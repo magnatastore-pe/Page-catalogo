@@ -442,12 +442,12 @@ Nota de convención: los rechazos de `replace` devuelven HTTP 200 con `{ok:false
 
 ### Después — lo que evita problemas que se acumulan
 
-8. **I2** — Borrado de imágenes + vista de imágenes huérfanas.
-9. **P1** — Comprimir los PDF generados (15 MB → ~3-4 MB esperable).
-10. **E1** — Regenerar solo los PDF de los catálogos que cambiaron.
-11. **I1** — Probar end-to-end el ciclo completo con una foto en Blob, web **y** PDF.
-12. **O2** — CI mínimo (`tsc` + `eslint` + `build`).
-13. **S10** — Subir a `next@16.2.12` y reauditar.
+8. ⬜ **I2** — Borrado de imágenes + vista de imágenes huérfanas.
+9. ✅ **P1** — PDFs de 8-15 MB a 0.7-6 MB (**-60% promedio**). La solución no fue la que suponía esta auditoría (posprocesar con Ghostscript, que no existe en el contenedor de build de Vercel) sino atacar la causa: `next/image` servía AVIF/WebP y Chromium los re-embebía casi sin comprimir. Ahora `scripts/generate-pdf.mjs` pide JPEG solo durante la impresión. Ver el detalle en S6/P1 más arriba.
+10. ⬜ **E1** — Regenerar solo los PDF de los catálogos que cambiaron.
+11. 🟡 **I1** — Ejercitado parcialmente en producción (magnata): foto subida a Blob y servida por `/_next/image` con 200. Falta confirmarla dentro de un PDF generado.
+12. ⬜ **O2** — CI mínimo (`tsc` + `eslint` + `build`).
+13. 🟡 **S10** — Actualizado a `next@16.2.12`. **No cierra el aviso**: la 16.2.12 sigue fijando `sharp@0.34.5`, así que las 3 vulnerabilidades altas transitivas continúan. Sigue valiendo que `npm audit fix --force` (bajar a `next@9`) sería mucho peor. A revisar cuando Next actualice su propio `sharp`.
 
 ### Cuando haya aire — sostenibilidad
 
