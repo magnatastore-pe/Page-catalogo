@@ -442,11 +442,13 @@ Nota de convención: los rechazos de `replace` devuelven HTTP 200 con `{ok:false
 
 ### Después — lo que evita problemas que se acumulan
 
-8. ⬜ **I2** — Borrado de imágenes + vista de imágenes huérfanas.
+8. ✅ **I2** — La galería marca las imágenes que ningún catálogo usa y permite borrarlas (de Blob o del repo, según dónde vivan). Se niega a borrar una en uso, y el botón ni se dibuja sobre esas. Detalle importante encontrado al implementarlo: la primera versión marcaba 40 de 55 como huérfanas porque no contaba las **fotos de las plantillas de arranque** — no las referencia ningún catálogo, pero las necesita el wizard, y borrarlas habría dejado los catálogos nuevos con imágenes rotas. Corregido: quedan 2 huérfanas reales.
 9. ✅ **P1** — PDFs de 8-15 MB a 0.7-6 MB (**-60% promedio**). La solución no fue la que suponía esta auditoría (posprocesar con Ghostscript, que no existe en el contenedor de build de Vercel) sino atacar la causa: `next/image` servía AVIF/WebP y Chromium los re-embebía casi sin comprimir. Ahora `scripts/generate-pdf.mjs` pide JPEG solo durante la impresión. Ver el detalle en S6/P1 más arriba.
 10. ⬜ **E1** — Regenerar solo los PDF de los catálogos que cambiaron.
 11. 🟡 **I1** — Ejercitado parcialmente en producción (magnata): foto subida a Blob y servida por `/_next/image` con 200. Falta confirmarla dentro de un PDF generado.
-12. ⬜ **O2** — CI mínimo (`tsc` + `eslint` + `build`).
+12. ✅ **O2** — `.github/workflows/ci.yml` corre `tsc` + `eslint` + `next build` en cada push y PR a `main`. En verde.
+
+    **Gotcha que costó dos intentos fallidos, documentado para no repetirlo**: el workflow usa `npm install`, **no `npm ci`**. `npm ci` exige que `package.json` y `package-lock.json` estén perfectamente sincronizados, y este lockfile no puede cumplirlo en Linux: se genera desde macOS, donde npm resuelve el árbol para darwin y deja afuera `@emnapi/core` y `@emnapi/runtime` (dependencias de `@img/sharp-wasm32`) que un runner Linux sí necesita. No se arregla regenerando el lockfile — se probó con `npm install --package-lock-only`, borrándolo y rehaciéndolo de cero, y forzando `--os=linux --cpu=x64`; en los tres casos npm resuelve para la plataforma local. `npm install` además es **lo mismo que usa Vercel**, así que el CI refleja el camino real de deploy en vez de uno más estricto que nadie ejecuta. `--ignore-scripts` saltea el `postinstall` de Playwright (~150MB de Chromium que acá no se usan).
 13. 🟡 **S10** — Actualizado a `next@16.2.12`. **No cierra el aviso**: la 16.2.12 sigue fijando `sharp@0.34.5`, así que las 3 vulnerabilidades altas transitivas continúan. Sigue valiendo que `npm audit fix --force` (bajar a `next@9`) sería mucho peor. A revisar cuando Next actualice su propio `sharp`.
 
 ### Cuando haya aire — sostenibilidad
