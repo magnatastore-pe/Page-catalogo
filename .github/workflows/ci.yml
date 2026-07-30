@@ -26,17 +26,25 @@ jobs:
           node-version: 24
           cache: npm
 
-      # --ignore-scripts saltea el postinstall (`playwright install
-      # chromium`). Acá no se genera ningún PDF, así que bajar Chromium
-      # serían ~150MB por corrida para nada — y ese paso fue justamente
-      # el que hizo fallar la primera versión de este workflow en un
-      # runner limpio.
+      # `npm install`, NO `npm ci`, a propósito — y es lo mismo que usa
+      # Vercel para construir el sitio de verdad, así que este paso
+      # refleja el camino real de deploy en vez de uno más estricto que
+      # nadie ejecuta.
       #
-      # Verificado que alcanza: sobre un árbol recién clonado,
-      # `npm ci --ignore-scripts` seguido de tsc, eslint y next build
-      # pasa entero (la duda era `sharp`, que Next resuelve como binario
-      # precompilado, sin script de instalación propio).
-      - run: npm ci --ignore-scripts
+      # `npm ci` exige que package.json y package-lock.json estén
+      # perfectamente sincronizados, y este lockfile no puede cumplirlo
+      # en Linux: se genera desde macOS, donde npm resuelve el árbol
+      # para darwin y deja afuera `@emnapi/core` y `@emnapi/runtime`
+      # (dependencias de `@img/sharp-wasm32`) que en un runner Linux sí
+      # hacen falta. No es algo que se arregle regenerando el lockfile:
+      # se probó con `npm install --package-lock-only`, borrándolo y
+      # rehaciéndolo de cero, y forzando `--os=linux --cpu=x64`; en los
+      # tres casos npm sigue resolviendo para la plataforma local.
+      #
+      # --ignore-scripts saltea el postinstall (`playwright install
+      # chromium`): acá no se genera ningún PDF, así que serían ~150MB
+      # por corrida para nada.
+      - run: npm install --ignore-scripts
 
       - name: Tipos
         run: npx tsc --noEmit
