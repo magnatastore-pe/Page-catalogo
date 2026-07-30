@@ -290,17 +290,16 @@ export default function CreateCatalogWizard() {
         {step === "done" && createdInfo && (
           <div className="admin-wizard-done">
             <p className="admin-save-message ok">
-              Catálogo &ldquo;{createdInfo.id}&rdquo; creado (
-              <a href={createdInfo.commitUrl} target="_blank" rel="noreferrer">
-                ver commit
-              </a>
-              ). En cuanto termine el redeploy (1-2 min) se va a poder ver en{" "}
-              <a href={`/catalog/${createdInfo.id}`} target="_blank" rel="noreferrer">
-                /catalog/{createdInfo.id}
-              </a>{" "}
-              y editar en <code>/admin/{createdInfo.id}</code> — todavía no existen, el link recién funciona
-              cuando termine.
+              ¡Catálogo &ldquo;{createdInfo.id}&rdquo; creado! Va a estar listo para ver en 1 o 2 minutos.
             </p>
+            <a
+              className="admin-btn admin-btn-primary admin-wizard-done-link"
+              href={`/catalog/${createdInfo.id}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Ver catálogo
+            </a>
             <button type="button" className="admin-btn admin-btn-primary" onClick={reset}>
               Listo
             </button>
