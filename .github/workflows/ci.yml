@@ -18,11 +18,6 @@ jobs:
   verificar:
     runs-on: ubuntu-latest
 
-    env:
-      # No se genera el PDF acá (ver más abajo), así que no hace falta
-      # bajar Chromium: son ~150MB por corrida que no se usarían.
-      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
-
     steps:
       - uses: actions/checkout@v4
 
@@ -31,7 +26,17 @@ jobs:
           node-version: 24
           cache: npm
 
-      - run: npm ci
+      # --ignore-scripts saltea el postinstall (`playwright install
+      # chromium`). Acá no se genera ningún PDF, así que bajar Chromium
+      # serían ~150MB por corrida para nada — y ese paso fue justamente
+      # el que hizo fallar la primera versión de este workflow en un
+      # runner limpio.
+      #
+      # Verificado que alcanza: sobre un árbol recién clonado,
+      # `npm ci --ignore-scripts` seguido de tsc, eslint y next build
+      # pasa entero (la duda era `sharp`, que Next resuelve como binario
+      # precompilado, sin script de instalación propio).
+      - run: npm ci --ignore-scripts
 
       - name: Tipos
         run: npx tsc --noEmit
