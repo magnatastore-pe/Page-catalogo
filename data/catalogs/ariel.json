@@ -105,16 +105,8 @@
           "PLEATED FABRIC | FLUID SILHOUETTE",
           "RESORT COLOURWAY"
         ],
-        "collageLayout": "four",
+        "collageLayout": "two",
         "collageImages": [
-          {
-            "src": "/imagenes/4.png",
-            "alt": "Ariel emerald portrait"
-          },
-          {
-            "src": "/imagenes/5.png",
-            "alt": "Ariel emerald front"
-          },
           {
             "src": "/imagenes/4.png",
             "alt": "Ariel emerald portrait"
