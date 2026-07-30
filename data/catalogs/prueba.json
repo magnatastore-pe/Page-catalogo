@@ -23,7 +23,7 @@
         "bottomLine1": "PRUEBA · 2026",
         "bottomLine2": "Crafted for those who dare to stand out.",
         "bgImage": "/imagenes/1.png",
-        "pageNumber": 0
+        "pageNumber": 1
       }
     },
     {
@@ -32,7 +32,7 @@
         "heading": "DESIGNED TO BE SEEN",
         "paragraph": "Every piece in this collection is built on contrast — bold silhouettes, rich textures, and details made to turn heads. This is fashion with intention, made for the moments that matter.",
         "bgImage": "/imagenes/2.png",
-        "pageNumber": 0
+        "pageNumber": 2
       }
     },
     {
@@ -42,24 +42,24 @@
         "name": "PRUEBA",
         "type": "COLLECTION",
         "bgImage": "/imagenes/3.png",
-        "pageNumber": 0
+        "pageNumber": 3
       }
     },
     {
       "type": "chapterHero",
       "data": {
         "id": "ember",
-        "pageNumber": 0,
-        "name": "PRUEBA",
+        "pageNumber": 4,
+        "name": "Vestido color verde",
         "label": "EMBER",
-        "bgImage": "/imagenes/4.png"
+        "bgImage": "/imagenes/69-c5a44dc2-b793-45c2-9b0a-a40683573d67-jpg.jpeg"
       }
     },
     {
       "type": "productDetail",
       "data": {
         "id": "ember",
-        "pageNumber": 0,
+        "pageNumber": 5,
         "name": "PRUEBA",
         "type": "EMBER PIECE",
         "price": "S/ 000",
@@ -91,7 +91,7 @@
       "type": "chapterHero",
       "data": {
         "id": "midnight",
-        "pageNumber": 0,
+        "pageNumber": 6,
         "name": "PRUEBA",
         "label": "MIDNIGHT",
         "bgImage": "/imagenes/6.png"
@@ -101,7 +101,7 @@
       "type": "productDetail",
       "data": {
         "id": "midnight",
-        "pageNumber": 0,
+        "pageNumber": 7,
         "name": "PRUEBA",
         "type": "MIDNIGHT PIECE",
         "price": "S/ 000",
@@ -136,7 +136,7 @@
         "line1": "THE COLLECTION",
         "line2": "Available now.",
         "bgImage": "/imagenes/9.png",
-        "pageNumber": 0
+        "pageNumber": 8
       }
     }
   ]
