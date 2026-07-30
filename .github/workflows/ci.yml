@@ -1,0 +1,54 @@
+# Validación automática antes de que un cambio llegue a producción.
+#
+# Hasta ahora no había ninguna: el panel de administración comitea
+# directo a la rama de deploy, así que un cambio de código roto llegaba
+# al sitio sin que nada lo frenara. Justo lo que pasó al restringir
+# `remotePatterns`, que dejó todas las fotos subidas sin poder
+# optimizarse — `tsc` y `eslint` estaban limpios, pero nadie los corrió
+# antes del deploy.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+
+    env:
+      # No se genera el PDF acá (ver más abajo), así que no hace falta
+      # bajar Chromium: son ~150MB por corrida que no se usarían.
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Tipos
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npx eslint .
+
+      # `next build` a secas, NO `npm run build`: ese último encadena
+      # scripts/generate-pdf.mjs, que levanta un servidor y un Chromium
+      # headless. Eso ya corre en el build real de Vercel y acá solo
+      # sumaría varios minutos por corrida sin cubrir nada que este
+      # build no cubra: lo que se quiere atajar es que el proyecto no
+      # compile o que un catálogo no valide contra el schema, y ambas
+      # cosas fallan en este paso.
+      #
+      # Los catálogos se validan solos acá: data/catalogs/*.ts corre
+      # CatalogEntrySchema.parse() al importarse, así que un JSON
+      # malformado rompe el build en vez de llegar al sitio.
+      - name: Build
+        run: npx next build

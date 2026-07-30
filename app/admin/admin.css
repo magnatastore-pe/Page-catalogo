@@ -975,6 +975,48 @@
   cursor: default;
 }
 
+/* Marca de imagen huérfana + su botón de borrado (I2 de la auditoría).
+   Van abajo a la izquierda para no chocar con el badge "Drive" (arriba
+   izq.) ni con el botón de re-sync (abajo der.), que pueden estar
+   presentes en la misma miniatura. */
+.admin-gallery-item-unused {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #1a1a1a;
+  background: rgba(255, 214, 138, 0.95);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.admin-gallery-item-delete {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  line-height: 1;
+  font-size: 12px;
+  background: #fff;
+  border: 1px solid #e2e2df;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.admin-gallery-item-delete:hover:not(:disabled) {
+  border-color: #c0392b;
+}
+
+.admin-gallery-item-delete:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 /* ---- admin panel (Fase B, 2026-07-28) ----
    El catálogo real queda siempre montado de fondo (mismo CatalogRenderer
    del sitio público — reemplaza tanto el <main> plano de /admin/[id]

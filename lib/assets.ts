@@ -1,8 +1,10 @@
 import "server-only";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { put, list as listBlobs } from "@vercel/blob";
-import { commitFile } from "./github";
+import { put, list as listBlobs, del as delBlob } from "@vercel/blob";
+import { commitFile, commitFiles } from "./github";
+import { catalogs } from "@/data/catalogs";
+import { CATALOG_TEMPLATES } from "./newCatalog";
 
 const ASSETS_SUBDIR = "imagenes"; // relativo a public/
 const ALLOWED_EXTENSIONS = new Set(["jpg", "jpeg", "png", "webp", "gif"]);
@@ -67,6 +69,95 @@ function sanitizeFilename(originalFilename: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
   return `${base || "imagen"}.${ext}`;
+}
+
+/**
+ * Todas las rutas de imagen que algún catálogo está usando ahora mismo.
+ *
+ * Recorre el registro entero juntando **cualquier** string, en vez de
+ * leer campo por campo (`bgImage`, `collageImages[].src`,
+ * `swatches[].image`). Es a propósito: enumerar los campos obliga a
+ * acordarse de actualizar esto cada vez que el schema gane un campo de
+ * imagen nuevo, y olvidarse acá no rompe nada visible — simplemente
+ * marcaría como "sin usar" una foto que sí se usa, y alguien la
+ * borraría. Recolectar todo y filtrar por coincidencia exacta con el
+ * path del asset es más burdo pero no puede quedar desactualizado.
+ */
+export function listUsedAssetPaths(): Set<string> {
+  const used = new Set<string>();
+
+  const walk = (value: unknown): void => {
+    if (typeof value === "string") {
+      used.add(value);
+    } else if (Array.isArray(value)) {
+      value.forEach(walk);
+    } else if (value && typeof value === "object") {
+      Object.values(value).forEach(walk);
+    }
+  };
+
+  walk(catalogs);
+
+  // Las fotos de las plantillas de arranque también cuentan como "en
+  // uso", aunque ningún catálogo publicado las referencie: son las que
+  // rellenan un catálogo recién creado desde el wizard. Sin esto la
+  // galería las marcaba a todas como huérfanas (40 de 55 en el estado
+  // actual del repo) y borrarlas dejaba el wizard generando catálogos
+  // con imágenes rotas.
+  //
+  // `build()` se ejecuta con valores de relleno porque los paths de
+  // foto que devuelve son fijos, no dependen del nombre ni del año.
+  for (const template of CATALOG_TEMPLATES) {
+    walk(template.preview);
+    try {
+      walk(template.build("x", "x", "2026"));
+    } catch {
+      // Una plantilla rota no debe impedir listar el resto; en el peor
+      // caso sus fotos aparecen como huérfanas, que es el lado seguro
+      // (se muestran de más, no se borran de más).
+    }
+  }
+
+  return used;
+}
+
+export type DeleteAssetResult = { ok: true } | { ok: false; error: string };
+
+/**
+ * Borra una imagen de donde sea que viva: Vercel Blob (fotos nuevas) o
+ * el repo (fotos anteriores al cambio a Blob).
+ *
+ * Se niega si algún catálogo la está usando. Podría hacerse al revés
+ * (borrar igual y avisar), pero el costo de los dos errores no es
+ * simétrico: dejar una foto de más solo ocupa espacio, mientras que
+ * borrar una en uso rompe una página del catálogo publicado y la foto
+ * no se recupera. La galería ya marca cuáles están sin usar, así que
+ * esta validación no debería sorprender a nadie — es la red por si la
+ * lista que ve el panel quedó vieja respecto al último deploy.
+ */
+export async function deleteAsset(assetPath: string): Promise<DeleteAssetResult> {
+  if (listUsedAssetPaths().has(assetPath)) {
+    return { ok: false, error: "Esa imagen está en uso en un catálogo. Sacala de ahí antes de borrarla." };
+  }
+
+  try {
+    if (isBlobUrl(assetPath)) {
+      await delBlob(assetPath);
+      return { ok: true };
+    }
+
+    if (!assetPath.startsWith(`/${ASSETS_SUBDIR}/`) || assetPath.includes("..")) {
+      return { ok: false, error: "Ruta de imagen inválida." };
+    }
+
+    await commitFiles(
+      [{ path: `public${assetPath}`, base64Content: null }],
+      `assets: eliminar ${assetPath} desde el panel de administración`
+    );
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "Error desconocido al borrar la imagen." };
+  }
 }
 
 export type UploadAssetResult =

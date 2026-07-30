@@ -2,11 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useAssets, type ClientAsset } from "./AssetsContext";
-import { recordDriveLinkAction } from "@/app/admin/actions";
+import { recordDriveLinkAction, deleteAssetAction } from "@/app/admin/actions";
 import { uploadFile, replaceFile } from "@/lib/uploadClient";
 import { CLOUD_SOURCES, type CloudSource } from "@/lib/cloudSources";
 import type { DriveLink } from "@/lib/driveLinks";
 import { useToast } from "./ToastContext";
+import { useConfirm } from "./ConfirmDialogContext";
 
 type AssetGalleryProps = {
   /** Ruta actualmente elegida (si esta grilla vive dentro de un campo puntual) — resalta esa miniatura. */
@@ -29,11 +30,13 @@ type AssetGalleryProps = {
  * necesita.
  */
 export default function AssetGallery({ selectedPath, onPick, onUploaded, onUploadStart }: AssetGalleryProps) {
-  const { assets, addAsset } = useAssets();
+  const { assets, addAsset, removeAsset, usedPaths } = useAssets();
   const { showToast } = useToast();
+  const confirm = useConfirm();
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [syncingPath, setSyncingPath] = useState<string | null>(null);
+  const [deletingPath, setDeletingPath] = useState<string | null>(null);
   const [cloudLoadingId, setCloudLoadingId] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -170,6 +173,37 @@ export default function AssetGallery({ selectedPath, onPick, onUploaded, onUploa
     }
   };
 
+  /**
+   * Solo se ofrece sobre imágenes que ningún catálogo usa (el botón ni
+   * siquiera se dibuja en las demás), pero igual se pide confirmación:
+   * borrar una foto de Blob no se puede deshacer, y la lista que ve el
+   * panel puede estar más vieja que el último deploy.
+   */
+  const handleDelete = async (asset: ClientAsset) => {
+    const confirmed = await confirm({
+      title: "Eliminar imagen",
+      message: `"${asset.filename}" se va a borrar definitivamente. No se puede deshacer.`,
+      confirmLabel: "Eliminar",
+      danger: true,
+    });
+    if (!confirmed) return;
+
+    setDeletingPath(asset.path);
+    try {
+      const result = await deleteAssetAction(asset.path);
+      if (!result.ok) {
+        showToast(result.error, "error");
+        return;
+      }
+      removeAsset(asset.path);
+      showToast(`"${asset.filename}" eliminada.`);
+    } catch {
+      showToast("No se pudo eliminar la imagen.", "error");
+    } finally {
+      setDeletingPath(null);
+    }
+  };
+
   return (
     <>
       <div className="admin-gallery-grid">
@@ -201,6 +235,26 @@ export default function AssetGallery({ selectedPath, onPick, onUploaded, onUploa
                   aria-label="Revisar actualización en Drive"
                 >
                   {syncingPath === asset.path ? "…" : "↻"}
+                </button>
+              </>
+            )}
+            {!usedPaths.has(asset.path) && (
+              <>
+                <span className="admin-gallery-item-unused" title="Ningún catálogo publicado usa esta imagen">
+                  sin usar
+                </span>
+                <button
+                  type="button"
+                  className="admin-gallery-item-delete"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(asset);
+                  }}
+                  disabled={deletingPath === asset.path}
+                  title="Eliminar imagen"
+                  aria-label={`Eliminar ${asset.filename}`}
+                >
+                  {deletingPath === asset.path ? "…" : "🗑"}
                 </button>
               </>
             )}

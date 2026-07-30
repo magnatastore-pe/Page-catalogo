@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireSession } from "@/lib/session";
 import { catalogs, type CatalogId } from "@/data/catalogs";
-import { listAssets } from "@/lib/assets";
+import { listAssets, listUsedAssetPaths } from "@/lib/assets";
 import { listDriveLinks } from "@/lib/driveLinks";
 import AdminEditor from "@/components/admin/AdminEditor";
 import LogoutButton from "@/components/admin/LogoutButton";
@@ -24,9 +24,10 @@ export default async function AdminCatalogPage({ params }: AdminCatalogPageProps
   const entry = catalogs[id as CatalogId];
   const assets = await listAssets();
   const driveLinks = await listDriveLinks();
+  const usedPaths = [...listUsedAssetPaths()];
 
   return (
-    <AssetsProvider initialAssets={assets} initialDriveLinks={driveLinks}>
+    <AssetsProvider initialAssets={assets} initialDriveLinks={driveLinks} usedPaths={usedPaths}>
       <AdminEditor
         catalogId={id}
         initialBlocks={entry.blocks}

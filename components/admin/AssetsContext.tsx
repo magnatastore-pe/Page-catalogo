@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
 import type { Asset } from "@/lib/assets";
 import type { DriveLink } from "@/lib/driveLinks";
 
@@ -19,6 +19,9 @@ export type ClientAsset = Asset & { previewUrl?: string; driveLink?: DriveLink }
 type AssetsContextValue = {
   assets: ClientAsset[];
   addAsset: (asset: ClientAsset) => void;
+  removeAsset: (path: string) => void;
+  /** Rutas que algún catálogo publicado está usando — la galería marca el resto como "sin usar". */
+  usedPaths: Set<string>;
 };
 
 const AssetsContext = createContext<AssetsContextValue | null>(null);
@@ -33,10 +36,13 @@ const AssetsContext = createContext<AssetsContextValue | null>(null);
 export function AssetsProvider({
   initialAssets,
   initialDriveLinks = [],
+  usedPaths = [],
   children,
 }: {
   initialAssets: Asset[];
   initialDriveLinks?: DriveLink[];
+  /** Se calcula en el servidor (lib/assets.ts's listUsedAssetPaths) y llega como array porque un Set no es serializable a través del límite servidor/cliente. */
+  usedPaths?: string[];
   children: ReactNode;
 }) {
   const [assets, setAssets] = useState<ClientAsset[]>(() => {
@@ -48,7 +54,17 @@ export function AssetsProvider({
     setAssets((prev) => [asset, ...prev.filter((a) => a.path !== asset.path)]);
   };
 
-  return <AssetsContext.Provider value={{ assets, addAsset }}>{children}</AssetsContext.Provider>;
+  const removeAsset = (path: string) => {
+    setAssets((prev) => prev.filter((a) => a.path !== path));
+  };
+
+  const used = useMemo(() => new Set(usedPaths), [usedPaths]);
+
+  return (
+    <AssetsContext.Provider value={{ assets, addAsset, removeAsset, usedPaths: used }}>
+      {children}
+    </AssetsContext.Provider>
+  );
 }
 
 export function useAssets(): AssetsContextValue {

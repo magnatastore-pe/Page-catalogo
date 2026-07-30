@@ -1,7 +1,7 @@
 import { requireSession } from "@/lib/session";
 import { catalogs } from "@/data/catalogs";
 import type { Block, CatalogBlocks } from "@/data/schema";
-import { listAssets } from "@/lib/assets";
+import { listAssets, listUsedAssetPaths } from "@/lib/assets";
 import { listDriveLinks } from "@/lib/driveLinks";
 import LogoutButton from "@/components/admin/LogoutButton";
 import CreateCatalogWizard from "@/components/admin/wizard/CreateCatalogWizard";
@@ -31,9 +31,10 @@ export default async function AdminPage() {
   // AddCatalogForm no tenía ningún campo de imagen.
   const assets = await listAssets();
   const driveLinks = await listDriveLinks();
+  const usedPaths = [...listUsedAssetPaths()];
 
   return (
-    <AssetsProvider initialAssets={assets} initialDriveLinks={driveLinks}>
+    <AssetsProvider initialAssets={assets} initialDriveLinks={driveLinks} usedPaths={usedPaths}>
       <header className="admin-header">
         <h1>Panel de administración</h1>
         <div className="admin-header-actions">
