@@ -130,6 +130,20 @@ export async function replaceAsset(assetPath: string, base64Content: string): Pr
     return { ok: false, error: `Formato no soportado: .${ext || "?"}. Usá jpg, png, webp o gif.` };
   }
 
+  // `assetPath` llega desde el cliente (app/api/admin/upload/route.ts lo
+  // lee del FormData), así que nunca se usa tal cual — mismo criterio
+  // que createCatalog aplica a su `id` con slugify(). Sin esto, un path
+  // de "/../../algo.png" escribía fuera de public/imagenes/ en el repo
+  // real, y una URL arbitraria pisaba cualquier pathname del Blob store
+  // (auditoría 2026-07-30, S2).
+  //
+  // La condición correcta no es "parece una ruta válida" sino "es un
+  // asset que ya existe": reemplazar presupone algo que reemplazar.
+  const known = await listAssets().catch(() => [] as Asset[]);
+  if (!known.some((a) => a.path === assetPath)) {
+    return { ok: false, error: "La imagen a reemplazar no existe en la biblioteca." };
+  }
+
   try {
     if (isBlobUrl(assetPath)) {
       const blobPathname = new URL(assetPath).pathname.replace(/^\//, "");
