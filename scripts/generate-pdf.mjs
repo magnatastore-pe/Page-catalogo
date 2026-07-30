@@ -164,6 +164,24 @@ async function main() {
     const viewportHeight = parseInt(PAGE_HEIGHT, 10);
     const page = await browser.newPage({ viewport: { width: viewportWidth, height: viewportHeight } });
 
+    // Pedir las fotos como JPEG/PNG en vez de AVIF/WebP, SOLO para el
+    // PDF. next/image sirve AVIF/WebP cuando el navegador los acepta
+    // (next.config.ts los tiene primeros en `formats`), y eso es lo
+    // correcto para la web — pesan mucho menos. Pero al imprimir es al
+    // revés: Chromium no puede copiar un AVIF/WebP tal cual dentro del
+    // PDF, así que lo decodifica y lo vuelve a guardar prácticamente sin
+    // comprimir. Medido en el PDF de Ariel: fondos de 1080x1440 ocupando
+    // 1.1-2.6MB cada uno, cuando el mismo fondo como JPEG son ~250KB.
+    // Recibiendo JPEG, Chromium lo embebe sin recodificar.
+    //
+    // Solo afecta a la generación del PDF: el sitio real sigue sirviendo
+    // AVIF/WebP a los visitantes, sin cambios.
+    await page.route("**/_next/image**", async (route) => {
+      await route.continue({
+        headers: { ...route.request().headers(), accept: "image/jpeg,image/png,*/*" },
+      });
+    });
+
     const catalogIds = getCatalogIds();
     for (const catalogId of catalogIds) {
       await printCatalog(page, catalogId);
