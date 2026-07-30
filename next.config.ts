@@ -13,22 +13,48 @@ import type { NextConfig } from "next";
  * silencio y solo en producción. Así cada despliegue autoriza exactamente
  * su propio store, sin que nadie tenga que acordarse de sincronizar nada.
  */
+const ANY_BLOB_HOST = "**.public.blob.vercel-storage.com";
+
 function ownBlobHostname(): string | null {
+  // BLOB_STORE_ID también sirve y es lo que Vercel expone en algunos
+  // contextos; se acepta cualquiera de los dos para no depender de una
+  // sola variable.
   const token = process.env.BLOB_READ_WRITE_TOKEN;
-  const storeId = token?.match(/^vercel_blob_rw_([^_]+)_/)?.[1];
+  const storeId =
+    token?.match(/^vercel_blob_rw_([^_]+)_/)?.[1] ??
+    process.env.BLOB_STORE_ID?.replace(/^store_/, "");
   return storeId ? `${storeId.toLowerCase()}.public.blob.vercel-storage.com` : null;
 }
 
-const blobHostname = ownBlobHostname();
+const ownHost = ownBlobHostname();
 
-if (!blobHostname) {
-  // No se aborta el build: el sitio público se sirve entero desde
-  // public/imagenes/, así que sin Blob configurado igual funciona. Pero
-  // sí se avisa fuerte, porque una foto subida desde el panel no se va a
-  // poder optimizar y eso solo se notaría mirando el sitio.
+/**
+ * Si no se puede determinar el store propio, se cae al comodín en vez de
+ * dejar `remotePatterns` vacío.
+ *
+ * Esto se aprendió rompiendo producción: al conectar un Blob store por
+ * primera vez, el deploy que ya estaba corriendo se había construido
+ * ANTES de que existiera la variable, y como el hostname se resuelve en
+ * build time quedó sin ningún patrón permitido. Resultado: /_next/image
+ * devolvía 400 para TODAS las fotos subidas, que en el catálogo se ven
+ * como secciones negras (la foto no carga y queda solo el degradado
+ * oscuro encima). Las fotos estaban perfectas; el optimizador las
+ * rechazaba.
+ *
+ * El comodín tiene un costo real —cualquier Blob store del mundo puede
+ * pasar por este optimizador, que es justo lo que S6 vino a cerrar— pero
+ * es un costo de cuota, acotado y solo en estado mal configurado. Un
+ * sitio con todas las imágenes rotas es peor. Con el token presente (el
+ * caso normal) se sigue usando el patrón estricto de un solo host.
+ */
+const blobPatterns = ownHost ? [ownHost] : [ANY_BLOB_HOST];
+
+if (!ownHost) {
   console.warn(
-    "[next.config] BLOB_READ_WRITE_TOKEN ausente o con formato inesperado: " +
-      "las imágenes servidas desde Vercel Blob no van a poder optimizarse."
+    "[next.config] No se pudo determinar el Blob store propio " +
+      "(falta BLOB_READ_WRITE_TOKEN / BLOB_STORE_ID, o tienen un formato inesperado).\n" +
+      "[next.config] Se permite cualquier *.public.blob.vercel-storage.com como respaldo. " +
+      "Conectá el store al proyecto en Vercel y volvé a desplegar para restringirlo."
   );
 }
 
@@ -40,13 +66,13 @@ const nextConfig: NextConfig = {
     // next/image necesita el hostname en la lista para poder
     // optimizarlas igual que las que ya viven en public/imagenes/.
     //
-    // Solo el store propio, NO `**.public.blob.vercel-storage.com`
-    // (auditoría 2026-07-30, S6): el comodín habilitaba cualquier store de
-    // Blob del mundo, convirtiendo /_next/image en un optimizador abierto
-    // para imágenes de terceros a costa de la cuota de este proyecto.
-    remotePatterns: blobHostname
-      ? [{ protocol: "https" as const, hostname: blobHostname }]
-      : [],
+    // Solo el store propio siempre que se pueda determinar, NO
+    // `**.public.blob.vercel-storage.com` (auditoría 2026-07-30, S6): el
+    // comodín habilitaba cualquier store de Blob del mundo, convirtiendo
+    // /_next/image en un optimizador abierto para imágenes de terceros a
+    // costa de la cuota de este proyecto. Ver arriba el porqué del
+    // respaldo cuando no hay token.
+    remotePatterns: blobPatterns.map((hostname) => ({ protocol: "https" as const, hostname })),
   },
   /**
    * Cabeceras de seguridad (auditoría 2026-07-30, S5): en producción la
