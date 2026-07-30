@@ -53,6 +53,19 @@ export default function AdminPanel({
   // eslint-disable-next-line react-hooks/set-state-in-effect -- patrón estándar de "portal seguro para SSR": el flip pasa una sola vez, justo después de la hidratación, no en respuesta a un cambio externo que el linter esperaría acá.
   useEffect(() => setMounted(true), []);
 
+  // `onOpenChange` va por un ref, no directo en las deps del efecto de
+  // abajo — bug real encontrado en el asistente de creación: ahí se le
+  // pasa una función inline nueva en cada render (a diferencia del
+  // editor normal, donde es `setPanelOpen`, siempre la misma función),
+  // así que el efecto se volvía a disparar en cada tecla — incluido el
+  // `panelRef.current?.focus()` — y le robaba el foco al input justo
+  // después de cada letra. Con el ref, el efecto solo depende de
+  // `open` y sigue llamando siempre a la versión más reciente.
+  const onOpenChangeRef = useRef(onOpenChange);
+  useEffect(() => {
+    onOpenChangeRef.current = onOpenChange;
+  });
+
   useEffect(() => {
     if (!open) return;
 
@@ -61,7 +74,7 @@ export default function AdminPanel({
 
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
-        onOpenChange(false);
+        onOpenChangeRef.current(false);
         return;
       }
       if (e.key !== "Tab" || !panelRef.current) return;
@@ -83,7 +96,7 @@ export default function AdminPanel({
       document.removeEventListener("keydown", handleKeyDown);
       previouslyFocused?.focus();
     };
-  }, [open, onOpenChange]);
+  }, [open]);
 
   // Mismo cálculo que app/admin/actions.ts al guardar: el fondo en vivo
   // tiene que mostrar los números de página reales según el orden

@@ -13,7 +13,10 @@ import { slugify } from "@/lib/slug";
 import { createCatalogAction } from "@/app/admin/actions";
 import AdminPanel from "../AdminPanel";
 import BlockList, { type EditableBlock } from "../BlockList";
+import AddPageChooser from "../AddPageChooser";
+import { defaultBlockFor } from "../defaultBlock";
 import { useConfirm } from "../ConfirmDialogContext";
+import { useToast } from "../ToastContext";
 import StepInfo from "./StepInfo";
 import StepImages, { type WizardImage } from "./StepImages";
 
@@ -21,6 +24,12 @@ type Step = "info" | "images" | "texts" | "done";
 
 const MIN_COLORWAYS = 1;
 const MAX_COLORWAYS = 8;
+
+const SINGLE_TYPE_LABELS: Record<"manifesto" | "productHero" | "closing", string> = {
+  manifesto: "Manifiesto",
+  productHero: "Hero de producto",
+  closing: "Cierre",
+};
 
 function makeKey(): string {
   return typeof crypto !== "undefined" && "randomUUID" in crypto
@@ -60,6 +69,7 @@ export default function CreateCatalogWizard() {
   const [error, setError] = useState<string | null>(null);
   const [createdInfo, setCreatedInfo] = useState<{ id: string; commitUrl: string } | null>(null);
   const confirm = useConfirm();
+  const { showToast } = useToast();
 
   const template = CATALOG_TEMPLATES.find((t) => t.id === templateId) ?? CATALOG_TEMPLATES[0];
 
@@ -87,6 +97,26 @@ export default function CreateCatalogWizard() {
     setItems(draftBlocks.map((block) => ({ key: makeKey(), block })));
     setStep("texts");
   }
+
+  // Agregar página/colorway directo en el Paso 3 — antes solo se podía
+  // cambiar la cantidad de colorways volviendo al Paso 1 (el contador),
+  // que solo recalcula el borrador, no sirve una vez que los bloques ya
+  // se "congelaron" en `items`. Mismo patrón que AddPageChooser ya usa
+  // en el editor normal (AdminEditor), aplicado acá sobre `items`.
+  const heroBlock = items?.find((item) => item.block.type === "productHero")?.block;
+  const defaultProductName = heroBlock?.type === "productHero" ? heroBlock.data.name : "";
+  const defaultProductType = heroBlock?.type === "productHero" ? heroBlock.data.type : "";
+
+  const addColorwayToItems = (blocks: [Block, Block]) => {
+    if (!items) return;
+    setItems([...items, ...blocks.map((block) => ({ key: makeKey(), block }))]);
+  };
+
+  const addSingleToItems = (type: "manifesto" | "productHero" | "closing") => {
+    if (!items) return;
+    setItems([...items, { key: makeKey(), block: defaultBlockFor(type) }]);
+    showToast(`${SINGLE_TYPE_LABELS[type]} agregado`);
+  };
 
   function handleCreate() {
     if (!items) return;
@@ -231,6 +261,14 @@ export default function CreateCatalogWizard() {
                   pages[index]?.scrollIntoView({ behavior: "smooth", block: "start" });
                 });
               }}
+              footer={
+                <AddPageChooser
+                  defaultProductName={defaultProductName}
+                  defaultProductType={defaultProductType}
+                  onAddColorway={addColorwayToItems}
+                  onAddSingle={addSingleToItems}
+                />
+              }
             />
             <div className="admin-save-bar">
               <button type="button" className="admin-btn" onClick={() => setStep("images")} disabled={isPending}>
@@ -256,7 +294,12 @@ export default function CreateCatalogWizard() {
               <a href={createdInfo.commitUrl} target="_blank" rel="noreferrer">
                 ver commit
               </a>
-              ). En cuanto termine el redeploy se va a poder editar en <code>/admin/{createdInfo.id}</code>.
+              ). En cuanto termine el redeploy (1-2 min) se va a poder ver en{" "}
+              <a href={`/catalog/${createdInfo.id}`} target="_blank" rel="noreferrer">
+                /catalog/{createdInfo.id}
+              </a>{" "}
+              y editar en <code>/admin/{createdInfo.id}</code> — todavía no existen, el link recién funciona
+              cuando termine.
             </p>
             <button type="button" className="admin-btn admin-btn-primary" onClick={reset}>
               Listo

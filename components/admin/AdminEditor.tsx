@@ -11,6 +11,7 @@ import ThemeEditor from "./fields/ThemeEditor";
 import { useToast } from "./ToastContext";
 import { saveCatalogAction } from "@/app/admin/actions";
 import { CATALOG_TEMPLATES } from "@/lib/newCatalog";
+import { defaultBlockFor } from "./defaultBlock";
 
 const LAYOUT_LABELS: Partial<Record<LayoutId, string>> = Object.fromEntries(
   CATALOG_TEMPLATES.map((t) => [t.layoutId, t.label])
@@ -24,47 +25,6 @@ const TYPE_LABELS: Record<Block["type"], string> = {
   productDetail: "Detalle de producto (colorway)",
   closing: "Cierre",
 };
-
-function defaultBlockFor(type: Block["type"]): Block {
-  switch (type) {
-    case "cover":
-      return {
-        type,
-        data: {
-          title: "",
-          meta: [],
-          subtitle: "",
-          bottomLine1: "",
-          bottomLine2: "",
-          bgImage: "/imagenes/1.png",
-          pageNumber: 0,
-        },
-      };
-    case "manifesto":
-      return { type, data: { heading: "", paragraph: "", bgImage: "/imagenes/1.png", pageNumber: 0 } };
-    case "productHero":
-      return { type, data: { id: "", name: "", type: "", bgImage: "/imagenes/1.png", pageNumber: 0 } };
-    case "chapterHero":
-      return { type, data: { id: "", pageNumber: 0, name: "", label: "", bgImage: "/imagenes/1.png" } };
-    case "productDetail":
-      return {
-        type,
-        data: {
-          id: "",
-          pageNumber: 0,
-          name: "",
-          type: "",
-          price: "",
-          description: [],
-          collageLayout: "two",
-          collageImages: [],
-          swatches: [],
-        },
-      };
-    case "closing":
-      return { type, data: { title: "", line1: "", line2: "", bgImage: "/imagenes/1.png", pageNumber: 0 } };
-  }
-}
 
 function makeKey(): string {
   return typeof crypto !== "undefined" && "randomUUID" in crypto

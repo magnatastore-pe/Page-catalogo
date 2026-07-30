@@ -634,6 +634,31 @@ a {
   padding: 72px 24px 96px;
 }
 
+/* Entrada discreta al panel — /admin ya tiene su propia pantalla de
+   login detrás (proxy.ts + requireSession), así que este link no es un
+   agujero de seguridad, solo evita tener que escribir /admin a mano. */
+.catalog-index-admin-link {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  background: var(--paper);
+  z-index: 10;
+}
+
+.catalog-index-admin-link:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
 .catalog-index-header {
   text-align: center;
   margin-bottom: 48px;

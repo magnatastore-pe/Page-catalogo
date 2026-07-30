@@ -19,6 +19,9 @@ export default function HomePage() {
 
   return (
     <main className="catalog-index">
+      <Link href="/admin" className="catalog-index-admin-link">
+        Admin
+      </Link>
       <div className="catalog-index-header">
         <p>Catálogos</p>
       </div>

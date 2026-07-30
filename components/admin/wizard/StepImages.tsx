@@ -35,19 +35,26 @@ export default function StepImages({ images, onChange, slotCount }: StepImagesPr
   const dragIndexRef = useRef<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Agrega cada foto a la grilla apenas termina de subir esa foto en
+  // particular — no recién al final de todo el lote (bug real: con
+  // varias fotos a la vez, la grilla se quedaba sin cambios y sin
+  // ningún indicador por foto durante toda la espera, así que se sentía
+  // trabado/roto en vez de "subiendo de a una"). Mismo patrón que
+  // AssetGallery ya usa en el editor normal, donde esto nunca pasó.
   const uploadFiles = async (files: File[]) => {
     const imageFiles = files.filter((f) => f.type.startsWith("image/"));
     if (imageFiles.length === 0) return;
 
     setError(null);
     setUploading(true);
-    const uploaded: WizardImage[] = [];
+    let current = images;
     for (const file of imageFiles) {
       try {
         const res = await uploadFile(file);
         if (res.ok) {
           const previewUrl = URL.createObjectURL(file);
-          uploaded.push({ path: res.path, previewUrl });
+          current = [...current, { path: res.path, previewUrl }];
+          onChange(current);
           addAsset({ path: res.path, filename: res.path.split("/").pop() ?? file.name, previewUrl });
         } else {
           setError(res.error);
@@ -56,7 +63,6 @@ export default function StepImages({ images, onChange, slotCount }: StepImagesPr
         setError("No se pudo leer una de las imágenes.");
       }
     }
-    if (uploaded.length > 0) onChange([...images, ...uploaded]);
     setUploading(false);
   };
 
@@ -70,11 +76,12 @@ export default function StepImages({ images, onChange, slotCount }: StepImagesPr
     try {
       const picked = await source.pickImages();
       if (picked.length === 0) return; // canceló sin elegir nada, no es un error
-      const uploaded: WizardImage[] = [];
+      let current = images;
       for (const file of picked) {
         const res = await uploadFile(new File([file.blob], file.name, { type: file.blob.type }));
         if (res.ok) {
-          uploaded.push({ path: res.path, previewUrl: file.previewUrl });
+          current = [...current, { path: res.path, previewUrl: file.previewUrl }];
+          onChange(current);
           // Vínculo con el archivo de origen (Fase F) — solo si este
           // source soporta re-sync; de lo contrario no hay fileId
           // significativo que guardar para más adelante.
@@ -106,7 +113,6 @@ export default function StepImages({ images, onChange, slotCount }: StepImagesPr
           setError(res.error);
         }
       }
-      if (uploaded.length > 0) onChange([...images, ...uploaded]);
     } catch (err) {
       setError(err instanceof Error ? err.message : `No se pudo importar desde ${source.label}.`);
     } finally {
