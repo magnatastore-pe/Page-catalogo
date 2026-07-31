@@ -1,0 +1,178 @@
+{
+  "layoutId": "original",
+  "theme": {
+    "ink": "#2b1810",
+    "paper": "#f5ede4",
+    "line": "#3d2418",
+    "muted": "#8a7361",
+    "accent": "#c1652f",
+    "displayFont": "Didot, \"Bodoni MT\", \"Playfair Display\", serif",
+    "bodyFont": "Futura, \"Century Gothic\", sans-serif"
+  },
+  "blocks": [
+    {
+      "type": "cover",
+      "data": {
+        "title": "ARIEL",
+        "meta": [
+          "VOL. 01",
+          "2026",
+          "LOOKBOOK"
+        ],
+        "subtitle": "A NEW CHAPTER IN THE COLLECTION",
+        "bottomLine1": "ARIEL · 2026",
+        "bottomLine2": "Crafted for those who dare to stand out.",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-9d70b0b7.webp",
+        "pageNumber": 1
+      }
+    },
+    {
+      "type": "manifesto",
+      "data": {
+        "heading": "DESIGNED TO BE SEEN",
+        "paragraph": "Every piece in this collection is built on contrast — bold silhouettes, rich textures, and details made to turn heads. This is fashion with intention, made for the moments that matter.",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-adafa7a5.webp",
+        "pageNumber": 2
+      }
+    },
+    {
+      "type": "productHero",
+      "data": {
+        "id": "ariel",
+        "name": "ARIEL",
+        "type": "COLLECTION",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-66db6402.webp",
+        "pageNumber": 3
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "ember",
+        "pageNumber": 4,
+        "name": "ARIEL",
+        "label": "EMBER",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-f775b01a.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "ember",
+        "pageNumber": 5,
+        "name": "ARIEL",
+        "type": "EMBER PIECE",
+        "price": "S/ 000",
+        "description": [
+          "BOLD SILHOUETTE | STATEMENT DETAIL",
+          "SIGNATURE COLOURWAY"
+        ],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-2655f40a.webp",
+            "alt": "ARIEL EMBER"
+          },
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-3b0d1bb5.webp",
+            "alt": "ARIEL EMBER"
+          }
+        ],
+        "swatches": [
+          {
+            "label": "EMBER",
+            "type": "color",
+            "color": "#c1652f"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "midnight",
+        "pageNumber": 6,
+        "name": "ARIEL",
+        "label": "MIDNIGHT",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-ef7fcdec.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "midnight",
+        "pageNumber": 7,
+        "name": "ARIEL",
+        "type": "MIDNIGHT PIECE",
+        "price": "S/ 000",
+        "description": [
+          "RICH TEXTURE | SCULPTED FIT",
+          "AFTER-DARK COLOURWAY"
+        ],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-a2f39c86.webp",
+            "alt": "ARIEL MIDNIGHT"
+          },
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-261196bc.webp",
+            "alt": "ARIEL MIDNIGHT"
+          }
+        ],
+        "swatches": [
+          {
+            "label": "MIDNIGHT",
+            "type": "color",
+            "color": "#2b1810"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "colorway-3",
+        "pageNumber": 8,
+        "name": "ARIEL",
+        "label": "COLORWAY 3",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-edcaf956.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "colorway-3",
+        "pageNumber": 9,
+        "name": "ARIEL",
+        "type": "COLORWAY 3 COLLECTION",
+        "price": "",
+        "description": [],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "/imagenes/base-20260731-3bf9ec09.webp",
+            "alt": "ARIEL Colorway 3"
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 3",
+            "type": "color",
+            "color": "#c1652f"
+          }
+        ]
+      }
+    },
+    {
+      "type": "closing",
+      "data": {
+        "title": "ARIEL",
+        "line1": "THE COLLECTION",
+        "line2": "Available now.",
+        "bgImage": "/imagenes/base-20260731-484498df.webp",
+        "pageNumber": 10
+      }
+    }
+  ]
+}
