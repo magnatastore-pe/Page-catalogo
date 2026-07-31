@@ -57,6 +57,33 @@ export const CollageImageSchema = z.object({
 });
 export type CollageImage = z.infer<typeof CollageImageSchema>;
 
+/**
+ * Colores puestos a mano sobre un texto puntual de la página, desde la
+ * vista previa del panel (se clickea el texto y se elige el color).
+ *
+ * La clave es qué se usa de clave: un selector CSS **relativo a la
+ * `<section class="page">`** de esa página, no el nombre de un campo de
+ * datos. Con 10 plantillas dibujando los mismos datos con componentes
+ * distintos, atarlo al campo obligaría a que cada uno de los ~63
+ * componentes de `components/catalog/layouts` supiera pintar cada uno
+ * de sus textos; atarlo a la posición dentro de la sección lo resuelve
+ * en un solo lugar (`CatalogRenderer`, que emite las reglas CSS) y
+ * funciona igual en cualquier plantilla. Ver
+ * `components/admin/textColorTarget.ts` para el costo de esa decisión.
+ *
+ * Los dos `regex` no son decorativos: estas dos cadenas terminan
+ * literalmente dentro de un `<style>`, así que un valor libre sería una
+ * vía de inyección de CSS. Se aceptan solo caracteres de selector y
+ * colores `#rgb`/`#rrggbb`.
+ */
+export const TextColorsSchema = z
+  .record(
+    z.string().regex(/^[a-zA-Z0-9\s.:>()#_-]+$/),
+    z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/)
+  )
+  .optional();
+export type TextColors = z.infer<typeof TextColorsSchema>;
+
 // ---- Section data shapes ----
 
 export const CoverDataSchema = z.object({
@@ -67,6 +94,7 @@ export const CoverDataSchema = z.object({
   bottomLine2: z.string(),
   bgImage: z.string(),
   pageNumber: z.number(),
+  textColors: TextColorsSchema,
 });
 export type CoverData = z.infer<typeof CoverDataSchema>;
 
@@ -75,6 +103,7 @@ export const ManifestoDataSchema = z.object({
   paragraph: z.string(),
   bgImage: z.string(),
   pageNumber: z.number(),
+  textColors: TextColorsSchema,
 });
 export type ManifestoData = z.infer<typeof ManifestoDataSchema>;
 
@@ -84,6 +113,7 @@ export const ProductHeroDataSchema = z.object({
   type: z.string(),
   bgImage: z.string(),
   pageNumber: z.number(),
+  textColors: TextColorsSchema,
 });
 export type ProductHeroData = z.infer<typeof ProductHeroDataSchema>;
 
@@ -93,6 +123,7 @@ export const ChapterHeroSchema = z.object({
   name: z.string(),
   label: z.string(),
   bgImage: z.string(),
+  textColors: TextColorsSchema,
 });
 export type ChapterHero = z.infer<typeof ChapterHeroSchema>;
 
@@ -106,6 +137,7 @@ export const ProductVariantSchema = z.object({
   collageLayout: CollageLayoutSchema,
   collageImages: z.array(CollageImageSchema),
   swatches: z.array(SwatchItemSchema),
+  textColors: TextColorsSchema,
 });
 export type ProductVariant = z.infer<typeof ProductVariantSchema>;
 
@@ -115,6 +147,7 @@ export const ClosingDataSchema = z.object({
   line2: z.string(),
   bgImage: z.string(),
   pageNumber: z.number(),
+  textColors: TextColorsSchema,
 });
 export type ClosingData = z.infer<typeof ClosingDataSchema>;
 

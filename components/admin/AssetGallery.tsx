@@ -204,10 +204,19 @@ export default function AssetGallery({ selectedPath, onPick, onUploaded, onUploa
     }
   };
 
-  return (
-    <>
-      <div className="admin-gallery-grid">
-        {assets.map((asset) => (
+  /**
+   * La biblioteca se muestra en dos grupos — en uso y sin usar — en vez
+   * de una grilla sola con una etiquetita "sin usar" en las que no lo
+   * están: con decenas de fotos, encontrar cuáles quedaron colgadas de
+   * una prueba (o cuáles se pueden borrar sin romper nada) obligaba a
+   * recorrerlas una por una. El dato de "en uso" ya existía
+   * (`usedPaths`, calculado en el servidor sobre todos los catálogos
+   * publicados); esto solo lo usa para agrupar además de para etiquetar.
+   */
+  const usedAssets = assets.filter((asset) => usedPaths.has(asset.path));
+  const unusedAssets = assets.filter((asset) => !usedPaths.has(asset.path));
+
+  const renderAsset = (asset: ClientAsset) => (
           <div className="admin-gallery-item-wrap" key={asset.path}>
             <button
               type="button"
@@ -259,9 +268,32 @@ export default function AssetGallery({ selectedPath, onPick, onUploaded, onUploa
               </>
             )}
           </div>
-        ))}
-        {assets.length === 0 && <p>Todavía no hay imágenes.</p>}
-      </div>
+  );
+
+  return (
+    <>
+      {assets.length === 0 && <p>Todavía no hay imágenes.</p>}
+
+      {usedAssets.length > 0 && (
+        <section className="admin-gallery-group">
+          <h4 className="admin-gallery-group-title">
+            En uso <span>{usedAssets.length}</span>
+          </h4>
+          <div className="admin-gallery-grid">{usedAssets.map(renderAsset)}</div>
+        </section>
+      )}
+
+      {unusedAssets.length > 0 && (
+        <section className="admin-gallery-group">
+          <h4 className="admin-gallery-group-title">
+            Sin usar <span>{unusedAssets.length}</span>
+          </h4>
+          <p className="admin-gallery-group-hint">
+            Ningún catálogo publicado usa estas fotos. Son las únicas que se pueden borrar.
+          </p>
+          <div className="admin-gallery-grid">{unusedAssets.map(renderAsset)}</div>
+        </section>
+      )}
 
       <div
         className={`admin-wizard-dropzone${dragOver ? " drag-over" : ""}`}

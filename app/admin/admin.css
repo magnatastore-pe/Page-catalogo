@@ -1017,10 +1017,11 @@
   cursor: default;
 }
 
-/* ---- vista previa móvil (toggle Escritorio/Móvil de AdminPanel) ----
-   El catálogo se renderiza dentro de un iframe de 390px para que las
-   media queries de globals.css se resuelvan contra ese ancho de verdad
-   — ver components/admin/MobileFrame.tsx. */
+/* ---- vista previa (toggle Escritorio/Móvil de AdminPanel) ----
+   Las dos vistas renderizan el catálogo dentro de un iframe con las
+   medidas lógicas del dispositivo, para que las media queries de
+   globals.css se resuelvan contra ese ancho de verdad — ver
+   components/admin/PreviewFrame.tsx. */
 
 .admin-viewport-toggle {
   display: inline-flex;
@@ -1045,41 +1046,53 @@
   background: #fff;
 }
 
-/* En móvil el fondo deja de ser el catálogo a sangre completa y pasa a
-   ser un escenario oscuro con el "teléfono" encima. */
-.admin-panel-live--mobile {
+/* Las dos vistas (teléfono y escritorio) muestran el catálogo dentro de
+   un dispositivo dibujado sobre un escenario oscuro — ya no hay una
+   vista "a sangre completa contra la ventana real". El padding de
+   arriba es el mínimo que evita que la topbar (fija, ~56px) se
+   superponga al dispositivo: menos que eso y el teléfono queda medio
+   tapado por los botones de arriba. El resto del alto es para el
+   dispositivo, que es lo que interesa mirar. */
+.admin-panel-live--framed {
   display: flex;
   align-items: center;
   justify-content: center;
   background: radial-gradient(circle at 50% 35%, #3a3a38 0%, #232322 70%);
-  padding: 56px 16px 24px;
+  padding: 56px 16px 12px;
 }
 
-
-/* MobileFrame le fija width/height y --phone-scale por JS, en función
-   del alto disponible: así el teléfono se escala entero (manteniendo la
-   proporción real del iPhone 15) en vez de recortarse. */
-.admin-mobile-stage {
+/* PreviewFrame le fija width/height y --frame-scale por JS, en función
+   del espacio disponible: así el dispositivo se escala entero
+   (manteniendo su proporción real) en vez de recortarse. */
+.admin-frame-stage {
   flex: 0 0 auto;
-  overflow: hidden;
+  /* `clip` y no `hidden`: `hidden` sigue creando un contenedor
+     SCROLLEABLE (solo esconde la barra), así que algo que pida
+     "mostrame este elemento" — el navegador al enfocar el iframe, un
+     scrollIntoView que atraviese el borde del iframe — puede correrlo
+     y dejar la carcasa a medias. `clip` directamente no scrollea. */
+  overflow: clip;
 }
 
-/* Carcasa estilo iPhone moderno: marco negro fino, esquinas muy
-   redondeadas y un halo suave para despegarlo del fondo. */
-.admin-mobile-device {
+.admin-frame-device {
   position: relative;
-  /* `max-content` es imprescindible: el contenedor (.admin-mobile-stage)
-     tiene el ancho YA escalado, y sin esto el teléfono se encogía a ese
-     ancho y encima se le aplicaba la escala — o sea se achicaba dos
+  /* `max-content` es imprescindible: el contenedor (.admin-frame-stage)
+     tiene el ancho YA escalado, y sin esto el dispositivo se encogía a
+     ese ancho y encima se le aplicaba la escala — o sea se achicaba dos
      veces y la proporción salía mal (0.391 en vez de 0.476). Con
      max-content mantiene su tamaño real y la escala es la única
      reducción. */
   width: max-content;
   /* Escalado desde la esquina para que el tamaño que ocupa coincida con
-     el que MobileFrame le calculó al contenedor — con `center` la caja
+     el que PreviewFrame le calculó al contenedor — con `center` la caja
      de layout seguiría siendo la sin escalar y se desalinearía. */
-  transform: scale(var(--phone-scale, 1));
+  transform: scale(var(--frame-scale, 1));
   transform-origin: top left;
+}
+
+/* Carcasa estilo iPhone moderno: marco negro fino, esquinas muy
+   redondeadas y un halo suave para despegarlo del fondo. */
+.admin-frame-device--phone {
   padding: 12px;
   background: linear-gradient(160deg, #3a3a3c 0%, #1c1c1e 45%, #2c2c2e 100%);
   border-radius: 56px;
@@ -1088,19 +1101,141 @@
     0 30px 70px rgba(0, 0, 0, 0.55);
 }
 
-.admin-mobile-frame {
-  display: block;
-  /* Medidas lógicas reales del iPhone 15 (no 390x844, que es el 14).
-     Fijas a propósito: el ancho define cómo se resuelve el layout
-     adentro, así que no se toca — si no entra, MobileFrame escala el
-     conjunto (ver --phone-scale). */
-  width: 393px;
-  height: 852px;
-  border: 0;
+/* Carcasa estilo ventana de ordenador: marco fino, esquinas suaves,
+   misma sombra para que las dos vistas se sientan del mismo set. */
+.admin-frame-device--desktop {
+  padding: 8px;
+  background: linear-gradient(160deg, #45454a 0%, #232326 60%, #303034 100%);
+  border-radius: 18px;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+    0 30px 70px rgba(0, 0, 0, 0.55);
+}
+
+/* La "pantalla": barra de navegador simulada arriba + iframe abajo. El
+   overflow oculto es lo que recorta el iframe contra las esquinas
+   redondeadas de la carcasa. */
+.admin-frame-screen {
+  display: flex;
+  flex-direction: column;
+  /* Ver .admin-frame-stage: con `hidden` esta caja se podía scrollear
+     sola y escondía la barra de navegador simulada. */
+  overflow: clip;
+  background: #fff;
+}
+
+.admin-frame-device--phone .admin-frame-screen {
   /* 56px de la carcasa menos los 12px de marco: mantiene las curvas
      concéntricas en vez de dejar un borde raro en las esquinas. */
   border-radius: 44px;
+}
+
+.admin-frame-device--desktop .admin-frame-screen {
+  border-radius: 10px;
+}
+
+.admin-preview-frame {
+  display: block;
+  flex: 0 0 auto;
+  border: 0;
   background: #fff;
+}
+
+/* ---- barra de navegador simulada ----
+   No es decoración: se lleva alto real del viewport del iframe (ver
+   SPECS en PreviewFrame), que es exactamente lo que pasa en un
+   navegador de verdad. Sin esto, "una página entera" en la vista previa
+   era más alta que una página entera en el celular del visitante. */
+.admin-frame-chrome {
+  flex: 0 0 auto;
+  user-select: none;
+}
+
+.admin-frame-chrome--phone {
+  padding: 0 10px 8px;
+  background: #f2f2f4;
+  border-bottom: 1px solid #dcdce0;
+}
+
+.admin-frame-statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.admin-frame-statusbar-icons {
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.admin-frame-chrome--desktop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 44px;
+  padding: 0 12px;
+  background: #e9e9ec;
+  border-bottom: 1px solid #d5d5da;
+}
+
+.admin-frame-dots {
+  display: flex;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.admin-frame-dots i {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #c9c9ce;
+}
+
+.admin-frame-dots i:nth-child(1) {
+  background: #ff5f57;
+}
+
+.admin-frame-dots i:nth-child(2) {
+  background: #febc2e;
+}
+
+.admin-frame-dots i:nth-child(3) {
+  background: #28c840;
+}
+
+.admin-frame-urlbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  padding: 0 12px;
+  background: #fff;
+  border: 1px solid #dcdce0;
+  border-radius: 999px;
+  font-size: 12px;
+  color: #55555c;
+}
+
+.admin-frame-lock,
+.admin-frame-reload {
+  flex: 0 0 auto;
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+.admin-frame-url {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Un colorway se edita en una tarjeta pero son dos páginas del catálogo.
@@ -1138,7 +1273,7 @@
   color: #1a1a1a;
 }
 
-.admin-mobile-island {
+.admin-frame-island {
   position: absolute;
   top: 24px;
   left: 50%;
@@ -1686,4 +1821,163 @@
   padding: 11px 18px;
   min-height: 42px;
   font-size: 0.9rem;
+}
+
+/* ---- selector de color de un texto (clic en la vista previa) ----
+   Se dibuja en el documento del panel, no adentro del iframe: el iframe
+   está escalado y con overflow oculto, así que un popover ahí adentro
+   saldría diminuto y recortado contra la carcasa. */
+.admin-textcolor-popover {
+  position: fixed;
+  z-index: 990;
+  width: 236px;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #d9d9d4;
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+}
+
+.admin-textcolor-sample {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #4a4a45;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-textcolor-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-textcolor-row input[type="color"] {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid #d9d9d4;
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+}
+
+.admin-textcolor-hex {
+  flex: 1;
+  min-width: 0;
+  height: 34px;
+  padding: 0 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  text-transform: uppercase;
+  border: 1px solid #d9d9d4;
+  border-radius: 6px;
+}
+
+.admin-textcolor-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.admin-textcolor-preset {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.admin-textcolor-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* ---- biblioteca de imágenes agrupada (en uso / sin usar) ---- */
+.admin-gallery-group + .admin-gallery-group {
+  margin-top: 18px;
+}
+
+.admin-gallery-group-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6a6a64;
+}
+
+.admin-gallery-group-title span {
+  padding: 1px 7px;
+  font-size: 11px;
+  letter-spacing: 0;
+  color: #4a4a45;
+  background: #e9e9e4;
+  border-radius: 999px;
+}
+
+.admin-gallery-group-hint {
+  margin: 0 0 8px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #6a6a64;
+}
+
+/* ---- glosario (pestaña Ayuda) ---- */
+.admin-glossary dl {
+  margin: 0;
+}
+
+.admin-glossary-item {
+  padding: 10px 0;
+  border-bottom: 1px solid #e6e6e1;
+}
+
+.admin-glossary-item:last-child {
+  border-bottom: 0;
+}
+
+.admin-glossary dt {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.admin-glossary dd {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #55554f;
+}
+
+.admin-glossary-detail {
+  display: block;
+  margin-top: 4px;
+  color: #7a7a72;
+}
+
+/* Dónde se ve cada color del tema — ver COLOR_FIELDS en ThemeEditor. */
+.admin-theme-color-where {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #85857c;
+}
+
+.admin-textcolor-note {
+  margin-right: auto;
+  font-size: 11px;
+  color: #8a8a82;
 }

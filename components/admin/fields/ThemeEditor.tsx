@@ -32,12 +32,18 @@ const BODY_FONTS: Record<string, string> = {
   "Verdana, Geneva, sans-serif": "Verdana clara",
 };
 
-const COLOR_FIELDS: Array<{ key: keyof CatalogTheme; label: string }> = [
-  { key: "ink", label: "Texto / tinta" },
-  { key: "paper", label: "Papel / fondo claro" },
-  { key: "line", label: "Líneas" },
-  { key: "muted", label: "Texto secundario" },
-  { key: "accent", label: "Acento" },
+// El "dónde" de cada color no es decoración: la mayoría de las páginas
+// del catálogo son foto a pantalla completa con texto blanco fijo por
+// diseño, así que cambiar la tinta y quedarse mirando la portada no
+// produce ningún cambio visible — el reclamo real fue exactamente ese.
+// Al abrir esta pestaña, AdminEditor ya lleva la vista previa a la
+// página de detalle, que es donde casi todos estos colores se ven.
+const COLOR_FIELDS: Array<{ key: keyof CatalogTheme; label: string; where: string }> = [
+  { key: "ink", label: "Texto / tinta", where: "Nombre, descripción y precio en la página de detalle" },
+  { key: "paper", label: "Papel / fondo claro", where: "Fondo de la página de detalle" },
+  { key: "line", label: "Líneas", where: "Filete que separa el nombre de la descripción" },
+  { key: "muted", label: "Texto secundario", where: "Número de página y etiquetas chicas" },
+  { key: "accent", label: "Acento", where: "Barra de progreso al bajar por el catálogo" },
 ];
 
 export default function ThemeEditor({ theme, onChange }: ThemeEditorProps) {
@@ -48,8 +54,14 @@ export default function ThemeEditor({ theme, onChange }: ThemeEditorProps) {
     <div className="admin-theme-editor">
       <p className="admin-add-colorway-title">Tema del catálogo</p>
 
+      <p className="admin-page-detail-hint">
+        Estos colores se ven sobre todo en la página de detalle (por eso la vista previa saltó ahí). Las páginas
+        que son foto a pantalla completa llevan texto blanco por diseño: para cambiar uno de esos, clickealo
+        directamente en la vista previa y elegí el color ahí.
+      </p>
+
       <div className="admin-theme-colors">
-        {COLOR_FIELDS.map(({ key, label }) => (
+        {COLOR_FIELDS.map(({ key, label, where }) => (
           <div className="admin-theme-color" key={key}>
             <input
               type="color"
@@ -60,6 +72,7 @@ export default function ThemeEditor({ theme, onChange }: ThemeEditorProps) {
             <div className="admin-theme-color-text">
               <span className="admin-theme-color-label">{label}</span>
               <span className="admin-theme-color-hex">{(theme[key] as string).toUpperCase()}</span>
+              <span className="admin-theme-color-where">{where}</span>
             </div>
           </div>
         ))}

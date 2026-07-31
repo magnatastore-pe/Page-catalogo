@@ -122,7 +122,7 @@ a {
 }
 
 .page-no.dark {
-  color: #111;
+  color: var(--muted);
   text-shadow: none;
 }
 
@@ -267,9 +267,18 @@ a {
 }
 
 /* ───── DETAIL PAGES ───── */
+/* Los colores de esta página salen del tema del catálogo (pestaña
+   "Colores" del panel), no de valores fijos. Antes estaban clavados en
+   #fff/#111/#222, así que cambiar el tema de un catálogo de esta
+   plantilla no producía NINGÚN cambio visible — era literalmente el
+   reclamo "cambio los colores y no veo cambios". Las otras 9 plantillas
+   ya usaban estas variables; solo la original se había quedado afuera.
+   Ariel tiene guardados exactamente los valores que estaban fijos acá
+   (#ffffff / #111111 / #222222), así que su catálogo publicado se ve
+   igual que antes. */
 .detail {
-  background: #fff;
-  color: #111;
+  background: var(--paper);
+  color: var(--ink);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -320,7 +329,7 @@ a {
 }
 
 .info {
-  background: #fff;
+  background: var(--paper);
   padding: 34px 42px 50px;
   position: relative;
   overflow: hidden;
@@ -434,7 +443,7 @@ a {
 
 .rule {
   height: 1px;
-  background: #222;
+  background: var(--line);
   margin: 24px 0 22px;
 }
 

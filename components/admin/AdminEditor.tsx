@@ -7,6 +7,7 @@ import BlockForm from "./BlockForm";
 import AddPageChooser from "./AddPageChooser";
 import AdminPanel from "./AdminPanel";
 import AssetGallery from "./AssetGallery";
+import Glossary from "./Glossary";
 import ThemeEditor from "./fields/ThemeEditor";
 import { useToast } from "./ToastContext";
 import { saveCatalogAction } from "@/app/admin/actions";
@@ -32,13 +33,14 @@ function makeKey(): string {
     : Math.random().toString(36).slice(2);
 }
 
-type Tab = "portada" | "paginas" | "imagenes" | "colores";
+type Tab = "portada" | "paginas" | "imagenes" | "colores" | "ayuda";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "portada", label: "Portada" },
   { id: "paginas", label: "Páginas" },
   { id: "imagenes", label: "Imágenes" },
   { id: "colores", label: "Colores" },
+  { id: "ayuda", label: "Ayuda" },
 ];
 
 type AdminEditorProps = {
@@ -106,16 +108,23 @@ export default function AdminEditor({
    */
   const scrollLivePreviewTo = (itemsIndex: number) => {
     requestAnimationFrame(() => {
-      // En vista móvil el catálogo vive dentro del iframe de
-      // MobileFrame, o sea en OTRO documento: buscar en `document` no
-      // encuentra ninguna `.page` y el scroll no pasaba (bug real —
-      // funcionaba en escritorio y no en móvil). Se resuelve primero
-      // contra qué documento hay que buscar.
-      const frame = document.querySelector<HTMLIFrameElement>("iframe.admin-mobile-frame");
-      const pages = frame?.contentDocument
-        ? frame.contentDocument.querySelectorAll<HTMLElement>(".page")
-        : document.querySelectorAll<HTMLElement>(".admin-panel-live .page");
-      pages[itemsIndex]?.scrollIntoView({ behavior: "smooth", block: "start" });
+      // El catálogo vive dentro del iframe de PreviewFrame — en OTRO
+      // documento — tanto en la vista móvil como en la de escritorio
+      // (antes escritorio se dibujaba directo en esta página, y esta
+      // búsqueda tenía dos ramas). Buscar en `document` no encuentra
+      // ninguna `.page`.
+      const frame = document.querySelector<HTMLIFrameElement>("iframe.admin-preview-frame");
+      const page = frame?.contentDocument?.querySelectorAll<HTMLElement>(".page")[itemsIndex];
+      if (!page || !frame?.contentWindow) return;
+      // Se scrollea la ventana DEL IFRAME a mano en vez de usar
+      // `page.scrollIntoView()`: ese método scrollea todos los
+      // contenedores scrolleables hacia arriba en el árbol, y eso
+      // atraviesa el borde del iframe — corría también la "pantalla"
+      // del dispositivo en el documento padre, justo lo que mide la
+      // barra de navegador simulada, que desaparecía al tocar
+      // cualquier página (bug real reportado). `offsetTop` alcanza
+      // porque cada `.page` es hija directa del <main> del catálogo.
+      frame.contentWindow.scrollTo({ top: page.offsetTop, behavior: "smooth" });
     });
   };
 
@@ -136,7 +145,40 @@ export default function AdminEditor({
     setTab(next);
     if (next === "portada" && coverIndex >= 0) {
       scrollLivePreviewTo(coverIndex);
+      return;
     }
+    // Los colores del tema (tinta, papel, líneas, texto secundario) se
+    // ven casi todos en la página de detalle de producto: el resto de
+    // las páginas son foto a pantalla completa con texto blanco fijo.
+    // Quedarse en la portada al abrir "Colores" era exactamente el
+    // motivo del reclamo "cambio los colores y no veo ningún cambio".
+    if (next === "colores") {
+      const detailIndex = items.findIndex((item) => item.block.type === "productDetail");
+      if (detailIndex >= 0) scrollLivePreviewTo(detailIndex);
+    }
+  };
+
+  /**
+   * Pinta un texto puntual de una página, elegido clickeándolo en la
+   * vista previa (ver AdminPanel + textColorTarget.ts). `color: null`
+   * lo devuelve al color que le corresponde por diseño; cuando la
+   * página se queda sin ningún color a mano, se borra la clave entera
+   * en vez de guardar un objeto vacío.
+   */
+  const setTextColor = (blockIndex: number, selector: string, color: string | null) => {
+    setItems((prev) =>
+      prev.map((item, i) => {
+        if (i !== blockIndex) return item;
+        const next = { ...(item.block.data.textColors ?? {}) };
+        if (color === null) delete next[selector];
+        else next[selector] = color;
+        const textColors = Object.keys(next).length > 0 ? next : undefined;
+        return {
+          ...item,
+          block: { ...item.block, data: { ...item.block.data, textColors } } as Block,
+        };
+      })
+    );
   };
 
   const addSingle = (type: Exclude<Block["type"], "cover">) => {
@@ -174,6 +216,7 @@ export default function AdminEditor({
       theme={theme}
       layoutId={layoutId}
       title={catalogId}
+      onTextColorChange={setTextColor}
       topbarActions={topbarActions}
       open={panelOpen}
       onOpenChange={setPanelOpen}
@@ -227,6 +270,8 @@ export default function AdminEditor({
         {tab === "imagenes" && <AssetGallery />}
 
         {tab === "colores" && <ThemeEditor theme={theme} onChange={setTheme} />}
+
+        {tab === "ayuda" && <Glossary />}
       </div>
 
       <div className="admin-save-bar">

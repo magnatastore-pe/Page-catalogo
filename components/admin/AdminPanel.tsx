@@ -1,9 +1,11 @@
 "use client";
 
 import { createPortal } from "react-dom";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import CatalogRenderer from "@/components/catalog/CatalogRenderer";
-import MobileFrame from "./MobileFrame";
+import PreviewFrame from "./PreviewFrame";
+import TextColorPopover from "./TextColorPopover";
+import { findPaintableElement, resolveTextColorTarget, type TextColorTarget } from "./textColorTarget";
 import type { Block, CatalogTheme, LayoutId } from "@/data/schema";
 
 type AdminPanelProps = {
@@ -11,6 +13,13 @@ type AdminPanelProps = {
   theme: CatalogTheme;
   layoutId: LayoutId;
   title: string;
+  /**
+   * Pinta (o despinta, con `color: null`) un texto puntual de una
+   * página, elegido clickeándolo en la vista previa. Opcional: quien no
+   * la pase — el asistente de creación — simplemente no habilita el
+   * selector de color.
+   */
+  onTextColorChange?: (blockIndex: number, selector: string, color: string | null) => void;
   /** Acciones fijas que tienen que seguir alcanzables aunque el panel esté colapsado (volver al listado, cerrar sesión). */
   topbarActions?: ReactNode;
   open: boolean;
@@ -39,6 +48,7 @@ export default function AdminPanel({
   theme,
   layoutId,
   title,
+  onTextColorChange,
   topbarActions,
   open,
   onOpenChange,
@@ -54,11 +64,11 @@ export default function AdminPanel({
   // eslint-disable-next-line react-hooks/set-state-in-effect -- patrón estándar de "portal seguro para SSR": el flip pasa una sola vez, justo después de la hidratación, no en respuesta a un cambio externo que el linter esperaría acá.
   useEffect(() => setMounted(true), []);
 
-  // Cómo se está mirando el catálogo de fondo. Arranca en escritorio
-  // porque es el ancho real del panel; "móvil" lo mete en un iframe de
-  // 390px para que las media queries se resuelvan de verdad (ver
-  // MobileFrame). Es solo una preferencia de visualización: no toca el
-  // contenido ni lo que se guarda.
+  // Cómo se está mirando el catálogo de fondo: dentro de una ventana de
+  // ordenador simulada (1440x900) o de un teléfono (iPhone 15). Las dos
+  // pasan por PreviewFrame, que resuelve las media queries contra las
+  // medidas reales del dispositivo. Es solo una preferencia de
+  // visualización: no toca el contenido ni lo que se guarda.
   const [viewport, setViewport] = useState<"desktop" | "mobile">("desktop");
 
   // `onOpenChange` va por un ref, no directo en las deps del efecto de
@@ -106,6 +116,86 @@ export default function AdminPanel({
     };
   }, [open]);
 
+  // ---- clic en un texto de la vista previa → selector de color ----
+  const [colorTarget, setColorTarget] = useState<TextColorTarget | null>(null);
+  // El listener vive en el documento del iframe, que se recrea al
+  // cambiar de vista; el ref evita tener que re-suscribirlo en cada
+  // render solo porque cambió una función inline.
+  const textColorEnabledRef = useRef(Boolean(onTextColorChange));
+  useEffect(() => {
+    textColorEnabledRef.current = Boolean(onTextColorChange);
+  });
+
+  const handlePreviewDocument = useCallback((doc: Document | null) => {
+    if (!doc) return;
+
+    // Qué se puede pintar tiene que verse ANTES de clickear: sin esto,
+    // el puntero sobre el catálogo era el cursor de texto (I) — que
+    // sugiere "seleccionar", no "clickear" — y no había forma de saber
+    // qué textos responden al clic y cuáles no.
+    const hoverStyle = doc.createElement("style");
+    hoverStyle.textContent = `
+      .catalog-root, .catalog-root * { -webkit-user-select: none; user-select: none; }
+      .admin-paintable-hover {
+        cursor: pointer !important;
+        outline: 2px dashed rgba(59, 130, 246, 0.9) !important;
+        outline-offset: 3px;
+      }
+    `;
+    doc.head.appendChild(hoverStyle);
+
+    /** Coordenadas del iframe → posición real en la ventana del panel (el dispositivo está escalado, ver PreviewFrame). */
+    const frameGeometry = () => {
+      const frame = doc.defaultView?.frameElement as HTMLIFrameElement | null;
+      if (!frame) return null;
+      const rect = frame.getBoundingClientRect();
+      return { rect, scale: rect.width / (frame.offsetWidth || rect.width) };
+    };
+
+    let hovered: Element | null = null;
+    const onMove = (e: MouseEvent) => {
+      if (!textColorEnabledRef.current) return;
+      const next = findPaintableElement(doc, e.clientX, e.clientY);
+      if (next === hovered) return;
+      hovered?.classList.remove("admin-paintable-hover");
+      hovered = next;
+      hovered?.classList.add("admin-paintable-hover");
+    };
+
+    const onClick = (e: MouseEvent) => {
+      if (!textColorEnabledRef.current) return;
+      const geometry = frameGeometry();
+      if (!geometry) return;
+      // No alcanza con `e.target`: el degradado `.page-overlay` está por
+      // encima del texto y se lleva el clic (por eso el título de la
+      // portada no se podía pintar). `findPaintableElement` atraviesa lo
+      // decorativo hasta el texto real.
+      const el = findPaintableElement(doc, e.clientX, e.clientY);
+      // Un click sobre una foto o un fondo no abre nada — pero sí cierra
+      // el cuadro que estuviera abierto: los eventos del iframe no
+      // llegan al documento del panel, así que el "click afuera" que ya
+      // escuchaba el cuadro nunca se enteraba de los clicks sobre la
+      // vista previa, que es justo donde uno clickea para descartarlo.
+      if (!el) {
+        setColorTarget(null);
+        return;
+      }
+      const resolved = resolveTextColorTarget(el, geometry.rect, geometry.scale, e.clientX, e.clientY);
+      if (!resolved) return;
+      // Solo se corta la navegación (el link del PDF en la página de
+      // cierre) si de verdad se va a abrir el selector.
+      e.preventDefault();
+      setColorTarget(resolved);
+    };
+
+    doc.addEventListener("mousemove", onMove);
+    doc.addEventListener("click", onClick, true);
+  }, []);
+
+  const currentOverride = colorTarget
+    ? blocks[colorTarget.blockIndex]?.data.textColors?.[colorTarget.selector]
+    : undefined;
+
   // Mismo cálculo que app/admin/actions.ts al guardar: el fondo en vivo
   // tiene que mostrar los números de página reales según el orden
   // actual, no los que hayan quedado de antes de reordenar/agregar.
@@ -121,24 +211,45 @@ export default function AdminPanel({
       <div
         className={[
           "admin-panel-live",
-          viewport === "mobile" ? "admin-panel-live--mobile" : "",
+          "admin-panel-live--framed",
           // Con el panel abierto la vista previa se achica hasta el borde
           // izquierdo del panel en vez de seguir a sangre completa por
-          // debajo: así el panel nunca tapa parte del catálogo (ni la
-          // franja derecha en escritorio, ni medio teléfono en móvil).
+          // debajo: así el panel nunca tapa parte del catálogo.
           open ? "admin-panel-live--panel-open" : "",
         ]
           .filter(Boolean)
           .join(" ")}
       >
-        {viewport === "mobile" ? (
-          <MobileFrame>
-            <CatalogRenderer blocks={withPageNumbers} theme={theme} layoutId={layoutId} />
-          </MobileFrame>
-        ) : (
+        {/* Las dos vistas pasan por el mismo componente de dispositivo
+            simulado: cambia la carcasa (teléfono / ventana de ordenador)
+            y las medidas lógicas del viewport, nada más. */}
+        <PreviewFrame
+          key={viewport}
+          variant={viewport === "mobile" ? "phone" : "desktop"}
+          url={`page-catalogo.vercel.app/catalog/${title}`}
+          onDocumentReady={handlePreviewDocument}
+        >
           <CatalogRenderer blocks={withPageNumbers} theme={theme} layoutId={layoutId} />
-        )}
+        </PreviewFrame>
       </div>
+
+      {colorTarget && onTextColorChange && (
+        <TextColorPopover
+          key={`${colorTarget.blockIndex}:${colorTarget.selector}`}
+          x={colorTarget.x}
+          y={colorTarget.y}
+          sample={colorTarget.sample}
+          color={currentOverride ?? colorTarget.currentColor}
+          hasOverride={Boolean(currentOverride)}
+          presets={[theme.ink, theme.paper, theme.accent, theme.muted, theme.line]}
+          onChange={(color) => onTextColorChange(colorTarget.blockIndex, colorTarget.selector, color)}
+          onClear={() => {
+            onTextColorChange(colorTarget.blockIndex, colorTarget.selector, null);
+            setColorTarget(null);
+          }}
+          onClose={() => setColorTarget(null)}
+        />
+      )}
 
       <div className={`admin-panel-topbar${open ? " admin-panel-topbar--panel-open" : ""}`}>
         <p className="admin-panel-topbar-title">{title}</p>
