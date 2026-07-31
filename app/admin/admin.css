@@ -1046,28 +1046,64 @@
 }
 
 /* En móvil el fondo deja de ser el catálogo a sangre completa y pasa a
-   ser un escenario gris con el "teléfono" centrado. */
+   ser un escenario oscuro con el "teléfono" encima. */
 .admin-panel-live--mobile {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #4a4a48;
-  padding: 64px 16px 24px;
+  background: radial-gradient(circle at 50% 35%, #3a3a38 0%, #232322 70%);
+  padding: 56px 16px 24px;
+}
+
+/* Con el editor abierto, centrar respecto de TODA la ventana dejaría el
+   teléfono a medias debajo del panel. Se centra en el espacio que queda
+   realmente visible, usando la misma expresión de ancho que el panel
+   (ver .admin-panel) para que las dos medidas no se puedan desfasar.
+   Al cerrar el editor el padding desaparece y queda centrado en la
+   ventana entera. */
+.admin-panel-live--mobile.admin-panel-live--panel-open {
+  padding-right: calc(min(440px, 100vw) + 16px);
 }
 
 .admin-mobile-stage {
-  /* El ancho del iframe manda; este contenedor solo lo centra y evita
-     que se estire cuando el panel de edición achica el espacio. */
+  /* El ancho del teléfono manda; este contenedor solo evita que se
+     estire cuando el panel de edición achica el espacio. */
   flex: 0 0 auto;
 }
 
+/* Carcasa estilo iPhone moderno: marco negro fino, esquinas muy
+   redondeadas y un halo suave para despegarlo del fondo. */
+.admin-mobile-device {
+  position: relative;
+  padding: 12px;
+  background: linear-gradient(160deg, #3a3a3c 0%, #1c1c1e 45%, #2c2c2e 100%);
+  border-radius: 56px;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+    0 30px 70px rgba(0, 0, 0, 0.55);
+}
+
 .admin-mobile-frame {
+  display: block;
   width: 390px;
-  height: min(844px, calc(100vh - 104px));
+  height: min(844px, calc(100vh - 128px));
   border: 0;
-  border-radius: 18px;
+  /* 56px de la carcasa menos los 12px de marco: mantiene las curvas
+     concéntricas en vez de dejar un borde raro en las esquinas. */
+  border-radius: 44px;
   background: #fff;
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+
+.admin-mobile-island {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 112px;
+  height: 32px;
+  background: #000;
+  border-radius: 999px;
+  pointer-events: none;
 }
 
 @media (max-width: 850px) {

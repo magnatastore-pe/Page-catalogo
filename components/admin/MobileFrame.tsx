@@ -48,9 +48,15 @@ export default function MobileFrame({ children }: { children: ReactNode }) {
 
   return (
     <div className="admin-mobile-stage">
-      <iframe ref={frameRef} className="admin-mobile-frame" title="Vista móvil del catálogo">
-        {/* el contenido entra por el portal de abajo, no como hijos del iframe */}
-      </iframe>
+      <div className="admin-mobile-device">
+        <iframe ref={frameRef} className="admin-mobile-frame" title="Vista móvil del catálogo">
+          {/* el contenido entra por el portal de abajo, no como hijos del iframe */}
+        </iframe>
+        {/* Isla dinámica: decorativa, dibujada en el documento padre por
+            encima del iframe (adentro no llegaría, es otro documento).
+            aria-hidden porque no aporta nada a un lector de pantalla. */}
+        <div className="admin-mobile-island" aria-hidden="true" />
+      </div>
       {body && createPortal(children, body)}
     </div>
   );

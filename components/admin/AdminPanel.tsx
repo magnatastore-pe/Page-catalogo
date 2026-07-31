@@ -118,7 +118,18 @@ export default function AdminPanel({
 
   return createPortal(
     <>
-      <div className={`admin-panel-live${viewport === "mobile" ? " admin-panel-live--mobile" : ""}`}>
+      <div
+        className={[
+          "admin-panel-live",
+          viewport === "mobile" ? "admin-panel-live--mobile" : "",
+          // Solo importa en móvil: corre el teléfono para que quede
+          // centrado en el espacio visible en vez de medio tapado por el
+          // panel, y lo recentra al colapsarlo.
+          viewport === "mobile" && open ? "admin-panel-live--panel-open" : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      >
         {viewport === "mobile" ? (
           <MobileFrame>
             <CatalogRenderer blocks={withPageNumbers} theme={theme} layoutId={layoutId} />

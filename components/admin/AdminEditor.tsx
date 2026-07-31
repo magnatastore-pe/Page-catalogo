@@ -100,7 +100,15 @@ export default function AdminEditor({
   const focusLivePreview = (pageItemsIndex: number) => {
     const itemsIndex = coverItem ? pageItemsIndex + 1 : pageItemsIndex;
     requestAnimationFrame(() => {
-      const pages = document.querySelectorAll<HTMLElement>(".admin-panel-live .page");
+      // En vista móvil el catálogo vive dentro del iframe de
+      // MobileFrame, o sea en OTRO documento: buscar en `document` no
+      // encuentra ninguna `.page` y el scroll no pasaba (bug real —
+      // funcionaba en escritorio y no en móvil). Se resuelve primero
+      // contra qué documento hay que buscar.
+      const frame = document.querySelector<HTMLIFrameElement>("iframe.admin-mobile-frame");
+      const pages = frame?.contentDocument
+        ? frame.contentDocument.querySelectorAll<HTMLElement>(".page")
+        : document.querySelectorAll<HTMLElement>(".admin-panel-live .page");
       pages[itemsIndex]?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   };
