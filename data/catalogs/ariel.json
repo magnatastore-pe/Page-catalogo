@@ -2,7 +2,7 @@
   "layoutId": "original",
   "theme": {
     "ink": "#2b1810",
-    "paper": "#f5ede4",
+    "paper": "#ffffff",
     "line": "#3d2418",
     "muted": "#8a7361",
     "accent": "#c1652f",
@@ -19,10 +19,10 @@
           "2026",
           "LOOKBOOK"
         ],
-        "subtitle": "A NEW CHAPTER IN THE COLLECTION",
-        "bottomLine1": "ARIEL · 2026",
-        "bottomLine2": "Crafted for those who dare to stand out.",
-        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-9d70b0b7.webp",
+        "subtitle": "Inspired by effortless elegance.",
+        "bottomLine1": "Angel de Canela · Ariel Collection · 2026",
+        "bottomLine2": "",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-ade67029.webp",
         "pageNumber": 1
       }
     },
@@ -30,101 +30,94 @@
       "type": "manifesto",
       "data": {
         "heading": "DESIGNED TO BE SEEN",
-        "paragraph": "Every piece in this collection is built on contrast — bold silhouettes, rich textures, and details made to turn heads. This is fashion with intention, made for the moments that matter.",
-        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-adafa7a5.webp",
-        "pageNumber": 2
-      }
-    },
-    {
-      "type": "productHero",
-      "data": {
-        "id": "ariel",
-        "name": "ARIEL",
-        "type": "COLLECTION",
-        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-66db6402.webp",
-        "pageNumber": 3
+        "paragraph": "Every piece in the Ariel collection embodies effortless elegance, combining natural fabrics with timeless silhouettes. Designed to flow with every movement, it celebrates femininity through refined details, exceptional comfort, and a sophisticated style that transcends seasons.",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-b2878799.webp",
+        "pageNumber": 2,
+        "textColors": {
+          "div:nth-of-type(2) > div:nth-of-type(2) > p:nth-of-type(1)": "#ffffff"
+        }
       }
     },
     {
       "type": "chapterHero",
       "data": {
         "id": "ember",
-        "pageNumber": 4,
+        "pageNumber": 3,
         "name": "ARIEL",
-        "label": "EMBER",
-        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-f775b01a.webp"
+        "label": "BLACK",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-22664b52.webp"
       }
     },
     {
       "type": "productDetail",
       "data": {
         "id": "ember",
-        "pageNumber": 5,
+        "pageNumber": 4,
         "name": "ARIEL",
-        "type": "EMBER PIECE",
-        "price": "S/ 000",
+        "type": "BLACK PIECE",
+        "price": "S/ 229",
         "description": [
-          "BOLD SILHOUETTE | STATEMENT DETAIL",
+          "TIMELESS | ELEGANT",
           "SIGNATURE COLOURWAY"
         ],
         "collageLayout": "two",
         "collageImages": [
           {
-            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-2655f40a.webp",
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-3bc0f412.webp",
             "alt": "ARIEL EMBER"
           },
           {
-            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-3b0d1bb5.webp",
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-5b7d2127.webp",
             "alt": "ARIEL EMBER"
           }
         ],
         "swatches": [
           {
-            "label": "EMBER",
+            "label": "Black",
             "type": "color",
-            "color": "#c1652f"
+            "color": "#0e0e0e"
           }
         ]
       }
     },
     {
       "type": "chapterHero",
+      "data": {
+        "id": "midnight",
+        "pageNumber": 5,
+        "name": "ARIEL",
+        "label": "GREEN",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-4da28d5c.webp"
+      }
+    },
+    {
+      "type": "productDetail",
       "data": {
         "id": "midnight",
         "pageNumber": 6,
         "name": "ARIEL",
-        "label": "MIDNIGHT",
-        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-ef7fcdec.webp"
-      }
-    },
-    {
-      "type": "productDetail",
-      "data": {
-        "id": "midnight",
-        "pageNumber": 7,
-        "name": "ARIEL",
-        "type": "MIDNIGHT PIECE",
-        "price": "S/ 000",
+        "type": "GREEN PIECE",
+        "price": "S/ 229",
         "description": [
-          "RICH TEXTURE | SCULPTED FIT",
-          "AFTER-DARK COLOURWAY"
+          "NATURAL ELEGANCE  | EFFORTLESS FIT",
+          "EARTH TONE"
         ],
         "collageLayout": "two",
         "collageImages": [
           {
-            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-a2f39c86.webp",
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-6bea7f1c.webp",
             "alt": "ARIEL MIDNIGHT"
           },
           {
-            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-261196bc.webp",
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-b94b0c49.webp",
             "alt": "ARIEL MIDNIGHT"
           }
         ],
         "swatches": [
           {
-            "label": "MIDNIGHT",
+            "label": "GREEN",
             "type": "color",
-            "color": "#2b1810"
+            "color": "#47a35c"
           }
         ]
       }
@@ -133,33 +126,40 @@
       "type": "chapterHero",
       "data": {
         "id": "colorway-3",
-        "pageNumber": 8,
+        "pageNumber": 7,
         "name": "ARIEL",
-        "label": "COLORWAY 3",
-        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-edcaf956.webp"
+        "label": "WHITE",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-cb27f5bc.webp"
       }
     },
     {
       "type": "productDetail",
       "data": {
         "id": "colorway-3",
-        "pageNumber": 9,
+        "pageNumber": 8,
         "name": "ARIEL",
-        "type": "COLORWAY 3 COLLECTION",
-        "price": "",
-        "description": [],
+        "type": "WHITE PIECE",
+        "price": "S/ 229",
+        "description": [
+          "PURE ELEGANCE | EFFORTLESS FIT",
+          "SIGNATURE COLOURWAY"
+        ],
         "collageLayout": "two",
         "collageImages": [
           {
-            "src": "/imagenes/base-20260731-3bf9ec09.webp",
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-bef9d2e8.webp",
             "alt": "ARIEL Colorway 3"
+          },
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/ariel-20260731-7a190186.webp",
+            "alt": ""
           }
         ],
         "swatches": [
           {
-            "label": "Colorway 3",
+            "label": "WHITE",
             "type": "color",
-            "color": "#c1652f"
+            "color": "#fcfcfc"
           }
         ]
       }
@@ -171,7 +171,7 @@
         "line1": "THE COLLECTION",
         "line2": "Available now.",
         "bgImage": "/imagenes/base-20260731-484498df.webp",
-        "pageNumber": 10
+        "pageNumber": 9
       }
     }
   ]
