@@ -1055,15 +1055,6 @@
   padding: 56px 16px 24px;
 }
 
-/* Con el editor abierto, centrar respecto de TODA la ventana dejaría el
-   teléfono a medias debajo del panel. Se centra en el espacio que queda
-   realmente visible, usando la misma expresión de ancho que el panel
-   (ver .admin-panel) para que las dos medidas no se puedan desfasar.
-   Al cerrar el editor el padding desaparece y queda centrado en la
-   ventana entera. */
-.admin-panel-live--mobile.admin-panel-live--panel-open {
-  padding-right: calc(min(440px, 100vw) + 16px);
-}
 
 /* MobileFrame le fija width/height y --phone-scale por JS, en función
    del alto disponible: así el teléfono se escala entero (manteniendo la
@@ -1184,6 +1175,20 @@
   background: #111;
 }
 
+/* Con el panel abierto la vista previa termina justo donde empieza el
+   panel, en vez de seguir por debajo y quedar tapada en su franja
+   derecha (escritorio) o con el teléfono medio oculto (móvil). Misma
+   expresión de ancho que .admin-panel para que las dos medidas no se
+   puedan desfasar. Al colapsar el panel vuelve a ocupar toda la ventana.
+   Solo a partir de 851px: por debajo el panel es una hoja a pantalla
+   completa (ver el @media de abajo), así que achicar la vista previa la
+   dejaría con ancho cero en vez de simplemente detrás. */
+@media (min-width: 851px) {
+  .admin-panel-live--panel-open {
+    right: min(440px, 100vw);
+  }
+}
+
 /* Barra fija siempre visible, panel abierto o colapsado — es la única
    forma de volver al listado o cerrar sesión mientras se está en esta
    pantalla, ya que el <header>/<main> normales del admin quedan detrás
@@ -1242,20 +1247,6 @@
 
 .admin-panel-topbar-actions .admin-btn:hover {
   background: rgba(255, 255, 255, 0.22);
-}
-
-/* Veil puramente visual — pointer-events:none para que el catálogo de
-   fondo se pueda seguir scrolleando/mirando mientras el panel está
-   abierto, en vez de quedar bloqueado detrás de un scrim clickeable. */
-.admin-panel-scrim {
-  position: fixed;
-  inset: 0;
-  z-index: 960;
-  background: rgba(10, 10, 10, 0.4);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
-  pointer-events: none;
-  animation: admin-panel-fade-in 0.2s ease both;
 }
 
 .admin-panel {
@@ -1360,7 +1351,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .admin-panel-topbar,
-  .admin-panel-scrim,
   .admin-panel,
   .admin-panel-reopen {
     animation: none;

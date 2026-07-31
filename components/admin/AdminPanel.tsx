@@ -122,10 +122,11 @@ export default function AdminPanel({
         className={[
           "admin-panel-live",
           viewport === "mobile" ? "admin-panel-live--mobile" : "",
-          // Solo importa en móvil: corre el teléfono para que quede
-          // centrado en el espacio visible en vez de medio tapado por el
-          // panel, y lo recentra al colapsarlo.
-          viewport === "mobile" && open ? "admin-panel-live--panel-open" : "",
+          // Con el panel abierto la vista previa se achica hasta el borde
+          // izquierdo del panel en vez de seguir a sangre completa por
+          // debajo: así el panel nunca tapa parte del catálogo (ni la
+          // franja derecha en escritorio, ni medio teléfono en móvil).
+          open ? "admin-panel-live--panel-open" : "",
         ]
           .filter(Boolean)
           .join(" ")}
@@ -170,7 +171,9 @@ export default function AdminPanel({
 
       {open ? (
         <>
-          <div className="admin-panel-scrim" />
+          {/* Sin velo oscuro sobre el catálogo: ahora que el panel no se
+              superpone, lo único que hacía era oscurecer y desenfocar
+              justo lo que se está mirando mientras se edita. */}
           <div
             className="admin-panel"
             role="dialog"
