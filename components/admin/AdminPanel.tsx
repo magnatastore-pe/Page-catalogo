@@ -3,6 +3,7 @@
 import { createPortal } from "react-dom";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import CatalogRenderer from "@/components/catalog/CatalogRenderer";
+import MobileFrame from "./MobileFrame";
 import type { Block, CatalogTheme, LayoutId } from "@/data/schema";
 
 type AdminPanelProps = {
@@ -52,6 +53,13 @@ export default function AdminPanel({
   const [mounted, setMounted] = useState(false);
   // eslint-disable-next-line react-hooks/set-state-in-effect -- patrón estándar de "portal seguro para SSR": el flip pasa una sola vez, justo después de la hidratación, no en respuesta a un cambio externo que el linter esperaría acá.
   useEffect(() => setMounted(true), []);
+
+  // Cómo se está mirando el catálogo de fondo. Arranca en escritorio
+  // porque es el ancho real del panel; "móvil" lo mete en un iframe de
+  // 390px para que las media queries se resuelvan de verdad (ver
+  // MobileFrame). Es solo una preferencia de visualización: no toca el
+  // contenido ni lo que se guarda.
+  const [viewport, setViewport] = useState<"desktop" | "mobile">("desktop");
 
   // `onOpenChange` va por un ref, no directo en las deps del efecto de
   // abajo — bug real encontrado en el asistente de creación: ahí se le
@@ -110,13 +118,43 @@ export default function AdminPanel({
 
   return createPortal(
     <>
-      <div className="admin-panel-live">
-        <CatalogRenderer blocks={withPageNumbers} theme={theme} layoutId={layoutId} />
+      <div className={`admin-panel-live${viewport === "mobile" ? " admin-panel-live--mobile" : ""}`}>
+        {viewport === "mobile" ? (
+          <MobileFrame>
+            <CatalogRenderer blocks={withPageNumbers} theme={theme} layoutId={layoutId} />
+          </MobileFrame>
+        ) : (
+          <CatalogRenderer blocks={withPageNumbers} theme={theme} layoutId={layoutId} />
+        )}
       </div>
 
       <div className={`admin-panel-topbar${open ? " admin-panel-topbar--panel-open" : ""}`}>
         <p className="admin-panel-topbar-title">{title}</p>
-        <div className="admin-panel-topbar-actions">{topbarActions}</div>
+        <div className="admin-panel-topbar-actions">
+          {/* Cambiar de vista remonta el catálogo (en escritorio vive en
+              la página, en móvil dentro del iframe), así que se pierde la
+              posición de scroll. Es aceptable: es un cambio explícito de
+              "cómo lo estoy mirando", no algo que pase solo. */}
+          <div className="admin-viewport-toggle" role="group" aria-label="Tamaño de la vista previa">
+            <button
+              type="button"
+              className={viewport === "desktop" ? "is-active" : ""}
+              onClick={() => setViewport("desktop")}
+              aria-pressed={viewport === "desktop"}
+            >
+              Escritorio
+            </button>
+            <button
+              type="button"
+              className={viewport === "mobile" ? "is-active" : ""}
+              onClick={() => setViewport("mobile")}
+              aria-pressed={viewport === "mobile"}
+            >
+              Móvil
+            </button>
+          </div>
+          {topbarActions}
+        </div>
       </div>
 
       {open ? (

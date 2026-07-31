@@ -1017,6 +1017,67 @@
   cursor: default;
 }
 
+/* ---- vista previa móvil (toggle Escritorio/Móvil de AdminPanel) ----
+   El catálogo se renderiza dentro de un iframe de 390px para que las
+   media queries de globals.css se resuelvan contra ese ancho de verdad
+   — ver components/admin/MobileFrame.tsx. */
+
+.admin-viewport-toggle {
+  display: inline-flex;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.admin-viewport-toggle button {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.75);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.admin-viewport-toggle button.is-active {
+  color: #1a1a1a;
+  background: #fff;
+}
+
+/* En móvil el fondo deja de ser el catálogo a sangre completa y pasa a
+   ser un escenario gris con el "teléfono" centrado. */
+.admin-panel-live--mobile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #4a4a48;
+  padding: 64px 16px 24px;
+}
+
+.admin-mobile-stage {
+  /* El ancho del iframe manda; este contenedor solo lo centra y evita
+     que se estire cuando el panel de edición achica el espacio. */
+  flex: 0 0 auto;
+}
+
+.admin-mobile-frame {
+  width: 390px;
+  height: min(844px, calc(100vh - 104px));
+  border: 0;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 850px) {
+  /* En una pantalla chica el toggle no entra al lado de las acciones;
+     igual tiene poco sentido, porque ya se está viendo en móvil. */
+  .admin-viewport-toggle {
+    display: none;
+  }
+}
+
 /* ---- admin panel (Fase B, 2026-07-28) ----
    El catálogo real queda siempre montado de fondo (mismo CatalogRenderer
    del sitio público — reemplaza tanto el <main> plano de /admin/[id]
