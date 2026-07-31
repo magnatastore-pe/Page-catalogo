@@ -15,8 +15,38 @@ export async function uploadFile(file: File): Promise<UploadAssetResult> {
   const compressed = await compressImage(file, file.name);
   const formData = new FormData();
   formData.append("file", compressed);
-  const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
-  return res.json();
+  return post(formData, file.name);
+}
+
+/**
+ * Nunca lanza: cualquier fallo vuelve como `{ ok: false, error }` con
+ * algo que se pueda leer.
+ *
+ * `res.json()` a secas revienta cuando la respuesta no es JSON — un 413
+ * de la plataforma, un 502, la página de error de Next — y eso hacía
+ * que subir varias fotos de una cortara la tanda entera con un
+ * "no se pudo subir una de las imágenes" que no decía ni cuál ni por
+ * qué. Ahora el error identifica el archivo y trae el código real.
+ */
+async function post(formData: FormData, filename: string): Promise<UploadAssetResult> {
+  let res: Response;
+  try {
+    res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+  } catch {
+    return { ok: false, error: `"${filename}": se cortó la conexión durante la subida.` };
+  }
+
+  const raw = await res.text().catch(() => "");
+  try {
+    const parsed = JSON.parse(raw) as UploadAssetResult;
+    if (!parsed.ok) return { ...parsed, error: `"${filename}": ${parsed.error}` };
+    return parsed;
+  } catch {
+    return {
+      ok: false,
+      error: `"${filename}": el servidor respondió ${res.status}${raw ? ` (${raw.slice(0, 120)})` : ""}.`,
+    };
+  }
 }
 
 /** Igual, pero reemplaza el contenido de un asset ya existente en `path` (re-sync de Drive, Fase F). */
@@ -26,6 +56,5 @@ export async function replaceFile(path: string, blob: Blob, filename: string): P
   formData.append("file", compressed);
   formData.append("mode", "replace");
   formData.append("path", path);
-  const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
-  return res.json();
+  return post(formData, filename);
 }

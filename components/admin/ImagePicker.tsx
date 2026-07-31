@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useAssets } from "./AssetsContext";
 import AssetGallery from "./AssetGallery";
 
@@ -32,8 +33,15 @@ export default function ImagePicker({ label, value, onChange }: ImagePickerProps
       <div className="admin-image-picker-row">
         {value && (
           <div className="admin-image-picker-preview">
-            {/* eslint-disable-next-line @next/next/no-img-element -- puede ser un blob: URL local, next/image no lo acepta */}
-            <img src={currentPreview ?? value} alt="" />
+            {/* Igual que en la galería: la miniatura de 40px pasa por
+                el optimizador salvo que sea una subida de esta sesión
+                (blob: URL local, que el optimizador no puede tomar). */}
+            {currentPreview ? (
+              // eslint-disable-next-line @next/next/no-img-element -- blob: URL local
+              <img src={currentPreview} alt="" />
+            ) : (
+              <Image src={value} alt="" width={80} height={80} sizes="80px" />
+            )}
           </div>
         )}
         <input type="text" value={value} onChange={(e) => onChange(e.target.value)} />
@@ -63,10 +71,13 @@ export default function ImagePicker({ label, value, onChange }: ImagePickerProps
                 onChange(path);
                 setOpen(false);
               }}
-              onUploaded={(path) => {
+              onUploaded={(path, hadFailures) => {
                 onChange(path);
                 setJustUploaded(true);
-                setOpen(false);
+                // Si alguna foto de la tanda falló, la ventana se queda
+                // abierta: cerrarla se llevaba puesto el mensaje que
+                // dice cuál falló y por qué.
+                if (!hadFailures) setOpen(false);
               }}
               onUploadStart={() => setJustUploaded(false)}
             />

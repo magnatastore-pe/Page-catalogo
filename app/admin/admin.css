@@ -895,22 +895,30 @@
   font-size: 0.9rem;
 }
 
+/* El que scrollea es este contenedor, no cada grilla.
+   .admin-gallery es flex-column con max-height: 80vh — sin flex+min-height
+   acá, esta caja nunca se topa con un límite real y "overflow-y: auto" no
+   llega a activarse nunca: crece con el contenido y lo que no entra en
+   80vh queda directamente cortado (por el overflow:hidden del padre), en
+   vez de scrollear. Con esto es la única parte que scrollea, y la zona de
+   subir/importar de abajo queda siempre visible completa.
+
+   Estaba puesto sobre .admin-gallery-grid, que era el hijo directo del
+   modal; al separar la biblioteca en grupos ("En uso" / "Sin usar") la
+   grilla pasó a estar anidada dentro de un <section> y el modal se quedó
+   sin contenedor scrolleable — se cortaba y no se podía bajar. */
+.admin-gallery-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px;
+}
+
 .admin-gallery-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
   align-content: start;
   gap: 8px;
-  padding: 16px;
-  overflow-y: auto;
-  /* .admin-gallery es flex-column con max-height: 80vh — sin flex+min-height
-     acá, esta grilla nunca se topa con un límite real y "overflow-y: auto"
-     no llega a activarse nunca: la caja entera crece con el contenido y
-     lo que no entra en 80vh queda directamente cortado (el overflow:hidden
-     del padre), en vez de scrollear. Con esto la grilla es la única parte
-     que scrollea, y la zona de subir/importar de abajo queda siempre
-     visible completa. */
-  flex: 1;
-  min-height: 0;
 }
 
 .admin-gallery-item {

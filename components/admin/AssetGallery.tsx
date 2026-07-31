@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { useAssets, type ClientAsset } from "./AssetsContext";
 import { recordDriveLinkAction, deleteAssetAction } from "@/app/admin/actions";
 import { uploadFile, replaceFile } from "@/lib/uploadClient";
@@ -14,8 +15,8 @@ type AssetGalleryProps = {
   selectedPath?: string;
   /** Se llama al hacer click en una imagen ya subida. */
   onPick?: (path: string) => void;
-  /** Se llama después de subir/importar una imagen nueva (dispara el aviso de "recién subida" en quien la use). */
-  onUploaded?: (path: string) => void;
+  /** Se llama después de subir/importar una imagen nueva (dispara el aviso de "recién subida" en quien la use). `hadFailures` avisa si alguna de la tanda falló, para que quien la use no cierre la ventana y tape el mensaje de error. */
+  onUploaded?: (path: string, hadFailures?: boolean) => void;
   /** Se llama justo al arrancar un intento de subida/importación, antes de saber si va a andar — para que quien la use pueda limpiar un aviso de "recién subida" de una subida anterior. */
   onUploadStart?: () => void;
 };
@@ -34,6 +35,8 @@ export default function AssetGallery({ selectedPath, onPick, onUploaded, onUploa
   const { showToast } = useToast();
   const confirm = useConfirm();
   const [uploading, setUploading] = useState(false);
+  /** "2 de 5" mientras se sube una tanda — sin esto, subir varias fotos grandes parecía colgado. */
+  const [uploadProgress, setUploadProgress] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [syncingPath, setSyncingPath] = useState<string | null>(null);
   const [deletingPath, setDeletingPath] = useState<string | null>(null);
@@ -50,21 +53,37 @@ export default function AssetGallery({ selectedPath, onPick, onUploaded, onUploa
     setUploadError(null);
     onUploadStart?.();
     let firstPath: string | null = null;
+    // Cada foto se sube en su propio intento: antes, un solo fallo
+    // cortaba la tanda entera desde el primer error y las que faltaban
+    // ni se intentaban — el motivo real de "solo se puede una por una".
+    // Ahora se suben todas las que se puedan y el aviso dice cuáles no
+    // y por qué.
+    const failures: string[] = [];
     try {
-      for (const file of imageFiles) {
-        const result = await uploadFile(file);
-        if (result.ok) {
-          addAsset({ path: result.path, filename: result.path.split("/").pop() ?? file.name, previewUrl: URL.createObjectURL(file) });
-          firstPath = firstPath ?? result.path;
-        } else {
-          setUploadError(result.error);
+      for (const [i, file] of imageFiles.entries()) {
+        setUploadProgress(imageFiles.length > 1 ? `${i + 1} de ${imageFiles.length}` : null);
+        try {
+          const result = await uploadFile(file);
+          if (result.ok) {
+            addAsset({ path: result.path, filename: result.path.split("/").pop() ?? file.name, previewUrl: URL.createObjectURL(file) });
+            firstPath = firstPath ?? result.path;
+          } else {
+            failures.push(result.error);
+          }
+        } catch (err) {
+          failures.push(`"${file.name}": ${err instanceof Error ? err.message : "error desconocido"}`);
         }
       }
-      if (firstPath) onUploaded?.(firstPath);
-    } catch {
-      setUploadError("No se pudo subir una de las imágenes.");
+      if (firstPath) onUploaded?.(firstPath, failures.length > 0);
+      if (failures.length > 0) {
+        const subidas = imageFiles.length - failures.length;
+        setUploadError(
+          `${subidas} de ${imageFiles.length} subidas. No se pudieron subir: ${failures.join(" · ")}`
+        );
+      }
     } finally {
       setUploading(false);
+      setUploadProgress(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
@@ -224,8 +243,20 @@ export default function AssetGallery({ selectedPath, onPick, onUploaded, onUploa
               onClick={() => onPick?.(asset.path)}
               title={asset.filename}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element -- puede ser un blob: URL local */}
-              <img src={asset.previewUrl ?? asset.path} alt={asset.filename} />
+              {/* Miniaturas por el optimizador de Next, no la foto
+                  original: una foto subida desde el panel puede pesar
+                  varios MB y la galería dibuja decenas a la vez — eso
+                  era lo que hacía que abrir "Elegir imagen" se
+                  arrastrara. Con `width/height` chicos, Next sirve una
+                  versión de ~100px. La excepción es una subida de esta
+                  misma sesión: su vista previa es un `blob:` URL local,
+                  que el optimizador no puede tomar. */}
+              {asset.previewUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element -- blob: URL local, next/image no lo acepta
+                <img src={asset.previewUrl} alt={asset.filename} />
+              ) : (
+                <Image src={asset.path} alt={asset.filename} width={120} height={120} sizes="120px" />
+              )}
             </button>
             {asset.driveLink && (
               <>
@@ -272,28 +303,33 @@ export default function AssetGallery({ selectedPath, onPick, onUploaded, onUploa
 
   return (
     <>
-      {assets.length === 0 && <p>Todavía no hay imágenes.</p>}
+      {/* Un solo contenedor scrolleable para los dos grupos: dentro del
+          modal "Elegir imagen" es el que tiene que scrollear (ver
+          .admin-gallery-scroll en admin.css). */}
+      <div className="admin-gallery-scroll">
+        {assets.length === 0 && <p>Todavía no hay imágenes.</p>}
 
-      {usedAssets.length > 0 && (
-        <section className="admin-gallery-group">
-          <h4 className="admin-gallery-group-title">
-            En uso <span>{usedAssets.length}</span>
-          </h4>
-          <div className="admin-gallery-grid">{usedAssets.map(renderAsset)}</div>
-        </section>
-      )}
+        {usedAssets.length > 0 && (
+          <section className="admin-gallery-group">
+            <h4 className="admin-gallery-group-title">
+              En uso <span>{usedAssets.length}</span>
+            </h4>
+            <div className="admin-gallery-grid">{usedAssets.map(renderAsset)}</div>
+          </section>
+        )}
 
-      {unusedAssets.length > 0 && (
-        <section className="admin-gallery-group">
-          <h4 className="admin-gallery-group-title">
-            Sin usar <span>{unusedAssets.length}</span>
-          </h4>
-          <p className="admin-gallery-group-hint">
-            Ningún catálogo publicado usa estas fotos. Son las únicas que se pueden borrar.
-          </p>
-          <div className="admin-gallery-grid">{unusedAssets.map(renderAsset)}</div>
-        </section>
-      )}
+        {unusedAssets.length > 0 && (
+          <section className="admin-gallery-group">
+            <h4 className="admin-gallery-group-title">
+              Sin usar <span>{unusedAssets.length}</span>
+            </h4>
+            <p className="admin-gallery-group-hint">
+              Ningún catálogo publicado usa estas fotos. Son las únicas que se pueden borrar.
+            </p>
+            <div className="admin-gallery-grid">{unusedAssets.map(renderAsset)}</div>
+          </section>
+        )}
+      </div>
 
       <div
         className={`admin-wizard-dropzone${dragOver ? " drag-over" : ""}`}
@@ -311,7 +347,7 @@ export default function AssetGallery({ selectedPath, onPick, onUploaded, onUploa
         <p>Arrastrá fotos acá, pegalas con Ctrl+V, o</p>
         <div className="admin-wizard-dropzone-actions">
           <button type="button" className="admin-btn admin-btn-primary" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
-            {uploading ? "Subiendo…" : "Elegir archivos"}
+            {uploading ? `Subiendo${uploadProgress ? ` ${uploadProgress}` : ""}…` : "Elegir archivos"}
           </button>
           {CLOUD_SOURCES.map((source) => {
             const configured = source.isConfigured();
