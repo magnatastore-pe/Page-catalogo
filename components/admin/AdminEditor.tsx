@@ -97,8 +97,14 @@ export default function AdminEditor({
   // rAF espera a que React termine de aplicar el reorden/cambio de
   // estado antes de medir posiciones en el DOM; sin él se mide el orden
   // viejo, todavía no pintado.
-  const focusLivePreview = (pageItemsIndex: number) => {
-    const itemsIndex = coverItem ? pageItemsIndex + 1 : pageItemsIndex;
+  /**
+   * Lleva el fondo en vivo a la página número `itemsIndex` (índice
+   * dentro de `items`, el array real que se renderiza). Separado de
+   * `focusLivePreview` porque la portada no vive en `pageItems` — se
+   * edita en su propia pestaña — así que su índice no se puede expresar
+   * como "índice de pageItems + 1".
+   */
+  const scrollLivePreviewTo = (itemsIndex: number) => {
     requestAnimationFrame(() => {
       // En vista móvil el catálogo vive dentro del iframe de
       // MobileFrame, o sea en OTRO documento: buscar en `document` no
@@ -111,6 +117,26 @@ export default function AdminEditor({
         : document.querySelectorAll<HTMLElement>(".admin-panel-live .page");
       pages[itemsIndex]?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
+  };
+
+  /** Índice dentro de `items` de la página nº `pageItemsIndex` de la pestaña "Páginas". */
+  const focusLivePreview = (pageItemsIndex: number) => {
+    scrollLivePreviewTo(coverItem ? pageItemsIndex + 1 : pageItemsIndex);
+  };
+
+  /**
+   * Cambiar de pestaña también mueve la vista previa cuando esa pestaña
+   * corresponde a una página concreta. Antes solo lo hacía el listado de
+   * "Páginas": al ir a "Portada" se editaba la portada mientras el fondo
+   * seguía mostrando la página anterior — el mismo problema que el
+   * colorway, en otro lugar. "Imágenes" y "Colores" no apuntan a ninguna
+   * página en particular, así que no tocan el scroll.
+   */
+  const selectTab = (next: Tab) => {
+    setTab(next);
+    if (next === "portada" && coverIndex >= 0) {
+      scrollLivePreviewTo(coverIndex);
+    }
   };
 
   const addSingle = (type: Exclude<Block["type"], "cover" | "chapterHero" | "productDetail">) => {
@@ -167,7 +193,7 @@ export default function AdminEditor({
             role="tab"
             aria-selected={tab === t.id}
             className={`admin-tab${tab === t.id ? " active" : ""}`}
-            onClick={() => setTab(t.id)}
+            onClick={() => selectTab(t.id)}
           >
             {t.label}
           </button>

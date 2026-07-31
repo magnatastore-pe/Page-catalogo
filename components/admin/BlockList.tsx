@@ -92,8 +92,29 @@ export default function BlockList({ items, onChange, footer, onFocusIndex }: Blo
    * de la misma sección, que quedaba muy inquieto.
    */
   const lastFocusedIndex = useRef<number | null>(null);
+
+  /**
+   * Seguimiento automático al mover el foco entre campos: se saltea si
+   * ya estábamos en esa página, para no re-disparar el scroll suave al
+   * tabular dentro de la misma sección.
+   */
   const followSection = (index: number) => {
     if (lastFocusedIndex.current === index) return;
+    lastFocusedIndex.current = index;
+    onFocusIndex?.(index);
+  };
+
+  /**
+   * Acción explícita (clic en una tarjeta o en el encabezado de una
+   * sección): SIEMPRE hace scroll, sin importar el recuerdo.
+   *
+   * La distinción no es cosmética. Con la deduplicación aplicada también
+   * acá, volver a tocar una página ya visitada no hacía nada — y eso se
+   * notaba de verdad al cambiar entre vista de escritorio y móvil, donde
+   * el catálogo se remonta arrancando en scroll 0 mientras el recuerdo
+   * seguía diciendo "ya estás en esa página".
+   */
+  const goToSection = (index: number) => {
     lastFocusedIndex.current = index;
     onFocusIndex?.(index);
   };
@@ -210,7 +231,7 @@ export default function BlockList({ items, onChange, footer, onFocusIndex }: Blo
             <button
               type="button"
               className="admin-field-group-jump"
-              onClick={() => followSection(group.chapterIndex)}
+              onClick={() => goToSection(group.chapterIndex)}
             >
               Transición (capítulo) <span aria-hidden="true">↗</span>
             </button>
@@ -221,7 +242,7 @@ export default function BlockList({ items, onChange, footer, onFocusIndex }: Blo
             <button
               type="button"
               className="admin-field-group-jump"
-              onClick={() => followSection(group.detailIndex)}
+              onClick={() => goToSection(group.detailIndex)}
             >
               Detalle (fotos y precio) <span aria-hidden="true">↗</span>
             </button>
@@ -243,7 +264,7 @@ export default function BlockList({ items, onChange, footer, onFocusIndex }: Blo
           className="admin-page-card-open"
           onClick={() => {
             setActive({ kind: "single", key: item.key });
-            followSection(i);
+            goToSection(i);
           }}
         >
           <div className="admin-page-card-thumb" style={thumb ? { backgroundImage: `url(${thumb})` } : undefined} />
@@ -286,7 +307,7 @@ export default function BlockList({ items, onChange, footer, onFocusIndex }: Blo
           className="admin-page-card-open"
           onClick={() => {
             setActive({ kind: "colorway", chapterKey: group.chapter.key });
-            followSection(group.chapterIndex);
+            goToSection(group.chapterIndex);
           }}
         >
           <div className="admin-page-card-thumb" style={thumb ? { backgroundImage: `url(${thumb})` } : undefined} />
