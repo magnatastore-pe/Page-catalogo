@@ -601,3 +601,13 @@ Cuatro cosas encontradas usando el panel recién cambiado, tres de ellas regresi
 Aparte, el glosario quedó práctico: sin párrafo introductorio, 18 términos en 4 grupos, cada uno con una línea de qué es y —solo cuando cambia lo que hay que hacer— una de qué hacer.
 
 Nota de método: las pruebas de subida corrieron contra el Blob store real (es el único que hay), así que subieron archivos de verdad; se borraron después con `@vercel/blob`'s `del`, verificando que el store quedara con las 3 imágenes que ya tenía.
+
+2026-07-31 (fix — 413 FUNCTION_PAYLOAD_TOO_LARGE al subir un PNG grande)
+
+El mensaje de error detallado agregado el mismo día (ver entrada anterior) hizo su trabajo en el primer uso real: `9 de 10 subidas. No se pudieron subir: "2.png": el servidor respondió 413 (FUNCTION_PAYLOAD_TOO_LARGE)`. Con el mensaje viejo ("no se pudo subir una de las imágenes") esto habría quedado como un misterio sin archivo ni causa.
+
+Causa: `lib/imageCompression.ts` preservaba el formato de entrada a propósito (un PNG seguía siendo PNG), y un PNG **solo** se puede achicar por dimensiones — el parámetro de calidad de `canvas.toBlob` no aplica a PNG, y volver a codificarlo desde un canvas suele dar un archivo más grande que el original (el canvas no hace ninguna de las optimizaciones de paleta de un PNG real), con lo cual la comprobación "si no mejoró, quedate con el original" devolvía el archivo entero. O sea: para un PNG grande de dimensiones normales la compresión no hacía absolutamente nada, y esos MB iban directo contra el límite de tamaño de petición de la plataforma — muy por debajo de los 12MB que acepta el propio Route Handler, así que el tope de la app nunca llegaba a actuar.
+
+Ahora el objetivo dejó de ser "achicar un poco" y pasó a ser "entrar seguro": se prueban hasta 4 combinaciones de dimensión/calidad cada vez más chicas hasta bajar de 3MB, y un PNG que no entra se convierte a WebP (que sí tiene calidad regulable y conserva la transparencia; el nombre del archivo cambia de extensión en el mismo paso, porque el servidor valida por extensión). Se conserva el original solo si además de ser más chico entra en el tope — devolverlo cuando se pasa era garantizar el 413.
+
+Verificado de punta a punta con un PNG real de 12.19MB (3000x4000): sube como WebP de **0.38MB** a 1800x2400 — 97% menos — y la imagen resultante, mirada directamente (no solo su tamaño), no muestra artefactos. GIF se sigue salteando entero (un canvas aplanaría la animación) y los JPEG mantienen su formato, como antes.
