@@ -9,7 +9,8 @@ import { chromium } from "playwright";
 import vercelChromium from "@sparticuz/chromium";
 import { spawn } from "node:child_process";
 import { setTimeout as sleep } from "node:timers/promises";
-import { readdirSync } from "node:fs";
+import { readdirSync, readFileSync, existsSync, mkdirSync, copyFileSync, writeFileSync, statSync } from "node:fs";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -26,6 +27,62 @@ function getCatalogIds() {
   return readdirSync(path.join(rootDir, "data", "catalogs"))
     .filter((f) => f.endsWith(".json"))
     .map((f) => f.replace(/\.json$/, ""));
+}
+
+/**
+ * Caché de PDFs entre builds (E1 de la auditoría).
+ *
+ * El problema: imprimir cada catálogo cuesta ~10s, y hasta ahora
+ * *cada* build regeneraba *todos*. Cambiar un precio en un catálogo
+ * reimprimía los demás sin ninguna razón, y el costo crece lineal con
+ * la cantidad de catálogos.
+ *
+ * Por qué no alcanza con "saltear el que no cambió": los PDF están en
+ * .gitignore, así que un build de Vercel arranca sin ninguno — saltear
+ * a secas los dejaría en 404. Hace falta un lugar donde sobrevivan de
+ * un build al siguiente, y en Vercel ese lugar es `.next/cache`, el
+ * único directorio que se conserva entre builds.
+ *
+ * La clave de caché no es solo el contenido del catálogo: también
+ * entra un hash del código que lo dibuja (componentes de catálogo,
+ * estilos globales y este mismo script). Sin eso, tocar un layout
+ * cambiaría el diseño sin cambiar ningún JSON, y todos los catálogos
+ * se quedarían con el PDF viejo — un modo de falla silencioso y mucho
+ * peor que perder unos segundos de build. Con el hash del renderer
+ * adentro, cualquier cambio de código regenera todo; lo que se ahorra
+ * es el caso común, que es justo el que dispara el panel: editar
+ * contenido.
+ */
+const CACHE_DIR = path.join(rootDir, ".next", "cache", "catalog-pdfs");
+
+/** Hash de todo lo que afecta cómo se ve un PDF, sin ser el contenido del catálogo. */
+function computeRendererHash() {
+  const hash = createHash("sha256");
+  const files = [];
+
+  const collect = (dir) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) collect(full);
+      else if (/\.(tsx?|css)$/.test(entry.name)) files.push(full);
+    }
+  };
+
+  collect(path.join(rootDir, "components", "catalog"));
+  files.push(path.join(rootDir, "app", "globals.css"));
+  files.push(path.join(rootDir, "scripts", "generate-pdf.mjs"));
+
+  for (const file of files.sort()) {
+    hash.update(path.relative(rootDir, file));
+    hash.update(readFileSync(file));
+  }
+  return hash.digest("hex");
+}
+
+/** Clave de caché de un catálogo: su contenido + el hash del renderer. */
+function cacheKeyFor(catalogId, rendererHash) {
+  const json = readFileSync(path.join(rootDir, "data", "catalogs", `${catalogId}.json`));
+  return createHash("sha256").update(rendererHash).update(json).digest("hex");
 }
 
 const PORT = process.env.PDF_GEN_PORT || "4173";
@@ -138,6 +195,43 @@ async function printCatalog(page, catalogId) {
 }
 
 async function main() {
+  const catalogIds = getCatalogIds();
+  const rendererHash = computeRendererHash();
+  mkdirSync(CACHE_DIR, { recursive: true });
+
+  // Se resuelve la caché ANTES de levantar nada: si ningún catálogo
+  // cambió, copiar los PDF guardados y salir evita arrancar un
+  // `next start` y un Chromium headless que no se van a usar — que es
+  // justamente de dónde sale casi todo el costo de este paso.
+  const pending = [];
+  let reused = 0;
+
+  for (const catalogId of catalogIds) {
+    const key = cacheKeyFor(catalogId, rendererHash);
+    const cachedPdf = path.join(CACHE_DIR, `${catalogId}.pdf`);
+    const cachedKey = path.join(CACHE_DIR, `${catalogId}.key`);
+    const outputPath = path.join(rootDir, "public", `catalog-${catalogId}.pdf`);
+
+    const hit =
+      existsSync(cachedPdf) &&
+      existsSync(cachedKey) &&
+      readFileSync(cachedKey, "utf-8").trim() === key &&
+      statSync(cachedPdf).size > 0;
+
+    if (hit) {
+      copyFileSync(cachedPdf, outputPath);
+      console.log(`[generate-pdf] (${catalogId}) sin cambios, reusado de caché`);
+      reused += 1;
+    } else {
+      pending.push({ catalogId, key, cachedPdf, cachedKey, outputPath });
+    }
+  }
+
+  if (pending.length === 0) {
+    console.log(`[generate-pdf] ${catalogIds.length} catálogo(s), todos reusados de caché — no hace falta imprimir nada`);
+    return;
+  }
+
   console.log(`[generate-pdf] starting next start on port ${PORT}...`);
   const server = spawn("npx", ["next", "start", "-p", PORT], {
     cwd: rootDir,
@@ -182,10 +276,19 @@ async function main() {
       });
     });
 
-    const catalogIds = getCatalogIds();
-    for (const catalogId of catalogIds) {
+    for (const { catalogId, key, cachedPdf, cachedKey, outputPath } of pending) {
       await printCatalog(page, catalogId);
+      // La caché se actualiza solo después de imprimir bien: si algo
+      // falla a mitad, la clave vieja sigue ahí y el próximo build
+      // vuelve a intentarlo, en vez de quedar marcado como al día con
+      // un PDF que no se generó.
+      copyFileSync(outputPath, cachedPdf);
+      writeFileSync(cachedKey, key);
     }
+
+    console.log(
+      `[generate-pdf] ${catalogIds.length} catálogo(s): ${reused} reusado(s) de caché, ${pending.length} generado(s)`
+    );
   } finally {
     if (browser) await browser.close();
     server.kill("SIGTERM");
