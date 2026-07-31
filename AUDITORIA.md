@@ -444,7 +444,11 @@ Nota de convención: los rechazos de `replace` devuelven HTTP 200 con `{ok:false
 
 8. ✅ **I2** — La galería marca las imágenes que ningún catálogo usa y permite borrarlas (de Blob o del repo, según dónde vivan). Se niega a borrar una en uso, y el botón ni se dibuja sobre esas. Detalle importante encontrado al implementarlo: la primera versión marcaba 40 de 55 como huérfanas porque no contaba las **fotos de las plantillas de arranque** — no las referencia ningún catálogo, pero las necesita el wizard, y borrarlas habría dejado los catálogos nuevos con imágenes rotas. Corregido: quedan 2 huérfanas reales.
 9. ✅ **P1** — PDFs de 8-15 MB a 0.7-6 MB (**-60% promedio**). La solución no fue la que suponía esta auditoría (posprocesar con Ghostscript, que no existe en el contenedor de build de Vercel) sino atacar la causa: `next/image` servía AVIF/WebP y Chromium los re-embebía casi sin comprimir. Ahora `scripts/generate-pdf.mjs` pide JPEG solo durante la impresión. Ver el detalle en S6/P1 más arriba.
-10. ⬜ **E1** — Regenerar solo los PDF de los catálogos que cambiaron.
+10. ✅ **E1** — `scripts/generate-pdf.mjs` cachea los PDF en `.next/cache/catalog-pdfs/` y regenera solo lo que cambió. Si no hay nada que imprimir, ni siquiera levanta `next start` ni Chromium.
+
+    Detalle que condicionó el diseño: **no alcanzaba con "saltear el que no cambió"**. Los PDF están en `.gitignore`, así que un build de Vercel arranca sin ninguno y saltear a secas los dejaría en 404 — necesitan sobrevivir de un build al siguiente, y `.next/cache` es el único directorio que Vercel conserva. La clave de caché incluye además un hash del **código que dibuja** (`components/catalog`, `globals.css`, el propio script): sin eso, tocar un layout cambiaría el diseño sin cambiar ningún JSON y todos los catálogos quedarían con el PDF viejo, un fallo silencioso peor que perder segundos de build.
+
+    Medido con builds reales (3 catálogos): caché fría **39s** → sin cambios **6s** → un catálogo cambiado **21s**. Verificado que un cambio de renderer regenera los tres. Confirmado además contra una edición real hecha desde el panel mientras se trabajaba en esto: tocó solo `ariel`, y se reusaron `apple` y `lux`.
 11. 🟡 **I1** — Ejercitado parcialmente en producción (magnata): foto subida a Blob y servida por `/_next/image` con 200. Falta confirmarla dentro de un PDF generado.
 12. ✅ **O2** — `.github/workflows/ci.yml` corre `tsc` + `eslint` + `next build` en cada push y PR a `main`. En verde.
 
