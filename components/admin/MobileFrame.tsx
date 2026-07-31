@@ -23,9 +23,62 @@ import { createPortal } from "react-dom";
  * /catalog/<id> mostraría lo último publicado, que es justo lo que no
  * se quiere ver mientras se edita.
  */
+/**
+ * Medidas lógicas reales de un iPhone 15 (no 390x844, que es el 14).
+ * El ancho tiene que ser exacto porque es lo que define cómo se resuelve
+ * el layout adentro; la altura, porque de ella sale la proporción.
+ */
+const PHONE_W = 393;
+const PHONE_H = 852;
+const BEZEL = 12; // borde de la carcasa, por lado
+
 export default function MobileFrame({ children }: { children: ReactNode }) {
   const frameRef = useRef<HTMLIFrameElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const [body, setBody] = useState<HTMLElement | null>(null);
+
+  /**
+   * Si la ventana es más baja que el teléfono, se ESCALA el conjunto en
+   * vez de recortarle la altura al iframe. Recortarla era lo que hacía
+   * que se viera más ancho de lo que es un iPhone real: el ancho seguía
+   * en su valor completo mientras la altura se achicaba, o sea la
+   * proporción se deformaba.
+   *
+   * Con `transform: scale` el iframe sigue midiendo 393x852 por dentro
+   * — las media queries y el texto se resuelven exactamente como en el
+   * teléfono real — y solo se dibuja más chico. Es lo mismo que hace el
+   * modo dispositivo de las DevTools, y por eso no se puede hacer con
+   * `zoom`, que sí alteraría el viewport interno.
+   */
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const deviceW = PHONE_W + BEZEL * 2;
+    const deviceH = PHONE_H + BEZEL * 2;
+
+    const fit = () => {
+      const parent = stage.parentElement;
+      // `clientHeight` INCLUYE el padding del contenedor, así que usarlo
+      // tal cual daba un alto disponible mayor que el real y el teléfono
+      // terminaba cortado arriba y abajo (se veía en pantalla aunque las
+      // medidas del iframe dieran bien). Hay que descontar el padding
+      // para quedarse con la caja de contenido.
+      const styles = parent ? getComputedStyle(parent) : null;
+      const padding = styles
+        ? parseFloat(styles.paddingTop) + parseFloat(styles.paddingBottom)
+        : 0;
+      const available = (parent?.clientHeight ?? window.innerHeight) - padding;
+      const scale = Math.min(1, available / deviceH);
+      stage.style.setProperty("--phone-scale", String(scale));
+      stage.style.width = `${deviceW * scale}px`;
+      stage.style.height = `${deviceH * scale}px`;
+    };
+
+    fit();
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, []);
 
   useEffect(() => {
     const doc = frameRef.current?.contentDocument;
@@ -43,11 +96,21 @@ export default function MobileFrame({ children }: { children: ReactNode }) {
     doc.documentElement.lang = "es";
     doc.body.style.margin = "0";
 
+    // Ocultar la barra de scroll adentro del teléfono: un celular no
+    // muestra una, y verla rompe la ilusión. Solo se oculta, el scroll
+    // sigue funcionando igual (rueda, trackpad, arrastre).
+    const hideScrollbar = doc.createElement("style");
+    hideScrollbar.textContent = `
+      html { scrollbar-width: none; -ms-overflow-style: none; }
+      html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+    `;
+    doc.head.appendChild(hideScrollbar);
+
     setBody(doc.body);
   }, []);
 
   return (
-    <div className="admin-mobile-stage">
+    <div className="admin-mobile-stage" ref={stageRef}>
       <div className="admin-mobile-device">
         <iframe ref={frameRef} className="admin-mobile-frame" title="Vista móvil del catálogo">
           {/* el contenido entra por el portal de abajo, no como hijos del iframe */}

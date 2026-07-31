@@ -1065,16 +1065,30 @@
   padding-right: calc(min(440px, 100vw) + 16px);
 }
 
+/* MobileFrame le fija width/height y --phone-scale por JS, en función
+   del alto disponible: así el teléfono se escala entero (manteniendo la
+   proporción real del iPhone 15) en vez de recortarse. */
 .admin-mobile-stage {
-  /* El ancho del teléfono manda; este contenedor solo evita que se
-     estire cuando el panel de edición achica el espacio. */
   flex: 0 0 auto;
+  overflow: hidden;
 }
 
 /* Carcasa estilo iPhone moderno: marco negro fino, esquinas muy
    redondeadas y un halo suave para despegarlo del fondo. */
 .admin-mobile-device {
   position: relative;
+  /* `max-content` es imprescindible: el contenedor (.admin-mobile-stage)
+     tiene el ancho YA escalado, y sin esto el teléfono se encogía a ese
+     ancho y encima se le aplicaba la escala — o sea se achicaba dos
+     veces y la proporción salía mal (0.391 en vez de 0.476). Con
+     max-content mantiene su tamaño real y la escala es la única
+     reducción. */
+  width: max-content;
+  /* Escalado desde la esquina para que el tamaño que ocupa coincida con
+     el que MobileFrame le calculó al contenedor — con `center` la caja
+     de layout seguiría siendo la sin escalar y se desalinearía. */
+  transform: scale(var(--phone-scale, 1));
+  transform-origin: top left;
   padding: 12px;
   background: linear-gradient(160deg, #3a3a3c 0%, #1c1c1e 45%, #2c2c2e 100%);
   border-radius: 56px;
@@ -1085,8 +1099,12 @@
 
 .admin-mobile-frame {
   display: block;
-  width: 390px;
-  height: min(844px, calc(100vh - 128px));
+  /* Medidas lógicas reales del iPhone 15 (no 390x844, que es el 14).
+     Fijas a propósito: el ancho define cómo se resuelve el layout
+     adentro, así que no se toca — si no entra, MobileFrame escala el
+     conjunto (ver --phone-scale). */
+  width: 393px;
+  height: 852px;
   border: 0;
   /* 56px de la carcasa menos los 12px de marco: mantiene las curvas
      concéntricas en vez de dejar un borde raro en las esquinas. */
