@@ -23,6 +23,27 @@ export function catalogFilePath(catalogId: string): string {
 }
 
 /**
+ * `pageNumber` se deriva SIEMPRE de la posición en el arreglo, acá
+ * adentro, justo antes de comitear.
+ *
+ * Antes lo hacía solo `saveCatalogAction`, así que un catálogo recién
+ * creado desde el asistente se guardaba con los `pageNumber: 0` que
+ * traen las plantillas (las 42 páginas de lib/newCatalog.ts los tienen
+ * en 0) y mostraba ceros en vez de 1, 2, 3… hasta que alguien lo editaba
+ * y volvía a guardar. Poniéndolo en el único lugar por donde pasan tanto
+ * crear como guardar, no hay forma de que un camino nuevo se olvide.
+ */
+function withDerivedPageNumbers(entry: CatalogEntry): CatalogEntry {
+  return {
+    ...entry,
+    blocks: entry.blocks.map((block, i) => ({
+      ...block,
+      data: { ...block.data, pageNumber: i + 1 },
+    })) as CatalogEntry["blocks"],
+  };
+}
+
+/**
  * Valida `candidateEntry` (tema + bloques) contra el modelo de datos
  * (data/schema.ts) y, solo si es válido, comitea el JSON resultante al
  * repo. Nunca escribe nada si la validación falla — el catálogo
@@ -46,9 +67,10 @@ export async function saveCatalog(
   // Action que llama a esto — el botón "Guardar" del panel espera
   // SIEMPRE un SaveCatalogResult, nunca un throw.
   try {
-    const content = Buffer.from(JSON.stringify(parsed.data, null, 2) + "\n", "utf-8").toString(
-      "base64"
-    );
+    const content = Buffer.from(
+      JSON.stringify(withDerivedPageNumbers(parsed.data), null, 2) + "\n",
+      "utf-8"
+    ).toString("base64");
     const { commitUrl } = await commitFile(
       catalogFilePath(catalogId),
       content,
@@ -109,7 +131,7 @@ export async function createCatalog(id: string, candidateEntry: unknown): Promis
 
     const { commitUrl } = await commitFiles(
       [
-        { path: catalogFilePath(trimmedId), base64Content: toBase64(jsonFileContent(parsed.data)) },
+        { path: catalogFilePath(trimmedId), base64Content: toBase64(jsonFileContent(withDerivedPageNumbers(parsed.data))) },
         { path: `data/catalogs/${trimmedId}.ts`, base64Content: toBase64(catalogLoaderSource(trimmedId)) },
         { path: `data/catalogs/index.ts`, base64Content: toBase64(registryIndexSource(allIds)) },
       ],

@@ -139,7 +139,7 @@ export default function AdminEditor({
     }
   };
 
-  const addSingle = (type: Exclude<Block["type"], "cover" | "chapterHero" | "productDetail">) => {
+  const addSingle = (type: Exclude<Block["type"], "cover">) => {
     setPageItems([...pageItems, { key: makeKey(), block: defaultBlockFor(type) }]);
     showToast(`${TYPE_LABELS[type]} agregado`);
   };

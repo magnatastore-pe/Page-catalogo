@@ -576,14 +576,28 @@ a {
      `flex-start` el título siempre queda visible desde arriba y, en
      el peor caso, lo que se recorta es el precio/número de página al
      final — un recorte mucho menos grave que perder el título. */
-  .collage {
-    flex: 6 1 0;
+  /* Segunda vuelta sobre lo mismo (2026-07-31). El reparto fijo 6/4 de
+     arriba dejaba a `.info` con un alto que NO depende de su contenido,
+     así que en pantallas bajas (un navegador in-app se come bastante
+     viewport: medido, 363px de contenido contra 309 disponibles en la
+     colorway más cargada) lo último — precio y número de página —
+     quedaba recortado.
+
+     Ahora `.info` se dimensiona por su contenido (`flex: 0 0 auto`) y el
+     collage se queda con lo que sobre. El `max-height` es el tope que
+     evita volver al problema original: si algún día una colorway tiene
+     tanto texto que pasa el 62%, se recorta ella y no se lleva puesta la
+     altura de la sección entera rompiendo el scroll-snap. */
+  .info {
+    flex: 0 0 auto;
+    max-height: 62%;
+    justify-content: flex-start;
+    padding: 22px 18px 44px;
   }
 
-  .info {
-    flex: 4 1 0;
-    justify-content: flex-start;
-    padding: 22px 18px 50px;
+  .collage {
+    flex: 1 1 auto;
+    min-height: 0;
   }
 
   .info-grid {

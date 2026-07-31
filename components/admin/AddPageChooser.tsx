@@ -4,9 +4,27 @@ import { useState } from "react";
 import type { Block } from "@/data/schema";
 import AddColorwayForm from "./AddColorwayForm";
 
-type SingleType = "manifesto" | "productHero" | "closing";
+/** Tipos de página que se pueden agregar de a una. Se exporta para que
+ *  el editor y el asistente de creación no mantengan su propia copia de
+ *  esta lista — tenerla duplicada fue lo que los desincronizó al sumar
+ *  "Detalle" y "Portadilla". */
+export type SingleType = "manifesto" | "productHero" | "closing" | "chapterHero" | "productDetail";
 
-const SINGLE_TYPES: { type: SingleType; label: string; icon: string }[] = [
+/**
+ * "Agregar colorway" sigue siendo el camino recomendado (arma el par
+ * capítulo + detalle ya vinculados), pero antes era el ÚNICO modo de
+ * agregar esas dos páginas: no se podía sumar solo una de detalle ni
+ * solo una de portadilla. Ahora también están sueltas, con etiquetas
+ * que dicen qué es cada una en vez del nombre técnico del bloque.
+ *
+ * Una página de detalle agregada sola queda con el identificador vacío,
+ * así que no se agrupa con ninguna portadilla — es una página
+ * independiente, que es justo lo que se quiere al agregarla por
+ * separado.
+ */
+export const SINGLE_TYPES: { type: SingleType; label: string; icon: string }[] = [
+  { type: "productDetail", label: "Detalle (precio y fotos)", icon: "🏷️" },
+  { type: "chapterHero", label: "Portadilla (foto de fondo)", icon: "🌄" },
   { type: "manifesto", label: "Manifiesto", icon: "📝" },
   { type: "productHero", label: "Hero de producto", icon: "🖼️" },
   { type: "closing", label: "Cierre", icon: "🏁" },
@@ -83,3 +101,8 @@ export default function AddPageChooser({
     </div>
   );
 }
+
+/** Etiqueta legible de cada tipo, derivada de la misma lista de arriba. */
+export const SINGLE_TYPE_LABELS = Object.fromEntries(
+  SINGLE_TYPES.map((t) => [t.type, t.label])
+) as Record<SingleType, string>;

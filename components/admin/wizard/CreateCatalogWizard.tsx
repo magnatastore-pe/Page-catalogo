@@ -13,7 +13,7 @@ import { slugify } from "@/lib/slug";
 import { createCatalogAction } from "@/app/admin/actions";
 import AdminPanel from "../AdminPanel";
 import BlockList, { type EditableBlock } from "../BlockList";
-import AddPageChooser from "../AddPageChooser";
+import AddPageChooser, { SINGLE_TYPE_LABELS, type SingleType } from "../AddPageChooser";
 import { defaultBlockFor } from "../defaultBlock";
 import { useConfirm } from "../ConfirmDialogContext";
 import { useToast } from "../ToastContext";
@@ -24,12 +24,6 @@ type Step = "info" | "images" | "texts" | "done";
 
 const MIN_COLORWAYS = 1;
 const MAX_COLORWAYS = 8;
-
-const SINGLE_TYPE_LABELS: Record<"manifesto" | "productHero" | "closing", string> = {
-  manifesto: "Manifiesto",
-  productHero: "Hero de producto",
-  closing: "Cierre",
-};
 
 function makeKey(): string {
   return typeof crypto !== "undefined" && "randomUUID" in crypto
@@ -112,7 +106,7 @@ export default function CreateCatalogWizard() {
     setItems([...items, ...blocks.map((block) => ({ key: makeKey(), block }))]);
   };
 
-  const addSingleToItems = (type: "manifesto" | "productHero" | "closing") => {
+  const addSingleToItems = (type: SingleType) => {
     if (!items) return;
     setItems([...items, { key: makeKey(), block: defaultBlockFor(type) }]);
     showToast(`${SINGLE_TYPE_LABELS[type]} agregado`);
