@@ -50,8 +50,8 @@ export default function ProductDetailPage({ variant }: ProductDetailPageProps) {
           <p className="ag-detail-type">{variant.type}</p>
           <div className="ag-rule" />
           <div className="ag-desc">
-            {variant.description.map((line) => (
-              <p key={line}>{line}</p>
+            {variant.description.map((line, i) => (
+              <p key={`${line}-${i}`}>{line}</p>
             ))}
           </div>
           <SwatchGroup swatches={variant.swatches} />

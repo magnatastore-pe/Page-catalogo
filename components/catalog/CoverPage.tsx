@@ -27,8 +27,8 @@ export default function CoverPage({ data }: CoverPageProps) {
       <RevealOnScroll className="visible cover-title">
         <h1>{data.title}</h1>
         <div className="cover-meta">
-          {data.meta.map((item) => (
-            <span key={item}>{item}</span>
+          {data.meta.map((item, i) => (
+            <span key={`${item}-${i}`}>{item}</span>
           ))}
         </div>
         <div className="cover-sub">{data.subtitle}</div>

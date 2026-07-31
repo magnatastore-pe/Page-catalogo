@@ -28,7 +28,22 @@
 
 const MAX_DIMENSION = 2400;
 const SKIP_COMPRESSION_TYPES = new Set(["image/gif"]);
-const COMPRESSION_THRESHOLD_BYTES = 1.5 * 1024 * 1024; // fotos ya chicas no valen la pena tocar
+
+/**
+ * Formato de salida único: WebP (fix, 2026-07-31). Antes se preservaba
+ * el formato de entrada, así que un JPEG de cámara se recomprimía como
+ * JPEG (~0.6MB) cuando el mismo archivo en WebP, a la misma calidad
+ * visible, pesa la mitad o menos. Con todo lo que sube el panel yendo a
+ * WebP, la biblioteca entera queda liviana sin que nadie tenga que
+ * acordarse de exportar en un formato u otro.
+ *
+ * Conserva transparencia (a diferencia de JPEG) y lo soportan todos los
+ * navegadores que este sitio ya requiere — el propio next/image viene
+ * sirviendo WebP/AVIF desde la Fase 1. El GIF es la única excepción, y
+ * se saltea entero: dibujarlo en un canvas aplanaría la animación.
+ */
+const OUTPUT_TYPE = "image/webp";
+const OUTPUT_EXTENSION = "webp";
 
 /**
  * Tope al que se apunta. Vercel corta las peticiones a una función
@@ -46,7 +61,7 @@ const TARGET_MAX_BYTES = 3 * 1024 * 1024;
  * que falla.
  */
 const ATTEMPTS: Array<{ maxDimension: number; quality: number }> = [
-  { maxDimension: MAX_DIMENSION, quality: 0.85 },
+  { maxDimension: MAX_DIMENSION, quality: 0.82 },
   { maxDimension: 2000, quality: 0.8 },
   { maxDimension: 1600, quality: 0.72 },
   { maxDimension: 1280, quality: 0.65 },
@@ -56,12 +71,10 @@ function asFile(blob: Blob, filename: string): File {
   return blob instanceof File ? blob : new File([blob], filename, { type: blob.type });
 }
 
-/** Cambia la extensión cuando se cambió el formato (un PNG que salió WebP no puede seguir llamándose .png: el servidor valida por extensión). */
-function withExtension(filename: string, mime: string): string {
-  const ext = mime === "image/webp" ? "webp" : mime === "image/jpeg" ? "jpg" : null;
-  if (!ext) return filename;
+/** El archivo sale siempre en WebP, así que la extensión tiene que acompañar: el servidor valida por extensión. */
+function withWebpExtension(filename: string): string {
   const dot = filename.lastIndexOf(".");
-  return `${dot > 0 ? filename.slice(0, dot) : filename}.${ext}`;
+  return `${dot > 0 ? filename.slice(0, dot) : filename}.${OUTPUT_EXTENSION}`;
 }
 
 function encode(
@@ -81,17 +94,16 @@ function encode(
 }
 
 export async function compressImage(input: Blob, filename: string): Promise<File> {
-  if (SKIP_COMPRESSION_TYPES.has(input.type) || input.size < COMPRESSION_THRESHOLD_BYTES) {
+  // Ya no hay umbral de "esta foto es chica, no la toques": aunque pese
+  // poco, pasarla a WebP la deja más liviana todavía, y así TODO lo que
+  // entra a la biblioteca queda en un solo formato.
+  if (SKIP_COMPRESSION_TYPES.has(input.type)) {
     return asFile(input, filename);
   }
 
   try {
     const bitmap = await createImageBitmap(input);
-
-    // Un PNG grande se pasa a WebP: conserva la transparencia y, a
-    // diferencia del PNG, responde al parámetro de calidad. Los demás
-    // formatos mantienen el suyo.
-    const outputType = input.type === "image/png" ? "image/webp" : input.type || "image/jpeg";
+    const outputType = OUTPUT_TYPE;
 
     let best: Blob | null = null;
     for (const attempt of ATTEMPTS) {
@@ -114,7 +126,7 @@ export async function compressImage(input: Blob, filename: string): Promise<File
       return asFile(input, filename);
     }
 
-    return new File([best], withExtension(filename, outputType), { type: outputType });
+    return new File([best], withWebpExtension(filename), { type: outputType });
   } catch {
     // Si algo falla al decodificar/comprimir, seguir con el original
     // en vez de bloquear la subida por esto.

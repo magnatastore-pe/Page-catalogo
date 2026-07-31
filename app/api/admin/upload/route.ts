@@ -65,11 +65,15 @@ export async function POST(request: NextRequest) {
 
   const mode = formData.get("mode");
   const targetPath = formData.get("path");
+  // Solo para nombrar el archivo (ver buildAssetName en lib/assets.ts):
+  // no decide permisos ni rutas, así que un valor raro no puede hacer
+  // más daño que un prefijo feo — igual se saneó del lado del servidor.
+  const catalogId = formData.get("catalogId");
 
   const result =
     mode === "replace" && typeof targetPath === "string"
       ? await replaceAsset(targetPath, base64)
-      : await uploadAsset(file.name, base64);
+      : await uploadAsset(file.name, base64, typeof catalogId === "string" ? catalogId : undefined);
 
   return NextResponse.json(result);
 }

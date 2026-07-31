@@ -31,7 +31,7 @@ type AssetGalleryProps = {
  * necesita.
  */
 export default function AssetGallery({ selectedPath, onPick, onUploaded, onUploadStart }: AssetGalleryProps) {
-  const { assets, addAsset, removeAsset, usedPaths } = useAssets();
+  const { assets, addAsset, removeAsset, usedPaths, catalogId } = useAssets();
   const { showToast } = useToast();
   const confirm = useConfirm();
   const [uploading, setUploading] = useState(false);
@@ -63,7 +63,7 @@ export default function AssetGallery({ selectedPath, onPick, onUploaded, onUploa
       for (const [i, file] of imageFiles.entries()) {
         setUploadProgress(imageFiles.length > 1 ? `${i + 1} de ${imageFiles.length}` : null);
         try {
-          const result = await uploadFile(file);
+          const result = await uploadFile(file, catalogId);
           if (result.ok) {
             addAsset({ path: result.path, filename: result.path.split("/").pop() ?? file.name, previewUrl: URL.createObjectURL(file) });
             firstPath = firstPath ?? result.path;
@@ -122,7 +122,7 @@ export default function AssetGallery({ selectedPath, onPick, onUploaded, onUploa
       if (picked.length === 0) return; // canceló sin elegir nada, no es un error
       let firstPath: string | null = null;
       for (const file of picked) {
-        const res = await uploadFile(new File([file.blob], file.name, { type: file.blob.type }));
+        const res = await uploadFile(new File([file.blob], file.name, { type: file.blob.type }), catalogId);
         if (!res.ok) {
           setUploadError(res.error);
           continue;

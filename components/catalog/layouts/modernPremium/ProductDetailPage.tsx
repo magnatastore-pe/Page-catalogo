@@ -23,8 +23,8 @@ export default function ProductDetailPage({ variant }: ProductDetailPageProps) {
           <p className="mp-detail-type">{variant.type}</p>
           <div className="mp-gold-rule" />
           <div className="mp-detail-desc">
-            {variant.description.map((line) => (
-              <p key={line}>{line}</p>
+            {variant.description.map((line, i) => (
+              <p key={`${line}-${i}`}>{line}</p>
             ))}
           </div>
           <SwatchGroup swatches={variant.swatches} />

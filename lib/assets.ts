@@ -1,9 +1,11 @@
 import "server-only";
+import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { put, list as listBlobs, del as delBlob } from "@vercel/blob";
 import { commitFile, commitFiles } from "./github";
 import { catalogs } from "@/data/catalogs";
+import { slugify } from "./slug";
 import { CATALOG_TEMPLATES } from "./newCatalog";
 
 const ASSETS_SUBDIR = "imagenes"; // relativo a public/
@@ -59,17 +61,6 @@ function extensionOf(filename: string): string {
   return filename.split(".").pop()?.toLowerCase() ?? "";
 }
 
-function sanitizeFilename(originalFilename: string): string {
-  const ext = extensionOf(originalFilename);
-  const base = originalFilename
-    .slice(0, originalFilename.length - ext.length - 1)
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // quita acentos
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-  return `${base || "imagen"}.${ext}`;
-}
 
 /**
  * Todas las rutas de imagen que algún catálogo está usando ahora mismo.
@@ -160,6 +151,30 @@ export async function deleteAsset(assetPath: string): Promise<DeleteAssetResult>
   }
 }
 
+/**
+ * Nombre con el que se guarda una foto: `<catálogo>-<fecha>-<hash>.<ext>`
+ * (ej. `ariel-20260731-3f9a1c2b.webp`).
+ *
+ * Reemplaza al "nombre original saneado + sufijo aleatorio si choca".
+ * Tres motivos concretos, todos salidos del uso real:
+ *
+ * - El nombre original casi nunca dice nada (`IMG_4821.JPG`, `2.png`) y
+ *   encima se repite entre tandas distintas.
+ * - El sufijo aleatorio para desempatar producía nombres feos y, peor,
+ *   duplicaba en la base la MISMA foto subida dos veces.
+ * - El hash es del contenido, así que dos subidas idénticas caen en el
+ *   mismo nombre y la segunda ni siquiera se sube: se reusa la primera.
+ *
+ * La fecha es de subida, no del archivo: sirve para ordenar y para
+ * reconocer de un vistazo qué entró en qué momento.
+ */
+function buildAssetName(catalogId: string | undefined, bytes: Buffer, ext: string): string {
+  const prefix = slugify(catalogId ?? "") || "catalogo";
+  const fecha = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+  const hash = createHash("sha1").update(bytes).digest("hex").slice(0, 8);
+  return `${prefix}-${fecha}-${hash}.${ext}`;
+}
+
 export type UploadAssetResult =
   | { ok: true; path: string; commitUrl: string }
   | { ok: false; error: string };
@@ -176,7 +191,8 @@ export type UploadAssetResult =
  */
 export async function uploadAsset(
   originalFilename: string,
-  base64Content: string
+  base64Content: string,
+  catalogId?: string
 ): Promise<UploadAssetResult> {
   const ext = extensionOf(originalFilename);
   if (!ALLOWED_EXTENSIONS.has(ext)) {
@@ -186,15 +202,17 @@ export async function uploadAsset(
     };
   }
 
-  let filename = sanitizeFilename(originalFilename);
+  const bytes = Buffer.from(base64Content, "base64");
+  const filename = buildAssetName(catalogId, bytes, ext);
   try {
-    const existing = new Set((await listAssets()).map((a) => a.filename));
-    if (existing.has(filename)) {
-      const base = filename.slice(0, filename.length - ext.length - 1);
-      filename = `${base}-${Math.random().toString(36).slice(2, 6)}.${ext}`;
-    }
+    // Mismo contenido = mismo nombre = mismo archivo. Subir dos veces la
+    // misma foto ya no deja dos copias en la base (antes se le agregaba
+    // un sufijo aleatorio y quedaban duplicadas); se reusa la que ya
+    // está, sin volver a subir nada.
+    const yaEsta = (await listAssets()).find((a) => a.filename === filename);
+    if (yaEsta) return { ok: true, path: yaEsta.path, commitUrl: "" };
 
-    const blob = await put(`${ASSETS_SUBDIR}/${filename}`, Buffer.from(base64Content, "base64"), {
+    const blob = await put(`${ASSETS_SUBDIR}/${filename}`, bytes, {
       access: "public",
       contentType: EXT_TO_MIME[ext],
       addRandomSuffix: false,

@@ -41,8 +41,8 @@ export default function ProductDetailPage({ variant }: ProductDetailPageProps) {
         <div className="ed-detail-rule" />
 
         <div className="ed-detail-desc">
-          {variant.description.map((line) => (
-            <p key={line}>{line}</p>
+          {variant.description.map((line, i) => (
+            <p key={`${line}-${i}`}>{line}</p>
           ))}
         </div>
 

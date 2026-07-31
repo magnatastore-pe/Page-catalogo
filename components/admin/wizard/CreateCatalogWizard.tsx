@@ -229,7 +229,12 @@ export default function CreateCatalogWizard() {
 
         {step === "images" && (
           <>
-            <StepImages images={images} onChange={setImages} slotCount={imageSlotCount(draftBlocks)} />
+            <StepImages
+              images={images}
+              onChange={setImages}
+              slotCount={imageSlotCount(draftBlocks)}
+              catalogId={slugify(slug) || slugify(name)}
+            />
             <div className="admin-save-bar">
               <button type="button" className="admin-btn" onClick={() => setStep("info")}>
                 ← Atrás

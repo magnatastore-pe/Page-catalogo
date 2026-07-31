@@ -11,10 +11,13 @@ import { compressImage } from "./imageCompression";
  * en vez de esperar a que la red/GitHub procesen el archivo original
  * completo.
  */
-export async function uploadFile(file: File): Promise<UploadAssetResult> {
+export async function uploadFile(file: File, catalogId?: string): Promise<UploadAssetResult> {
   const compressed = await compressImage(file, file.name);
   const formData = new FormData();
   formData.append("file", compressed);
+  // Con qué catálogo se nombra el archivo guardado (ver buildAssetName
+  // en lib/assets.ts). Opcional: sin esto el prefijo es "catalogo".
+  if (catalogId) formData.append("catalogId", catalogId);
   return post(formData, file.name);
 }
 

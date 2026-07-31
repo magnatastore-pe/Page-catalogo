@@ -28,8 +28,8 @@ export default function ProductDetailPage({ variant }: ProductDetailPageProps) {
         <span className="sw-sticker sw-sticker-name">{variant.name}</span>
         <p className="sw-detail-type">{variant.type}</p>
         <div className="sw-detail-desc">
-          {variant.description.map((line) => (
-            <span key={line}>&gt; {line}</span>
+          {variant.description.map((line, i) => (
+            <span key={`${line}-${i}`}>&gt; {line}</span>
           ))}
         </div>
         <SwatchGroup swatches={variant.swatches} />

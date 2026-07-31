@@ -36,8 +36,8 @@ export default function ProductDetailPage({ variant }: ProductDetailPageProps) {
 
       <div className="nk-detail-info">
         <div className="nk-detail-desc">
-          {variant.description.map((line) => (
-            <span key={line}>{line}</span>
+          {variant.description.map((line, i) => (
+            <span key={`${line}-${i}`}>{line}</span>
           ))}
         </div>
         <SwatchGroup swatches={variant.swatches} />

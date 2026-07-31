@@ -27,7 +27,7 @@ export default async function AdminCatalogPage({ params }: AdminCatalogPageProps
   const usedPaths = [...listUsedAssetPaths()];
 
   return (
-    <AssetsProvider initialAssets={assets} initialDriveLinks={driveLinks} usedPaths={usedPaths}>
+    <AssetsProvider initialAssets={assets} initialDriveLinks={driveLinks} usedPaths={usedPaths} catalogId={id}>
       <AdminEditor
         catalogId={id}
         initialBlocks={entry.blocks}

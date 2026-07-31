@@ -37,7 +37,7 @@ export default function ProductDetailPage({ variant }: ProductDetailPageProps) {
 
         <ol className="ik-specs">
           {variant.description.map((line, i) => (
-            <li key={line}>
+            <li key={`${line}-${i}`}>
               <span>{i + 1}</span>
               {line}
             </li>

@@ -28,7 +28,7 @@ export default function ProductDetailPage({ variant }: ProductDetailPageProps) {
         <div className="info-grid">
           <div className="left">
             {variant.description.map((line, i) => (
-              <span key={line}>
+              <span key={`${line}-${i}`}>
                 {line}
                 {i < variant.description.length - 1 && <br />}
               </span>

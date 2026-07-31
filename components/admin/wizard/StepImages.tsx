@@ -13,6 +13,8 @@ type StepImagesProps = {
   images: WizardImage[];
   onChange: (images: WizardImage[]) => void;
   slotCount: number;
+  /** Id que va a tener el catálogo que se está creando — se usa para nombrar las fotos que se suban acá (ver buildAssetName en lib/assets.ts). */
+  catalogId?: string;
 };
 
 /**
@@ -26,7 +28,7 @@ type StepImagesProps = {
  * una grilla de miniaturas de subida, que es el patrón estándar para
  * esto y no toca el modelo de bloques en absoluto.
  */
-export default function StepImages({ images, onChange, slotCount }: StepImagesProps) {
+export default function StepImages({ images, onChange, slotCount, catalogId }: StepImagesProps) {
   const { addAsset } = useAssets();
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -50,7 +52,7 @@ export default function StepImages({ images, onChange, slotCount }: StepImagesPr
     let current = images;
     for (const file of imageFiles) {
       try {
-        const res = await uploadFile(file);
+        const res = await uploadFile(file, catalogId);
         if (res.ok) {
           const previewUrl = URL.createObjectURL(file);
           current = [...current, { path: res.path, previewUrl }];
@@ -78,7 +80,7 @@ export default function StepImages({ images, onChange, slotCount }: StepImagesPr
       if (picked.length === 0) return; // canceló sin elegir nada, no es un error
       let current = images;
       for (const file of picked) {
-        const res = await uploadFile(new File([file.blob], file.name, { type: file.blob.type }));
+        const res = await uploadFile(new File([file.blob], file.name, { type: file.blob.type }), catalogId);
         if (res.ok) {
           current = [...current, { path: res.path, previewUrl: file.previewUrl }];
           onChange(current);

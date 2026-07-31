@@ -8,8 +8,8 @@ type SwatchGroupProps = {
 export default function SwatchGroup({ swatches }: SwatchGroupProps) {
   return (
     <div className="swatches">
-      {swatches.map((swatch) => (
-        <div className="swatch" key={swatch.label}>
+      {swatches.map((swatch, i) => (
+        <div className="swatch" key={`${swatch.label}-${i}`}>
           {swatch.type === "image" ? (
             <Image src={swatch.image} alt={swatch.label} fill sizes="64px" />
           ) : (

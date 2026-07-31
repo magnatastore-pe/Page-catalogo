@@ -24,8 +24,8 @@ export default function ProductDetailPage({ variant }: ProductDetailPageProps) {
         <p className="jp-detail-type">{variant.type}</p>
         <div className="jp-detail-rule" />
         <div className="jp-detail-desc">
-          {variant.description.map((line) => (
-            <p key={line}>{line}</p>
+          {variant.description.map((line, i) => (
+            <p key={`${line}-${i}`}>{line}</p>
           ))}
         </div>
         <SwatchGroup swatches={variant.swatches} />

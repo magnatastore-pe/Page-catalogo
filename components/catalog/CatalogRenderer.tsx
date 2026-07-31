@@ -73,9 +73,14 @@ export default function CatalogRenderer({ blocks, theme, layoutId = "original", 
     <main className="catalog-root" style={themeStyle(theme)}>
       {customTextColors && <style>{customTextColors}</style>}
       <ScrollProgress />
-      {blocks.map((block) => (
+      {blocks.map((block, i) => (
         <BlockRenderer
-          key={`${block.type}-${block.data.pageNumber}`}
+          // La key sale de la POSICIÓN, no de `pageNumber`: ese número
+          // se recalcula al guardar, así que un catálogo puede tener
+          // varios bloques con el mismo (lux tiene tres en 0) y React
+          // avisaba de keys duplicadas — con riesgo real de omitir o
+          // duplicar una página. El orden del array es la identidad.
+          key={`${block.type}-${i}`}
           block={block}
           layoutId={layoutId}
           pdfHref={pdfHref}

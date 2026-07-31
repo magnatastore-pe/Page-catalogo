@@ -22,6 +22,8 @@ type AssetsContextValue = {
   removeAsset: (path: string) => void;
   /** Rutas que algún catálogo publicado está usando — la galería marca el resto como "sin usar". */
   usedPaths: Set<string>;
+  /** Catálogo que se está editando, si hay uno: solo se usa para nombrar los archivos que se suban (ver buildAssetName en lib/assets.ts). */
+  catalogId?: string;
 };
 
 const AssetsContext = createContext<AssetsContextValue | null>(null);
@@ -37,10 +39,13 @@ export function AssetsProvider({
   initialAssets,
   initialDriveLinks = [],
   usedPaths = [],
+  catalogId,
   children,
 }: {
   initialAssets: Asset[];
   initialDriveLinks?: DriveLink[];
+  /** Catálogo en edición — /admin/[id] lo pasa; /admin (listado + asistente) no, porque todavía no existe. */
+  catalogId?: string;
   /** Se calcula en el servidor (lib/assets.ts's listUsedAssetPaths) y llega como array porque un Set no es serializable a través del límite servidor/cliente. */
   usedPaths?: string[];
   children: ReactNode;
@@ -61,7 +66,7 @@ export function AssetsProvider({
   const used = useMemo(() => new Set(usedPaths), [usedPaths]);
 
   return (
-    <AssetsContext.Provider value={{ assets, addAsset, removeAsset, usedPaths: used }}>
+    <AssetsContext.Provider value={{ assets, addAsset, removeAsset, usedPaths: used, catalogId }}>
       {children}
     </AssetsContext.Provider>
   );
