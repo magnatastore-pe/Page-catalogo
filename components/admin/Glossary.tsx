@@ -1,131 +1,129 @@
 "use client";
 
 /**
- * Glosario del panel: qué quiere decir cada palabra que aparece en los
- * formularios. El panel usa vocabulario editorial (colorway, manifiesto,
+ * Glosario del panel: qué es cada cosa y, cuando importa, qué hacer con
+ * ella. El panel usa vocabulario editorial (colorway, manifiesto,
  * collage, swatch) que es preciso pero no obvio para alguien que solo
- * quiere cargar su catálogo — esta pestaña existe para no tener que
- * adivinarlo.
+ * quiere cargar su catálogo.
  *
  * Es contenido, no lógica: se define acá como datos y se dibuja de una
- * sola forma, para poder agregar términos sin tocar JSX.
+ * sola forma, para poder agregar o corregir términos sin tocar JSX.
+ * Cada entrada es una línea de qué es y, solo si cambia lo que uno
+ * hace, una de qué hacer — no una enciclopedia.
  */
 
 type Term = {
   term: string;
-  short: string;
-  detail?: string;
+  what: string;
+  /** Qué hacer con esto. Solo cuando agrega algo que no se deduce de la definición. */
+  tip?: string;
 };
 
-const TERMS: Term[] = [
+type Group = {
+  title: string;
+  terms: Term[];
+};
+
+const GROUPS: Group[] = [
   {
-    term: "Catálogo",
-    short: "Todo el conjunto: la portada, las páginas y sus colores.",
-    detail: "Cada catálogo tiene su propia dirección web (/catalog/su-nombre) y su propio PDF.",
+    title: "Las páginas",
+    terms: [
+      { term: "Página", what: "Cada pantalla completa del catálogo. El visitante ve una por vez." },
+      { term: "Portada", what: "La primera: foto grande con el nombre de la colección." },
+      {
+        term: "Manifiesto",
+        what: "Texto sobre una foto: la idea de la colección.",
+        tip: "Es la única página pensada para un párrafo largo.",
+      },
+      { term: "Hero de producto", what: "Presenta el producto principal: nombre y tipo sobre una foto." },
+      { term: "Cierre", what: "La última: la frase final y el enlace para descargar el PDF." },
+    ],
   },
   {
-    term: "Página",
-    short: "Cada pantalla completa del catálogo, de arriba a abajo.",
-    detail: "El visitante ve una por vez: al bajar, la siguiente se acomoda sola en la pantalla.",
+    title: "Colorways",
+    terms: [
+      {
+        term: "Colorway",
+        what: "Una versión de color del mismo producto (el mismo vestido en marfil y en verde).",
+        tip: "Ocupa 2 páginas: capítulo + detalle. El panel las edita juntas, en una sola tarjeta.",
+      },
+      { term: "Capítulo", what: "La primera página del colorway: foto a pantalla completa que anuncia el color." },
+      { term: "Detalle", what: "La segunda: collage, descripción, colores y precio." },
+      {
+        term: "Collage",
+        what: "La grilla de fotos de la página de detalle.",
+        tip: "La forma se arma sola con 1, 2, 3 o 4 fotos. Más de 4 no se muestran.",
+      },
+      {
+        term: "Swatch",
+        what: "El cuadradito de color con su nombre al lado.",
+        tip: "Puede ser una foto recortada de la tela o un color liso.",
+      },
+    ],
   },
   {
-    term: "Portada",
-    short: "La primera página: la foto grande con el nombre de la colección.",
+    title: "Diseño",
+    terms: [
+      {
+        term: "Plantilla",
+        what: "El diseño visual completo: composición, tipografías y decoración.",
+        tip: "Se elige al crear el catálogo y no se cambia después.",
+      },
+      {
+        term: "Tema",
+        what: "Los 5 colores y las 2 tipografías del catálogo (pestaña Colores).",
+        tip: "Se ven en la página de detalle. Las páginas con foto a pantalla completa llevan texto blanco por diseño.",
+      },
+      { term: "Tinta / Papel", what: "Tinta es el color del texto; papel, el fondo de las zonas claras." },
+      { term: "Acento", what: "La barra de progreso que avanza al bajar por el catálogo." },
+      {
+        term: "Color de un texto suelto",
+        what: "Cualquier texto puede tener su propio color, aparte del tema.",
+        tip: "Clickealo en la vista previa y elegí el color. El cuadro se cierra solo.",
+      },
+    ],
   },
   {
-    term: "Manifiesto",
-    short: "Página de texto sobre una foto: la idea o el concepto de la colección.",
-    detail: "Suele ir después de la portada. Es el único lugar pensado para un párrafo largo.",
-  },
-  {
-    term: "Hero de producto",
-    short: "Página de presentación del producto principal, con su nombre y tipo sobre una foto.",
-  },
-  {
-    term: "Colorway",
-    short: "Una versión de color del mismo producto (por ejemplo: el mismo vestido en marfil y en verde).",
-    detail:
-      "Cada colorway ocupa DOS páginas: primero el capítulo (foto de transición) y después el detalle (fotos, colores y precio). El panel las muestra juntas como una sola tarjeta.",
-  },
-  {
-    term: "Capítulo",
-    short: "La primera de las dos páginas de un colorway: foto a pantalla completa que anuncia el color.",
-  },
-  {
-    term: "Detalle",
-    short: "La segunda página de un colorway: el collage de fotos, la descripción, los colores y el precio.",
-  },
-  {
-    term: "Collage",
-    short: "La grilla de fotos de la página de detalle.",
-    detail:
-      "La forma de la grilla se arma sola según cuántas fotos pongas: 1, 2, 3 o 4. Poner más de 4 no agrega nada — solo se muestran las primeras 4.",
-  },
-  {
-    term: "Swatch",
-    short: "El cuadradito de color de la página de detalle, con el nombre del color al lado.",
-    detail: "Puede ser una foto recortada de la tela o un color liso, si no hay una buena foto de cerca.",
-  },
-  {
-    term: "Cierre",
-    short: "La última página: el agradecimiento o la frase final, y el enlace para descargar el PDF.",
-  },
-  {
-    term: "Plantilla",
-    short: "El diseño visual completo del catálogo: composición de las páginas, tipografías y decoración.",
-    detail:
-      "Se elige al crear el catálogo y después no se cambia: el contenido ya cargado puede no calzar con los supuestos de otro diseño (por ejemplo, una plantilla de una sola foto por colorway contra otra de cuatro).",
-  },
-  {
-    term: "Tema",
-    short: "Los 5 colores y las 2 tipografías del catálogo (pestaña Colores).",
-    detail:
-      "Se ven sobre todo en la página de detalle. Las páginas que son foto a pantalla completa llevan texto blanco por diseño — para cambiar el color de uno de esos textos, clickealo directamente en la vista previa.",
-  },
-  {
-    term: "Tinta / Papel",
-    short: "Tinta es el color del texto principal; papel es el color de fondo de las zonas claras.",
-  },
-  {
-    term: "Acento",
-    short: "El color de los detalles: la barra de progreso al bajar y los remarques del diseño.",
-  },
-  {
-    term: "Guardar y publicar",
-    short: "Guarda los cambios y los sube al sitio real.",
-    detail:
-      "No es instantáneo: el sitio se vuelve a construir solo y el cambio se ve en 1 o 2 minutos. Lo mismo pasa con una foto recién subida.",
-  },
-  {
-    term: "Vista previa",
-    short: "El catálogo que se ve detrás del panel: es el de verdad, con los cambios que todavía no guardaste.",
-    detail:
-      "El botón Escritorio/Móvil cambia cómo se simula. Clickear un texto ahí abre el selector de color de ese texto.",
-  },
-  {
-    term: "Imagen sin usar",
-    short: "Una foto de la biblioteca que ninguna página de ningún catálogo está usando.",
-    detail: "Son las únicas que se pueden borrar, justamente para no romper un catálogo publicado.",
+    title: "Fotos y publicación",
+    terms: [
+      {
+        term: "Imagen sin usar",
+        what: "Una foto que ninguna página de ningún catálogo está usando.",
+        tip: "Son las únicas que se pueden borrar, para no romper un catálogo publicado.",
+      },
+      {
+        term: "Vista previa",
+        what: "El catálogo de atrás: es el de verdad, con los cambios que todavía no guardaste.",
+        tip: "El botón Escritorio/Móvil cambia en qué pantalla se simula.",
+      },
+      {
+        term: "Guardar y publicar",
+        what: "Guarda los cambios y los sube al sitio real.",
+        tip: "Tarda 1 o 2 minutos en verse. Lo mismo con una foto recién subida.",
+      },
+    ],
   },
 ];
 
 export default function Glossary() {
   return (
     <div className="admin-glossary">
-      <p className="admin-page-detail-hint">
-        Qué quiere decir cada palabra que usa el panel. Si algo no está acá y no se entiende, se puede agregar.
-      </p>
-      <dl>
-        {TERMS.map((t) => (
-          <div className="admin-glossary-item" key={t.term}>
-            <dt>{t.term}</dt>
-            <dd>
-              {t.short}
-              {t.detail && <span className="admin-glossary-detail">{t.detail}</span>}
-            </dd>
-          </div>
-        ))}
-      </dl>
+      {GROUPS.map((group) => (
+        <section key={group.title}>
+          <h4 className="admin-glossary-group">{group.title}</h4>
+          <dl>
+            {group.terms.map((t) => (
+              <div className="admin-glossary-item" key={t.term}>
+                <dt>{t.term}</dt>
+                <dd>
+                  {t.what}
+                  {t.tip && <span className="admin-glossary-detail">{t.tip}</span>}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      ))}
     </div>
   );
 }
