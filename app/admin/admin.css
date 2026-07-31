@@ -1094,6 +1094,41 @@
   background: #fff;
 }
 
+/* Un colorway se edita en una tarjeta pero son dos páginas del catálogo.
+   El aviso lo dice, y cada encabezado de sección es un botón que lleva
+   la vista previa a SU página (además del seguimiento automático al
+   poner el foco en cualquiera de sus campos). */
+.admin-page-detail-hint {
+  margin: 0 0 14px;
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #5a5a55;
+  background: #f4f3ef;
+  border-radius: 6px;
+}
+
+.admin-field-group-jump {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6a6a64;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.admin-field-group-jump:hover {
+  color: #1a1a1a;
+}
+
 .admin-mobile-island {
   position: absolute;
   top: 24px;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import type { Block } from "@/data/schema";
 import BlockForm from "./BlockForm";
 import { useConfirm } from "./ConfirmDialogContext";
@@ -77,6 +77,26 @@ type BlockListProps = {
 export default function BlockList({ items, onChange, footer, onFocusIndex }: BlockListProps) {
   const [active, setActive] = useState<Active | null>(null);
   const confirm = useConfirm();
+
+  /**
+   * Un colorway se edita en una sola tarjeta pero son DOS páginas del
+   * catálogo (la transición y el detalle con el collage). Al abrirlo se
+   * enfocaba solo la transición, así que editando las fotos del collage
+   * la vista previa seguía mostrando la otra página — se estaba
+   * cambiando algo que no se veía.
+   *
+   * Con esto la vista previa sigue a la sección donde está el foco:
+   * tocar cualquier campo de "Detalle" la lleva a la página de detalle,
+   * y volver a "Transición" la trae de vuelta. Se recuerda cuál fue la
+   * última para no re-disparar el scroll suave en cada tab entre campos
+   * de la misma sección, que quedaba muy inquieto.
+   */
+  const lastFocusedIndex = useRef<number | null>(null);
+  const followSection = (index: number) => {
+    if (lastFocusedIndex.current === index) return;
+    lastFocusedIndex.current = index;
+    onFocusIndex?.(index);
+  };
 
   const moveUp = (i: number) => {
     if (i === 0) return;
@@ -182,13 +202,29 @@ export default function BlockList({ items, onChange, footer, onFocusIndex }: Blo
             Colorway: {chapterData?.label || chapterData?.name || "(sin nombre)"}
           </h4>
 
-          <div className="admin-field-group">
-            <h4>Transición (capítulo)</h4>
+          <p className="admin-page-detail-hint">
+            Este colorway son 2 páginas. La vista previa sigue a la sección que estés editando.
+          </p>
+
+          <div className="admin-field-group" onFocusCapture={() => followSection(group.chapterIndex)}>
+            <button
+              type="button"
+              className="admin-field-group-jump"
+              onClick={() => followSection(group.chapterIndex)}
+            >
+              Transición (capítulo) <span aria-hidden="true">↗</span>
+            </button>
             <BlockForm block={group.chapter.block} onChange={(b) => updateBlock(group.chapterIndex, b)} />
           </div>
 
-          <div className="admin-field-group">
-            <h4>Detalle</h4>
+          <div className="admin-field-group" onFocusCapture={() => followSection(group.detailIndex)}>
+            <button
+              type="button"
+              className="admin-field-group-jump"
+              onClick={() => followSection(group.detailIndex)}
+            >
+              Detalle (fotos y precio) <span aria-hidden="true">↗</span>
+            </button>
             <BlockForm block={group.detail.block} onChange={(b) => updateBlock(group.detailIndex, b)} />
           </div>
         </div>
@@ -207,7 +243,7 @@ export default function BlockList({ items, onChange, footer, onFocusIndex }: Blo
           className="admin-page-card-open"
           onClick={() => {
             setActive({ kind: "single", key: item.key });
-            onFocusIndex?.(i);
+            followSection(i);
           }}
         >
           <div className="admin-page-card-thumb" style={thumb ? { backgroundImage: `url(${thumb})` } : undefined} />
@@ -250,7 +286,7 @@ export default function BlockList({ items, onChange, footer, onFocusIndex }: Blo
           className="admin-page-card-open"
           onClick={() => {
             setActive({ kind: "colorway", chapterKey: group.chapter.key });
-            onFocusIndex?.(group.chapterIndex);
+            followSection(group.chapterIndex);
           }}
         >
           <div className="admin-page-card-thumb" style={thumb ? { backgroundImage: `url(${thumb})` } : undefined} />
