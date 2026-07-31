@@ -13,7 +13,7 @@ export default function SwatchesEditor({ swatches, onChange }: SwatchesEditorPro
     onChange(swatches.map((s, idx) => (idx === i ? next : s)));
   };
   const remove = (i: number) => onChange(swatches.filter((_, idx) => idx !== i));
-  const add = () => onChange([...swatches, { label: "", type: "image", image: "/imagenes/1.png" }]);
+  const add = () => onChange([...swatches, { label: "", type: "image", image: "/imagenes/base-20260731-c6c17dd3.webp" }]);
 
   const setType = (i: number, type: "image" | "color") => {
     const current = swatches[i];
@@ -21,7 +21,7 @@ export default function SwatchesEditor({ swatches, onChange }: SwatchesEditorPro
       update(i, {
         label: current.label,
         type: "image",
-        image: current.type === "image" ? current.image : "/imagenes/1.png",
+        image: current.type === "image" ? current.image : "/imagenes/base-20260731-c6c17dd3.webp",
       });
     } else {
       update(i, {

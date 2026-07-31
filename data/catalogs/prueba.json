@@ -22,7 +22,7 @@
         "subtitle": "A NEW CHAPTER IN THE COLLECTION",
         "bottomLine1": "PRUEBA · 2026",
         "bottomLine2": "Crafted for those who dare to stand out.",
-        "bgImage": "/imagenes/1.png",
+        "bgImage": "/imagenes/base-20260731-c6c17dd3.webp",
         "pageNumber": 1
       }
     },
@@ -31,7 +31,7 @@
       "data": {
         "heading": "DESIGNED TO BE SEEN",
         "paragraph": "Every piece in this collection is built on contrast — bold silhouettes, rich textures, and details made to turn heads. This is fashion with intention, made for the moments that matter.",
-        "bgImage": "/imagenes/2.png",
+        "bgImage": "/imagenes/base-20260731-b049bace.webp",
         "pageNumber": 2
       }
     },
@@ -41,7 +41,7 @@
         "id": "prueba",
         "name": "PRUEBA",
         "type": "COLLECTION",
-        "bgImage": "/imagenes/3.png",
+        "bgImage": "/imagenes/base-20260731-a9b1d10c.webp",
         "pageNumber": 3
       }
     },
@@ -52,7 +52,7 @@
         "pageNumber": 4,
         "name": "Vestido color verde",
         "label": "EMBER",
-        "bgImage": "/imagenes/69-c5a44dc2-b793-45c2-9b0a-a40683573d67-jpg.jpeg"
+        "bgImage": "/imagenes/base-20260731-c69a7f28.webp"
       }
     },
     {
@@ -70,11 +70,11 @@
         "collageLayout": "two",
         "collageImages": [
           {
-            "src": "/imagenes/4.png",
+            "src": "/imagenes/base-20260731-6d30cbba.webp",
             "alt": "PRUEBA EMBER"
           },
           {
-            "src": "/imagenes/5.png",
+            "src": "/imagenes/base-20260731-bcab6625.webp",
             "alt": "PRUEBA EMBER"
           }
         ],
@@ -94,7 +94,7 @@
         "pageNumber": 6,
         "name": "PRUEBA",
         "label": "MIDNIGHT",
-        "bgImage": "/imagenes/6.png"
+        "bgImage": "/imagenes/base-20260731-3bf9ec09.webp"
       }
     },
     {
@@ -112,11 +112,11 @@
         "collageLayout": "two",
         "collageImages": [
           {
-            "src": "/imagenes/6.png",
+            "src": "/imagenes/base-20260731-3bf9ec09.webp",
             "alt": "PRUEBA MIDNIGHT"
           },
           {
-            "src": "/imagenes/7.png",
+            "src": "/imagenes/base-20260731-f3aa87fc.webp",
             "alt": "PRUEBA MIDNIGHT"
           }
         ],
@@ -135,7 +135,7 @@
         "title": "PRUEBA",
         "line1": "THE COLLECTION",
         "line2": "Available now.",
-        "bgImage": "/imagenes/9.png",
+        "bgImage": "/imagenes/base-20260731-484498df.webp",
         "pageNumber": 8
       }
     }
