@@ -255,7 +255,7 @@ export default function AssetGallery({ selectedPath, onPick, onUploaded, onUploa
                 // eslint-disable-next-line @next/next/no-img-element -- blob: URL local, next/image no lo acepta
                 <img src={asset.previewUrl} alt={asset.filename} />
               ) : (
-                <Image src={asset.path} alt={asset.filename} width={120} height={120} sizes="120px" />
+                <Image src={asset.path} alt={asset.filename} width={240} height={240} />
               )}
             </button>
             {asset.driveLink && (

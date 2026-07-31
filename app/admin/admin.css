@@ -834,9 +834,12 @@
   flex: 1;
 }
 
+/* La miniatura de lo ya elegido: 84x64 y no 40x40 — a 40px no se
+   distinguía qué foto estaba puesta, que es justamente para lo que
+   sirve. Sigue siendo una fila compacta. */
 .admin-image-picker-preview {
-  width: 40px;
-  height: 40px;
+  width: 84px;
+  height: 64px;
   flex-shrink: 0;
   border-radius: 5px;
   overflow: hidden;

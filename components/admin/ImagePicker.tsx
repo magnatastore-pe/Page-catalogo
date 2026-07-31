@@ -40,7 +40,7 @@ export default function ImagePicker({ label, value, onChange }: ImagePickerProps
               // eslint-disable-next-line @next/next/no-img-element -- blob: URL local
               <img src={currentPreview} alt="" />
             ) : (
-              <Image src={value} alt="" width={80} height={80} sizes="80px" />
+              <Image src={value} alt="" width={168} height={128} />
             )}
           </div>
         )}
