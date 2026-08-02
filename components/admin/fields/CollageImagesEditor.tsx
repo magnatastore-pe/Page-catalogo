@@ -26,7 +26,7 @@ export default function CollageImagesEditor({ images, onChange }: CollageImagesE
     onChange(images.map((img, idx) => (idx === i ? { ...img, ...patch } : img)));
   };
   const remove = (i: number) => onChange(images.filter((_, idx) => idx !== i));
-  const add = () => onChange([...images, { src: "/imagenes/base-20260731-c6c17dd3.webp", alt: "" }]);
+  const add = () => onChange([...images, { src: "/imagenes/placeholder-20260802-4dbc0b18.webp", alt: "" }]);
 
   const reorder = (from: number, to: number) => {
     if (from === to) return;

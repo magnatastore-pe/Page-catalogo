@@ -253,7 +253,7 @@
      `overflow: hidden`, y la fila de la ficha es `auto`, así que el
      texto conserva su alto natural y lo que se reparte es la foto. */
   .layout-architecture-grid.ag-detail {
-    height: 100svh;
+    height: 100dvh;
   }
 
   .layout-architecture-grid .ag-detail-grid {

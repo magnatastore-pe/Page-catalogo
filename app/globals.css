@@ -51,7 +51,7 @@
    El costo de `mandatory` es real y hay que tenerlo presente: si una
    sección fuera más alta que la pantalla, lo que sobra queda entre dos
    puntos de anclaje y no se puede dejar quieto a la vista. Por eso las
-   secciones tienen que entrar en `100svh` — ver el @media mobile más
+   secciones tienen que entrar en `100dvh` — ver el @media mobile más
    abajo, donde se ajustan manifiesto y detalle justamente para eso. */
 html {
   scroll-behavior: smooth;
@@ -101,9 +101,23 @@ a {
 }
 
 /* ───── PAGE BASE ───── */
+/* `dvh` (alto de la ventana AHORA), no `svh` (el alto con la barra del
+   navegador desplegada, o sea el más chico posible).
+
+   En el celular la barra de direcciones se esconde al deslizar y la
+   pantalla visible crece. Con `svh` cada página quedaba más baja que la
+   pantalla justo después de ese momento, y por el borde asomaba un
+   pedazo de la página vecina: una franja de color (el fondo claro de
+   una ficha, por ejemplo) arriba o abajo, que es exactamente lo que se
+   reportó con capturas desde el teléfono. Con `dvh` la página siempre
+   mide lo que se está viendo, con la barra desplegada o escondida.
+
+   La contrapartida conocida de `dvh` es que la altura cambia mientras
+   la barra aparece o desaparece; acá no molesta porque el scroll calza
+   de a una página entera y el recálculo ocurre durante el gesto. */
 .page {
   position: relative;
-  min-height: 100svh;
+  min-height: 100dvh;
   scroll-snap-align: start;
   scroll-snap-stop: always;
   overflow: hidden;
@@ -1148,7 +1162,8 @@ a {
 /* Cada .page se imprime como una página física propia; el navegador
    headless que genera el PDF (scripts/generate-pdf.mjs) usa un
    viewport fijo cuyo tamaño coincide con el @page de abajo, así que
-   100svh sigue resolviendo al alto real de cada página impresa. */
+   100dvh sigue resolviendo al alto real de cada página impresa
+   (verificado re-generando el PDF, no asumido). */
 @media print {
   * {
     print-color-adjust: exact;

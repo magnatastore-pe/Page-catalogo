@@ -7,7 +7,7 @@ export type CompletenessResult = { ok: boolean; missing: string[] };
  * (el usuario confirmó: avisar sí, impedir no). Solo marca campos que
  * son inequívocamente "vacíos" (string vacío, arrays sin elementos) —
  * a propósito NO intenta adivinar si una imagen de fondo sigue en el
- * placeholder por defecto (`/imagenes/base-20260731-c6c17dd3.webp`), porque esa misma ruta
+ * placeholder por defecto (`/imagenes/placeholder-20260802-4dbc0b18.webp`), porque esa misma ruta
  * es una foto real y deliberada en más de un catálogo (ej. la portada
  * de Ariel) — no hay forma confiable de distinguir "nunca se tocó" de
  * "el admin eligió justo esa foto", así que un chequeo así generaría

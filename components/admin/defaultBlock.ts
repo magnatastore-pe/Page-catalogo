@@ -17,16 +17,16 @@ export function defaultBlockFor(type: Block["type"]): Block {
           subtitle: "",
           bottomLine1: "",
           bottomLine2: "",
-          bgImage: "/imagenes/base-20260731-c6c17dd3.webp",
+          bgImage: "/imagenes/placeholder-20260802-4dbc0b18.webp",
           pageNumber: 0,
         },
       };
     case "manifesto":
-      return { type, data: { heading: "", paragraph: "", bgImage: "/imagenes/base-20260731-c6c17dd3.webp", pageNumber: 0 } };
+      return { type, data: { heading: "", paragraph: "", bgImage: "/imagenes/placeholder-20260802-4dbc0b18.webp", pageNumber: 0 } };
     case "productHero":
-      return { type, data: { id: "", name: "", type: "", bgImage: "/imagenes/base-20260731-c6c17dd3.webp", pageNumber: 0 } };
+      return { type, data: { id: "", name: "", type: "", bgImage: "/imagenes/placeholder-20260802-4dbc0b18.webp", pageNumber: 0 } };
     case "chapterHero":
-      return { type, data: { id: "", pageNumber: 0, name: "", label: "", bgImage: "/imagenes/base-20260731-c6c17dd3.webp" } };
+      return { type, data: { id: "", pageNumber: 0, name: "", label: "", bgImage: "/imagenes/placeholder-20260802-4dbc0b18.webp" } };
     case "productDetail":
       return {
         type,
@@ -43,6 +43,6 @@ export function defaultBlockFor(type: Block["type"]): Block {
         },
       };
     case "closing":
-      return { type, data: { title: "", line1: "", line2: "", bgImage: "/imagenes/base-20260731-c6c17dd3.webp", pageNumber: 0 } };
+      return { type, data: { title: "", line1: "", line2: "", bgImage: "/imagenes/placeholder-20260802-4dbc0b18.webp", pageNumber: 0 } };
   }
 }

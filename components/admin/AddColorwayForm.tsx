@@ -26,7 +26,7 @@ export default function AddColorwayForm({
   const [colorwayName, setColorwayName] = useState("");
   const [productName, setProductName] = useState(defaultProductName);
   const [productType, setProductType] = useState(defaultProductType);
-  const [bgImage, setBgImage] = useState("/imagenes/base-20260731-c6c17dd3.webp");
+  const [bgImage, setBgImage] = useState("/imagenes/placeholder-20260802-4dbc0b18.webp");
   const [swatchType, setSwatchType] = useState<"image" | "color">("image");
   const [swatchColor, setSwatchColor] = useState("#cccccc");
   const { showToast } = useToast();
