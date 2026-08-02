@@ -226,7 +226,12 @@ export default function AdminPanel({
         <PreviewFrame
           key={viewport}
           variant={viewport === "mobile" ? "phone" : "desktop"}
-          url={`page-catalogo.vercel.app/catalog/${title}`}
+          // El dominio sale del navegador, no escrito a mano: el panel se
+          // sirve desde el mismo sitio que va a ver el visitante, así que
+          // la barra simulada muestra la dirección real (antes decía
+          // siempre el dominio del primer despliegue de este proyecto,
+          // que ya no es donde vive).
+          url={`${typeof window === "undefined" ? "" : window.location.host}/catalog/${title}`}
           onDocumentReady={handlePreviewDocument}
         >
           <CatalogRenderer blocks={withPageNumbers} theme={theme} layoutId={layoutId} />

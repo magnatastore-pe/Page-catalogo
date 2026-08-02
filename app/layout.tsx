@@ -10,7 +10,7 @@ import "./globals.css";
 // igual si se corre localmente.
 const SITE_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
   ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-  : "https://page-catalogo.vercel.app";
+  : "https://mawoa.live";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
