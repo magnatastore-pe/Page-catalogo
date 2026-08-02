@@ -1,7 +1,5 @@
 import "server-only";
 import { createHash } from "node:crypto";
-import fs from "node:fs/promises";
-import path from "node:path";
 import { put, list as listBlobs, del as delBlob } from "@vercel/blob";
 import { commitFile, commitFiles } from "./github";
 import { catalogs } from "@/data/catalogs";
@@ -28,33 +26,37 @@ function isBlobUrl(assetPath: string): boolean {
 }
 
 /**
- * Junta dos fuentes: las fotos viejas que siguen en public/imagenes/
- * (comiteadas a GitHub antes del cambio a Blob, tal como quedaron en
- * el último deploy — igual que antes, una subida recién hecha en esta
- * misma sesión no va a aparecer acá hasta el próximo redeploy) y las
- * fotos nuevas, que desde el fix de velocidad viven en Vercel Blob y
- * sí están disponibles al instante (sin esperar ningún deploy). El
- * picker del panel ya agrega la subida a su estado en cuanto
- * uploadAsset() confirma, así que esta lista solo importa para lo que
- * ya existía antes de abrir la sesión.
+ * La biblioteca del panel muestra SOLO las fotos subidas (las que viven
+ * en Vercel Blob), no las que vienen dentro del repositorio.
+ *
+ * Las de `public/imagenes/` son las fotos de muestra de las 10
+ * plantillas: existen para que un catálogo recién creado se vea como un
+ * catálogo de verdad, no para que nadie las elija a mano. Listarlas
+ * llenaba la ventana de "Elegir imagen" con decenas de fotos ajenas al
+ * negocio, y encima entre ellas las propias — que es justo lo que se
+ * pidió sacar.
+ *
+ * Esto es solo la lista del panel: las plantillas siguen usando esas
+ * rutas y se siguen sirviendo igual, así que un catálogo creado desde
+ * una plantilla no cambia en nada. Y como el campo de cada imagen
+ * también acepta una ruta escrita a mano, ninguna queda inaccesible.
+ *
+ * Una foto recién subida aparece al instante (Blob no necesita
+ * redeploy), y el picker igual la agrega a su estado apenas se
+ * confirma la subida.
  */
 export async function listAssets(): Promise<Asset[]> {
-  const dir = path.join(process.cwd(), "public", ASSETS_SUBDIR);
-  const [localFiles, blobs] = await Promise.all([
-    fs.readdir(dir).catch(() => [] as string[]),
-    listBlobs({ prefix: `${ASSETS_SUBDIR}/` }).then((r) => r.blobs).catch(() => []),
-  ]);
+  const blobs = await listBlobs({ prefix: `${ASSETS_SUBDIR}/` })
+    .then((r) => r.blobs)
+    .catch(() => []);
 
-  const local = localFiles
-    .filter((filename) => ALLOWED_EXTENSIONS.has(extensionOf(filename)))
-    .map((filename) => ({ filename, path: `/${ASSETS_SUBDIR}/${filename}` }));
-
-  const remote = blobs.map((b) => ({
-    filename: b.pathname.split("/").pop() ?? b.pathname,
-    path: b.url,
-  }));
-
-  return [...local, ...remote].sort((a, b) => a.filename.localeCompare(b.filename));
+  return blobs
+    .map((b) => ({
+      filename: b.pathname.split("/").pop() ?? b.pathname,
+      path: b.url,
+    }))
+    .filter((asset) => ALLOWED_EXTENSIONS.has(extensionOf(asset.filename)))
+    .sort((a, b) => a.filename.localeCompare(b.filename));
 }
 
 function extensionOf(filename: string): string {
