@@ -524,9 +524,42 @@
 
 .admin-swatch-row {
   display: grid;
-  grid-template-columns: 1fr auto 1fr auto;
+  grid-template-columns: 1fr auto 1fr auto auto;
   gap: 8px;
   align-items: center;
+}
+
+.admin-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #333;
+}
+
+.admin-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #111;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Dentro de una fila de swatch el espacio es escaso: texto más chico y
+   sin envolver, para no empujar los demás campos de la fila. */
+.admin-checkbox-inline {
+  font-size: 11px;
+  gap: 5px;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #666;
+}
+
+.admin-checkbox-inline input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
 }
 
 .admin-swatch-row input[type="color"] {
@@ -1282,6 +1315,26 @@
 
 .admin-field-group-jump:hover {
   color: #1a1a1a;
+}
+
+/* Antes acá había una flecha "↗", que se lee como "esto abre otra
+   página" — y lo que hace es mover la vista previa de al lado. Se
+   nombra la acción en vez de insinuarla con un símbolo. */
+.admin-field-group-jump-hint {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: #8a8a84;
+  border: 1px solid #dedcd6;
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+.admin-field-group-jump:hover .admin-field-group-jump-hint {
+  color: #1a1a1a;
+  border-color: #b8b6b0;
 }
 
 .admin-frame-island {

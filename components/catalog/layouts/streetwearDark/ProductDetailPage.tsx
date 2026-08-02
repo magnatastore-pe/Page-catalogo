@@ -2,6 +2,8 @@ import Image from "next/image";
 import PageNumber from "../../PageNumber";
 import SwatchGroup from "../../SwatchGroup";
 import type { ProductVariant } from "@/data/schema";
+import SoldOutBadge from "../../SoldOutBadge";
+import { isVariantSoldOut, soldOutClass } from "../../soldOut";
 import "./streetwearDark.css";
 
 type ProductDetailPageProps = {
@@ -15,7 +17,8 @@ type ProductDetailPageProps = {
  */
 export default function ProductDetailPage({ variant }: ProductDetailPageProps) {
   return (
-    <section className="page layout-streetwear-dark sw-detail" id={variant.id}>
+    <section className={`page layout-streetwear-dark sw-detail${soldOutClass(variant)}`} id={variant.id}>
+      {isVariantSoldOut(variant) && <SoldOutBadge />}
       <div className="sw-detail-photos">
         {variant.collageImages.map((img, i) => (
           <div className={`sw-photo sw-photo-${i}`} key={`${img.src}-${i}`}>

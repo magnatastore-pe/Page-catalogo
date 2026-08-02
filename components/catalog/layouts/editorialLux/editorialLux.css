@@ -242,13 +242,24 @@
     flex-direction: column;
   }
 
+  /* La foto ocupa lo que sobre después del texto, en vez de reservar
+     52vh fijos: con el scroll-snap por página (app/globals.css) una
+     sección más alta que la pantalla deja contenido en tierra de nadie
+     entre dos anclajes. Encogiendo la foto (que ya es object-fit:cover)
+     la sección entra siempre, incluso en pantallas muy bajas. */
   .layout-editorial-lux .ed-detail-image {
-    flex: 0 0 52vh;
+    flex: 1 1 0;
+    min-height: 0;
   }
 
+  /* El padding inferior extra deja libre la franja donde va el número
+     de página (`.page-no`, absoluto a 18px del borde): al ocupar la
+     foto todo el espacio sobrante, la ficha quedó pegada abajo y el
+     precio caía justo debajo del número. */
   .layout-editorial-lux .ed-detail-caption {
+    flex: 0 0 auto;
     min-width: 0;
-    padding: 30px 24px;
+    padding: 30px 24px 46px;
   }
 
   .layout-editorial-lux .ed-detail-inset {

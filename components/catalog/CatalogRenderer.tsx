@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import ScrollProgress from "./ScrollProgress";
+import ScrollReveal from "./ScrollReveal";
 import BlockRenderer from "./BlockRenderer";
 import type { CatalogBlocks, CatalogTheme, LayoutId } from "@/data/schema";
 
@@ -73,6 +74,7 @@ export default function CatalogRenderer({ blocks, theme, layoutId = "original", 
     <main className="catalog-root" style={themeStyle(theme)}>
       {customTextColors && <style>{customTextColors}</style>}
       <ScrollProgress />
+      <ScrollReveal />
       {blocks.map((block, i) => (
         <BlockRenderer
           // La key sale de la POSICIÓN, no de `pageNumber`: ese número

@@ -245,9 +245,20 @@
     padding: 0 6% 4%;
   }
 
+  /* La altura tiene que ser DEFINIDA para que las filas `1fr` se
+     repartan la pantalla: con solo `min-height` (lo que trae `.page`)
+     la grilla queda de altura indefinida y cada fila se dimensiona por
+     su contenido — así esta página medía 1364px en un celular, o sea
+     más del doble de la pantalla. `.page` ya recorta con
+     `overflow: hidden`, y la fila de la ficha es `auto`, así que el
+     texto conserva su alto natural y lo que se reparte es la foto. */
+  .layout-architecture-grid.ag-detail {
+    height: 100svh;
+  }
+
   .layout-architecture-grid .ag-detail-grid {
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: repeat(4, minmax(120px, 1fr)) auto;
+    grid-template-rows: repeat(3, minmax(0, 1fr)) auto;
   }
 
   .layout-architecture-grid .ag-cell-photo1 {

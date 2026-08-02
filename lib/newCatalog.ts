@@ -867,6 +867,56 @@ export function applyImageOverrides(blocks: Block[], images: string[]): Block[] 
  * del wizard, 2026-07-28): sin especificar, se usa tal cual la trae la
  * plantilla — comportamiento idéntico al de antes de esa fecha.
  */
+/**
+ * Los colorways de las plantillas nacen con un nombre genérico
+ * ("Colorway 1", "Colorway 2"...) en vez de los nombres de color con
+ * los que están escritas (EMBER, NOIR, ROUGE...).
+ *
+ * El motivo es de uso real, no de estilo: esos nombres son inventados
+ * para que la plantilla se vea como un catálogo de verdad en el
+ * carrusel, pero al crear un catálogo propio quedaban pegados en tres
+ * lugares a la vez (el texto de la página, el tipo de la ficha y el
+ * identificador interno), y renombrar el colorway dejaba a los tres
+ * contando cosas distintas. Genéricos, se ven claramente como algo a
+ * reemplazar, y el nombre que escriba el admin pasa a mandar sobre
+ * todos (ver `updateColorwayChapter` en components/admin/BlockList.tsx).
+ *
+ * Se hace acá, sobre los bloques ya construidos, y no en las 19
+ * definiciones de colorway de las plantillas: es una regla sola, en un
+ * solo lugar, en vez de 19 oportunidades de que una quede distinta.
+ */
+function genericColorwayNames(blocks: Block[]): Block[] {
+  const next = [...blocks];
+  let n = 0;
+
+  for (let i = 0; i < next.length; i++) {
+    if (!isColorwayPairAt(next, i)) continue;
+    n += 1;
+
+    const chapter = next[i] as Extract<Block, { type: "chapterHero" }>;
+    const detail = next[i + 1] as Extract<Block, { type: "productDetail" }>;
+    const previous = chapter.data.label;
+    const label = `Colorway ${n}`;
+    const id = `colorway-${n}`;
+    const replace = (text: string) => (previous ? text.split(previous).join(label) : text);
+
+    next[i] = { ...chapter, data: { ...chapter.data, id, label } };
+    next[i + 1] = {
+      ...detail,
+      data: {
+        ...detail.data,
+        id,
+        type: replace(detail.data.type),
+        collageImages: detail.data.collageImages.map((img) => ({ ...img, alt: replace(img.alt) })),
+        swatches: detail.data.swatches.map((s) => ({ ...s, label: replace(s.label) })),
+      },
+    };
+    i += 1;
+  }
+
+  return next;
+}
+
 export function createStarterCatalog(
   name: string,
   templateId?: string,
@@ -877,7 +927,7 @@ export function createStarterCatalog(
   const year = new Date().getFullYear().toString();
 
   const template = CATALOG_TEMPLATES.find((t) => t.id === templateId) ?? CATALOG_TEMPLATES[0];
-  const baseBlocks = template.build(title, id, year);
+  const baseBlocks = genericColorwayNames(template.build(title, id, year));
   const blocks =
     colorwayCount === undefined ? baseBlocks : adjustColorwayCount(baseBlocks, colorwayCount, template.theme);
 

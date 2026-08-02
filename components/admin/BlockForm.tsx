@@ -7,6 +7,7 @@ import TextAreaField from "./fields/TextAreaField";
 import StringListEditor from "./fields/StringListEditor";
 import CollageImagesEditor from "./fields/CollageImagesEditor";
 import SwatchesEditor from "./fields/SwatchesEditor";
+import CheckboxField from "./fields/CheckboxField";
 import ImagePicker from "./ImagePicker";
 
 type BlockFormProps = {
@@ -59,12 +60,6 @@ export default function BlockForm({ block, onChange }: BlockFormProps) {
       const set = (patch: Partial<typeof data>) => onChange({ ...block, data: { ...data, ...patch } });
       return (
         <>
-          <TextField
-            label="Identificador interno (vincula capítulo y detalle, no se edita)"
-            value={data.id}
-            onChange={(v) => set({ id: v })}
-            disabled
-          />
           <TextField label="Nombre" value={data.name} onChange={(v) => set({ name: v })} />
           <TextField label="Tipo" value={data.type} onChange={(v) => set({ type: v })} />
           <ImagePicker label="Imagen de fondo" value={data.bgImage} onChange={(v) => set({ bgImage: v })} />
@@ -77,14 +72,12 @@ export default function BlockForm({ block, onChange }: BlockFormProps) {
       const set = (patch: Partial<typeof data>) => onChange({ ...block, data: { ...data, ...patch } });
       return (
         <>
-          <TextField
-            label="Identificador interno (vincula capítulo y detalle, no se edita)"
-            value={data.id}
-            onChange={(v) => set({ id: v })}
-            disabled
-          />
-          <TextField label="Nombre" value={data.name} onChange={(v) => set({ name: v })} />
-          <TextField label="Etiqueta (colorway)" value={data.label} onChange={(v) => set({ label: v })} />
+          <TextField label="Nombre del producto" value={data.name} onChange={(v) => set({ name: v })} />
+          {/* Este es EL nombre del colorway: se ve en el catálogo y, al
+              cambiarlo, BlockList reescribe con él el identificador
+              interno de las dos páginas del par (ver allá). Por eso ya
+              no hay un campo de identificador que mirar ni mantener. */}
+          <TextField label="Nombre del colorway" value={data.label} onChange={(v) => set({ label: v })} />
           <ImagePicker label="Imagen de fondo" value={data.bgImage} onChange={(v) => set({ bgImage: v })} />
         </>
       );
@@ -95,12 +88,6 @@ export default function BlockForm({ block, onChange }: BlockFormProps) {
       const set = (patch: Partial<typeof data>) => onChange({ ...block, data: { ...data, ...patch } });
       return (
         <>
-          <TextField
-            label="Identificador interno (vincula capítulo y detalle, no se edita)"
-            value={data.id}
-            onChange={(v) => set({ id: v })}
-            disabled
-          />
           <div className="admin-field-group">
             <h4>Contenido</h4>
             <TextField label="Nombre" value={data.name} onChange={(v) => set({ name: v })} />
@@ -110,6 +97,12 @@ export default function BlockForm({ block, onChange }: BlockFormProps) {
               label="Descripción"
               items={data.description}
               onChange={(v) => set({ description: v })}
+            />
+            <CheckboxField
+              label="Modelo agotado (sold out)"
+              checked={data.soldOut === true}
+              onChange={(v) => set({ soldOut: v || undefined })}
+              hint="Muestra un cartel SOLD OUT en la esquina de esta página. Para marcar solo un color, usá la casilla de cada swatch en “Colores”."
             />
           </div>
           <div className="admin-field-group">

@@ -5,6 +5,7 @@ import type { Block } from "@/data/schema";
 import BlockForm from "./BlockForm";
 import { useConfirm } from "./ConfirmDialogContext";
 import { groupItemsForDisplay, type DisplayGroup } from "./blockGrouping";
+import { slugify } from "@/lib/slug";
 import { checkCompleteness, checkColorwayCompleteness } from "./pageCompleteness";
 
 /**
@@ -160,6 +161,73 @@ export default function BlockList({ items, onChange, footer, onFocusIndex }: Blo
     onChange(items.map((item, idx) => (idx === i ? { ...item, block } : item)));
   };
 
+  /**
+   * Edición del capítulo de un colorway: si cambió su nombre, el
+   * identificador interno de LAS DOS páginas del par se reescribe a
+   * partir de ese nombre, en una sola actualización.
+   *
+   * El identificador ya no se muestra ni se edita a mano (antes era un
+   * campo deshabilitado que decía "ember" aunque el colorway se llamara
+   * otra cosa — el nombre y el identificador quedaban contando cosas
+   * distintas). Tiene que cambiar en el par completo o en ninguno:
+   * cambiar solo un lado rompe el vínculo capítulo↔detalle, que es
+   * justamente para lo único que existe ese identificador.
+   */
+  const updateColorwayChapter = (
+    chapterIndex: number,
+    detailIndex: number,
+    previousLabel: string,
+    block: Block
+  ) => {
+    if (block.type !== "chapterHero" || block.data.label === previousLabel) {
+      updateBlock(chapterIndex, block);
+      return;
+    }
+
+    // Ids de los demás bloques, para no pisar el de otro colorway que
+    // se llame parecido (dos colorways con el mismo id dejarían de ser
+    // dos páginas vinculadas de a pares).
+    const taken = new Set(
+      items
+        .filter((_, idx) => idx !== chapterIndex && idx !== detailIndex)
+        .map((item) => ("id" in item.block.data ? item.block.data.id : ""))
+        .filter(Boolean)
+    );
+
+    const base = slugify(block.data.label) || "colorway";
+    let id = base;
+    for (let n = 2; taken.has(id); n++) id = `${base}-${n}`;
+
+    // El "Tipo" de la ficha suele llevar el nombre del colorway dentro
+    // ("EMERALD DRESS"): si estaba el nombre viejo, se reemplaza por el
+    // nuevo. Solo si estaba — un tipo escrito a mano que no lo mencione
+    // (p. ej. "DRESS" a secas) no se toca.
+    const label = block.data.label;
+    const rename = (text: string) => {
+      if (!previousLabel) return text;
+      const escaped = previousLabel.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return text.replace(new RegExp(escaped, "gi"), label);
+    };
+
+    onChange(
+      items.map((item, idx) => {
+        if (idx === chapterIndex) {
+          return { ...item, block: { ...block, data: { ...block.data, id } } };
+        }
+        if (idx === detailIndex && item.block.type === "productDetail") {
+          return {
+            ...item,
+            block: {
+              ...item.block,
+              data: { ...item.block.data, id, type: rename(item.block.data.type) },
+            },
+          };
+        }
+        return item;
+      })
+    );
+  };
+
   // Mueve el par [capítulo, detalle] que arranca en `startIndex` una
   // posición entera hacia arriba/abajo, en vez de mover cada bloque por
   // separado — así reordenar un colorway completo es 1 clic en vez de 2.
@@ -232,10 +300,16 @@ export default function BlockList({ items, onChange, footer, onFocusIndex }: Blo
               type="button"
               className="admin-field-group-jump"
               onClick={() => goToSection(group.chapterIndex)}
+              title="Mueve la vista previa a esta página"
             >
-              Transición (capítulo) <span aria-hidden="true">↗</span>
+              Transición (capítulo) <span className="admin-field-group-jump-hint">👁 ver</span>
             </button>
-            <BlockForm block={group.chapter.block} onChange={(b) => updateBlock(group.chapterIndex, b)} />
+            <BlockForm
+              block={group.chapter.block}
+              onChange={(b) =>
+                updateColorwayChapter(group.chapterIndex, group.detailIndex, chapterData?.label ?? "", b)
+              }
+            />
           </div>
 
           <div className="admin-field-group" onFocusCapture={() => followSection(group.detailIndex)}>
@@ -243,8 +317,9 @@ export default function BlockList({ items, onChange, footer, onFocusIndex }: Blo
               type="button"
               className="admin-field-group-jump"
               onClick={() => goToSection(group.detailIndex)}
+              title="Mueve la vista previa a esta página"
             >
-              Detalle (fotos y precio) <span aria-hidden="true">↗</span>
+              Detalle (fotos y precio) <span className="admin-field-group-jump-hint">👁 ver</span>
             </button>
             <BlockForm block={group.detail.block} onChange={(b) => updateBlock(group.detailIndex, b)} />
           </div>

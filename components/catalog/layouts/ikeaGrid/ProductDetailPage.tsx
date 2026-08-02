@@ -2,6 +2,8 @@ import Image from "next/image";
 import PageNumber from "../../PageNumber";
 import SwatchGroup from "../../SwatchGroup";
 import type { ProductVariant } from "@/data/schema";
+import SoldOutBadge from "../../SoldOutBadge";
+import { isVariantSoldOut, soldOutClass } from "../../soldOut";
 import "./ikeaGrid.css";
 
 type ProductDetailPageProps = {
@@ -15,7 +17,8 @@ type ProductDetailPageProps = {
  */
 export default function ProductDetailPage({ variant }: ProductDetailPageProps) {
   return (
-    <section className="page layout-ikea-grid ik-detail" id={variant.id}>
+    <section className={`page layout-ikea-grid ik-detail${soldOutClass(variant)}`} id={variant.id}>
+      {isVariantSoldOut(variant) && <SoldOutBadge />}
       <div className="ik-detail-photos">
         {variant.collageImages.map((img, i) => (
           <div className="ik-photo-cell" key={`${img.src}-${i}`}>

@@ -206,11 +206,18 @@
 
 /* ---- Responsive ---- */
 @media (max-width: 700px) {
+  /* Las polaroids se quedan en UNA fila en celular. Con `flex-wrap`
+     pasaban a dos filas y la sección terminaba más alta que la
+     pantalla (~98px de más en un viewport de 568px), y con el
+     scroll-snap por página (app/globals.css) eso deja contenido entre
+     dos anclajes. Cada foto es 3/4, así que su alto sale del ancho. */
   .layout-streetwear-dark .sw-detail-photos {
-    flex-wrap: wrap;
+    gap: 3%;
+    padding: 20px 16px;
   }
 
   .layout-streetwear-dark .sw-photo {
-    width: 40%;
+    width: 28%;
+    border-width: 4px;
   }
 }

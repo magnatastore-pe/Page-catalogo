@@ -2,6 +2,8 @@ import Image from "next/image";
 import PageNumber from "../../PageNumber";
 import SwatchGroup from "../../SwatchGroup";
 import type { ProductVariant } from "@/data/schema";
+import SoldOutBadge from "../../SoldOutBadge";
+import { isVariantSoldOut, soldOutClass } from "../../soldOut";
 import "./japaneseMinimal.css";
 
 type ProductDetailPageProps = {
@@ -17,7 +19,8 @@ export default function ProductDetailPage({ variant }: ProductDetailPageProps) {
   const [hero] = variant.collageImages;
 
   return (
-    <section className="page layout-japanese-minimal jp-detail" id={variant.id}>
+    <section className={`page layout-japanese-minimal jp-detail${soldOutClass(variant)}`} id={variant.id}>
+      {isVariantSoldOut(variant) && <SoldOutBadge />}
       <span className="jp-mark" aria-hidden="true" />
       <div className="jp-detail-text">
         <h3>{variant.name}</h3>

@@ -164,17 +164,20 @@ async function printCatalog(page, catalogId) {
   // completas salieron negras —imagen de fondo y texto ausentes—
   // porque el margen fijo no alcanzó a cubrir la carga+decode de fotos
   // de 1.5-2.6MB. Se espera explícitamente a que toda imagen haya
-  // terminado de cargar y todo bloque RevealOnScroll esté marcado
-  // visible, con un timeout generoso en vez de una espera a ciegas.
-  console.log(`[generate-pdf] (${catalogId}) waiting for every image and reveal block to finish...`);
+  // terminado de cargar, con un timeout generoso en vez de una espera
+  // a ciegas.
+  //
+  // Antes se esperaba además a que TODOS los bloques `.reveal`
+  // estuvieran marcados `visible`. Ya no aplica: la animación se
+  // repite en cada entrada al viewport, así que al terminar el
+  // recorrido solo la última sección sigue marcada y esa condición no
+  // se cumple nunca más (se colgaba hasta el timeout). Lo que
+  // garantiza que el texto salga en el PDF es la regla de
+  // `@media print` en app/globals.css, que fuerza `.reveal` visible al
+  // imprimir sin depender del estado de la clase.
+  console.log(`[generate-pdf] (${catalogId}) waiting for every image to finish loading...`);
   await page.waitForFunction(
-    () => {
-      const images = Array.from(document.querySelectorAll("img"));
-      const imagesReady = images.every((img) => img.complete && img.naturalWidth > 0);
-      const reveals = Array.from(document.querySelectorAll(".reveal"));
-      const revealsReady = reveals.every((el) => el.classList.contains("visible"));
-      return imagesReady && revealsReady;
-    },
+    () => Array.from(document.querySelectorAll("img")).every((img) => img.complete && img.naturalWidth > 0),
     { timeout: 30000 }
   );
 

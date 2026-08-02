@@ -17,17 +17,21 @@ export default function SwatchesEditor({ swatches, onChange }: SwatchesEditorPro
 
   const setType = (i: number, type: "image" | "color") => {
     const current = swatches[i];
+    // `soldOut` se conserva al cambiar de foto a color y viceversa: es
+    // un estado del color en sí, no de cómo se lo dibuja.
     if (type === "image") {
       update(i, {
         label: current.label,
         type: "image",
         image: current.type === "image" ? current.image : "/imagenes/base-20260731-c6c17dd3.webp",
+        soldOut: current.soldOut,
       });
     } else {
       update(i, {
         label: current.label,
         type: "color",
         color: current.type === "color" ? current.color : "#cccccc",
+        soldOut: current.soldOut,
       });
     }
   };
@@ -57,6 +61,14 @@ export default function SwatchesEditor({ swatches, onChange }: SwatchesEditorPro
                 onChange={(e) => update(i, { ...swatch, color: e.target.value })}
               />
             )}
+            <label className="admin-checkbox admin-checkbox-inline" title="Este color está agotado">
+              <input
+                type="checkbox"
+                checked={swatch.soldOut === true}
+                onChange={(e) => update(i, { ...swatch, soldOut: e.target.checked || undefined })}
+              />
+              <span>Agotado</span>
+            </label>
             <button
               type="button"
               className="admin-btn admin-btn-icon admin-btn-danger"

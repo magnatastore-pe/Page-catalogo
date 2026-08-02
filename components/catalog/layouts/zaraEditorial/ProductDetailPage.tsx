@@ -2,6 +2,8 @@ import Image from "next/image";
 import PageNumber from "../../PageNumber";
 import SwatchGroup from "../../SwatchGroup";
 import type { ProductVariant } from "@/data/schema";
+import SoldOutBadge from "../../SoldOutBadge";
+import { isVariantSoldOut, soldOutClass } from "../../soldOut";
 import "./zaraEditorial.css";
 
 type ProductDetailPageProps = {
@@ -16,7 +18,8 @@ export default function ProductDetailPage({ variant }: ProductDetailPageProps) {
   const [hero, secondary] = variant.collageImages;
 
   return (
-    <section className="page layout-zara-editorial za-detail" id={variant.id}>
+    <section className={`page layout-zara-editorial za-detail${soldOutClass(variant)}`} id={variant.id}>
+      {isVariantSoldOut(variant) && <SoldOutBadge />}
       <div className="za-detail-image">
         {hero && <Image src={hero.src} alt={hero.alt} fill sizes="(max-width: 850px) 100vw, 65vw" style={{ objectFit: "cover" }} />}
       </div>

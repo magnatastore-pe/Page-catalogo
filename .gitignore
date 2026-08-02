@@ -31,3 +31,6 @@ public/catalog-*.pdf
 .vercel
 .env*
 !.env.example
+
+# capturas de prueba del skill (no son parte del proyecto)
+.claude/skills/*/screenshots/

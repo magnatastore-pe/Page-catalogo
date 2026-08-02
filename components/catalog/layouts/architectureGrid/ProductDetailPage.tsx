@@ -2,6 +2,8 @@ import Image from "next/image";
 import PageNumber from "../../PageNumber";
 import SwatchGroup from "../../SwatchGroup";
 import type { ProductVariant } from "@/data/schema";
+import SoldOutBadge from "../../SoldOutBadge";
+import { isVariantSoldOut, soldOutClass } from "../../soldOut";
 import "./architectureGrid.css";
 
 type ProductDetailPageProps = {
@@ -17,7 +19,8 @@ export default function ProductDetailPage({ variant }: ProductDetailPageProps) {
   const [p1, p2, p3, p4] = variant.collageImages;
 
   return (
-    <section className="page layout-architecture-grid ag-detail" id={variant.id}>
+    <section className={`page layout-architecture-grid ag-detail${soldOutClass(variant)}`} id={variant.id}>
+      {isVariantSoldOut(variant) && <SoldOutBadge />}
       <div className="ag-detail-grid">
         {p1 && (
           <div className="ag-cell ag-cell-photo1">

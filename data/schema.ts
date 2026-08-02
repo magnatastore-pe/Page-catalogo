@@ -11,9 +11,26 @@ import { z } from "zod";
 
 // ---- Shared leaf shapes ----
 
+/**
+ * `soldOut` es opcional a propósito: todo el contenido ya publicado
+ * (y las 10 plantillas de arranque) se validan igual sin tocarlo, y
+ * "no dice nada" significa disponible. Vive tanto acá — un color
+ * puntual agotado — como en `ProductVariantSchema` — el modelo entero
+ * agotado; son dos estados distintos y reales.
+ */
 export const SwatchItemSchema = z.discriminatedUnion("type", [
-  z.object({ label: z.string(), type: z.literal("image"), image: z.string() }),
-  z.object({ label: z.string(), type: z.literal("color"), color: z.string() }),
+  z.object({
+    label: z.string(),
+    type: z.literal("image"),
+    image: z.string(),
+    soldOut: z.boolean().optional(),
+  }),
+  z.object({
+    label: z.string(),
+    type: z.literal("color"),
+    color: z.string(),
+    soldOut: z.boolean().optional(),
+  }),
 ]);
 export type SwatchItem = z.infer<typeof SwatchItemSchema>;
 
@@ -137,6 +154,8 @@ export const ProductVariantSchema = z.object({
   collageLayout: CollageLayoutSchema,
   collageImages: z.array(CollageImageSchema),
   swatches: z.array(SwatchItemSchema),
+  /** El modelo entero está agotado (ver `SwatchItemSchema`). */
+  soldOut: z.boolean().optional(),
   textColors: TextColorsSchema,
 });
 export type ProductVariant = z.infer<typeof ProductVariantSchema>;

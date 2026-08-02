@@ -2,6 +2,8 @@ import Image from "next/image";
 import PageNumber from "../../PageNumber";
 import SwatchGroup from "../../SwatchGroup";
 import type { ProductVariant } from "@/data/schema";
+import SoldOutBadge from "../../SoldOutBadge";
+import { isVariantSoldOut, soldOutClass } from "../../soldOut";
 import "./editorialLux.css";
 
 type ProductDetailPageProps = {
@@ -18,7 +20,8 @@ export default function ProductDetailPage({ variant }: ProductDetailPageProps) {
   const [hero, detail] = variant.collageImages;
 
   return (
-    <section className="page layout-editorial-lux ed-detail" id={variant.id}>
+    <section className={`page layout-editorial-lux ed-detail${soldOutClass(variant)}`} id={variant.id}>
+      {isVariantSoldOut(variant) && <SoldOutBadge />}
       <div className="ed-detail-image">
         {hero && (
           <Image

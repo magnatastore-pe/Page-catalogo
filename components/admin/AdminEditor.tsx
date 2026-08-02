@@ -13,6 +13,7 @@ import { useToast } from "./ToastContext";
 import { saveCatalogAction } from "@/app/admin/actions";
 import { CATALOG_TEMPLATES } from "@/lib/newCatalog";
 import { defaultBlockFor } from "./defaultBlock";
+import { scrollPreviewToPage } from "./previewScroll";
 
 const LAYOUT_LABELS: Partial<Record<LayoutId, string>> = Object.fromEntries(
   CATALOG_TEMPLATES.map((t) => [t.layoutId, t.label])
@@ -106,27 +107,7 @@ export default function AdminEditor({
    * edita en su propia pestaña — así que su índice no se puede expresar
    * como "índice de pageItems + 1".
    */
-  const scrollLivePreviewTo = (itemsIndex: number) => {
-    requestAnimationFrame(() => {
-      // El catálogo vive dentro del iframe de PreviewFrame — en OTRO
-      // documento — tanto en la vista móvil como en la de escritorio
-      // (antes escritorio se dibujaba directo en esta página, y esta
-      // búsqueda tenía dos ramas). Buscar en `document` no encuentra
-      // ninguna `.page`.
-      const frame = document.querySelector<HTMLIFrameElement>("iframe.admin-preview-frame");
-      const page = frame?.contentDocument?.querySelectorAll<HTMLElement>(".page")[itemsIndex];
-      if (!page || !frame?.contentWindow) return;
-      // Se scrollea la ventana DEL IFRAME a mano en vez de usar
-      // `page.scrollIntoView()`: ese método scrollea todos los
-      // contenedores scrolleables hacia arriba en el árbol, y eso
-      // atraviesa el borde del iframe — corría también la "pantalla"
-      // del dispositivo en el documento padre, justo lo que mide la
-      // barra de navegador simulada, que desaparecía al tocar
-      // cualquier página (bug real reportado). `offsetTop` alcanza
-      // porque cada `.page` es hija directa del <main> del catálogo.
-      frame.contentWindow.scrollTo({ top: page.offsetTop, behavior: "smooth" });
-    });
-  };
+  const scrollLivePreviewTo = (itemsIndex: number) => scrollPreviewToPage(itemsIndex);
 
   /** Índice dentro de `items` de la página nº `pageItemsIndex` de la pestaña "Páginas". */
   const focusLivePreview = (pageItemsIndex: number) => {

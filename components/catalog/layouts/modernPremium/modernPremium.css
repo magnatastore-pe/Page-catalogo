@@ -221,9 +221,13 @@
     padding: 30px 24px;
   }
 
+  /* `min-height` más chico: sumado al panel de contenido (que es
+     `flex: 0 0 auto`, o sea manda su alto natural) el 30vh anterior
+     dejaba la sección ~10px más alta que una pantalla baja, y con el
+     scroll-snap por página (app/globals.css) tiene que entrar entera. */
   .layout-modern-premium .mp-detail-images {
     flex: 1 1 auto;
     grid-template-columns: repeat(3, 1fr);
-    min-height: 30vh;
+    min-height: 22vh;
   }
 }

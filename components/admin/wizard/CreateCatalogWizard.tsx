@@ -19,6 +19,7 @@ import { useConfirm } from "../ConfirmDialogContext";
 import { useToast } from "../ToastContext";
 import StepInfo from "./StepInfo";
 import StepImages, { type WizardImage } from "./StepImages";
+import { scrollPreviewToPage } from "../previewScroll";
 
 type Step = "info" | "images" | "texts" | "done";
 
@@ -254,22 +255,7 @@ export default function CreateCatalogWizard() {
             <BlockList
               items={items}
               onChange={setItems}
-              onFocusIndex={(index) => {
-                requestAnimationFrame(() => {
-                  // El catálogo vive dentro del iframe de PreviewFrame
-                  // (otro documento), tanto en la vista de escritorio
-                  // como en la de móvil — ver AdminEditor, que hace la
-                  // misma búsqueda para el editor normal.
-                  const frame = document.querySelector<HTMLIFrameElement>("iframe.admin-preview-frame");
-                  const page = frame?.contentDocument?.querySelectorAll<HTMLElement>(".page")[index];
-                  if (!page || !frame?.contentWindow) return;
-                  // Scroll de la ventana del iframe, no `scrollIntoView`
-                  // — ver el comentario en AdminEditor: ese método
-                  // atraviesa el borde del iframe y corre el marco del
-                  // dispositivo en el documento padre.
-                  frame.contentWindow.scrollTo({ top: page.offsetTop, behavior: "smooth" });
-                });
-              }}
+              onFocusIndex={scrollPreviewToPage}
               footer={
                 <AddPageChooser
                   defaultProductName={defaultProductName}

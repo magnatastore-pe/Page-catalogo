@@ -195,14 +195,18 @@
     width: 62%;
   }
 
+  /* Aire y foto algo más contenidos: con el scroll-snap por página
+     (app/globals.css) la sección tiene que entrar entera en pantallas
+     bajas — con los valores anteriores se pasaba ~18px en un viewport
+     de 568px de alto. */
   .layout-japanese-minimal.jp-detail {
     flex-direction: column;
-    padding: 60px 10% 40px;
-    gap: 24px;
+    padding: 40px 10% 32px;
+    gap: 20px;
   }
 
   .layout-japanese-minimal .jp-detail-image {
-    width: 55%;
+    width: 48%;
     flex: 0 0 auto;
     align-self: center;
     margin-bottom: 0;

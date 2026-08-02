@@ -151,7 +151,13 @@
 
 /* ---- Responsive ---- */
 @media (max-width: 700px) {
+  /* El segundo término acota la ALTURA por la pantalla: la foto es 3/4,
+     así que 39svh de ancho son 52svh de alto. Sin ese tope, en pantallas
+     bajas (celular con la barra del navegador in-app) la portada quedaba
+     más alta que el viewport, y con el scroll-snap por página eso deja
+     contenido fuera de todo punto de anclaje. En un celular normal
+     (844px de alto) sigue mandando el 78vw de siempre. */
   .layout-apple-minimal .am-cover-image {
-    width: 78vw;
+    width: min(78vw, 39svh);
   }
 }

@@ -42,9 +42,20 @@
   box-sizing: border-box;
 }
 
+/* `mandatory` (antes `proximity`): el scroll siempre termina calzado en
+   una página completa, en vez de quedar a mitad de camino entre dos.
+   Junto con `scroll-snap-stop: always` en `.page` (que impide saltarse
+   una página en un gesto largo), el catálogo se recorre de página en
+   página, que es como se lee un catálogo impreso.
+
+   El costo de `mandatory` es real y hay que tenerlo presente: si una
+   sección fuera más alta que la pantalla, lo que sobra queda entre dos
+   puntos de anclaje y no se puede dejar quieto a la vista. Por eso las
+   secciones tienen que entrar en `100svh` — ver el @media mobile más
+   abajo, donde se ajustan manifiesto y detalle justamente para eso. */
 html {
   scroll-behavior: smooth;
-  scroll-snap-type: y proximity;
+  scroll-snap-type: y mandatory;
 }
 
 body {
@@ -138,6 +149,126 @@ a {
   transform: none;
 }
 
+/* ───── ENTRADA DE CADA PÁGINA (texto + fotos) ─────
+   La clase `page-anim` la pone components/catalog/ScrollReveal.tsx al
+   montar, e `in-view` cuando la sección está en pantalla — se saca al
+   salir, así que la entrada se repite subiendo y bajando. Como la
+   clase la agrega el JS, sin JS las páginas se ven completas y
+   quietas, nunca invisibles.
+
+   Se anima con `translate`/`scale` (propiedades independientes) y NO
+   con `transform`: varios elementos ya usan `transform` para
+   posicionarse (el número de página se centra con
+   `translateX(-50%)`) o para el zoom en hover de las fotos del
+   collage, y pisarlo desde acá los rompería — el mismo problema que
+   ya está documentado para `.reveal.visible`. */
+.page.page-anim > *:not(.page-bg):not(.page-overlay):not(.reveal) {
+  opacity: 0;
+  translate: 0 22px;
+  transition: opacity 0.75s ease, translate 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.page.page-anim.in-view > *:not(.page-bg):not(.page-overlay):not(.reveal) {
+  opacity: 1;
+  translate: none;
+}
+
+/* Un contenedor que agrupa VARIOS elementos (`:has(> * + *)`, o sea
+   "tiene al menos dos hijos") no entra como un bloque: entran sus
+   hijos, uno detrás de otro. Es lo que hace que en la ficha de un
+   producto el nombre, la descripción y el precio aparezcan escalonados
+   en vez de todos juntos de una pieza.
+   Sirve para las 10 plantillas sin nombrar ni una: la regla mira la
+   forma del árbol, no clases concretas de una plantilla. */
+.page.page-anim > *:not(.page-bg):not(.page-overlay):not(.reveal):has(> * + *) {
+  opacity: 1;
+  translate: none;
+  transition: none;
+}
+
+.page.page-anim > *:not(.page-bg):not(.page-overlay):not(.reveal):has(> * + *) > *:not(.reveal) {
+  opacity: 0;
+  translate: 0 18px;
+  transition: opacity 0.7s ease, translate 0.85s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.page.page-anim.in-view > *:not(.page-bg):not(.page-overlay):not(.reveal):has(> * + *) > *:not(.reveal) {
+  opacity: 1;
+  translate: none;
+}
+
+/* Escalonado dentro del contenedor (el precio suele ser el último).
+   Mismo motivo que arriba para arrastrar los `:not(...)`: si no, la
+   regla que fija `transition` gana y no hay escalonado. */
+.page.page-anim > *:not(.page-bg):not(.page-overlay):not(.reveal):has(> * + *) > *:nth-child(2) {
+  transition-delay: 0.1s;
+}
+.page.page-anim > *:not(.page-bg):not(.page-overlay):not(.reveal):has(> * + *) > *:nth-child(3) {
+  transition-delay: 0.2s;
+}
+.page.page-anim > *:not(.page-bg):not(.page-overlay):not(.reveal):has(> * + *) > *:nth-child(4) {
+  transition-delay: 0.3s;
+}
+.page.page-anim > *:not(.page-bg):not(.page-overlay):not(.reveal):has(> * + *) > *:nth-child(n + 5) {
+  transition-delay: 0.38s;
+}
+
+/* Escalonado: cada bloque de la página entra un poco después del
+   anterior, en vez de todos juntos.
+   Los `:not(...)` no son decorativos acá: las reglas de arriba fijan
+   `transition` (atajo que incluye el retraso, o sea lo resetea a 0), así
+   que estas tienen que ganarles en especificidad o el escalonado
+   simplemente no ocurre — pasó exactamente eso al escribirlas cortas. */
+.page.page-anim > *:not(.page-bg):not(.page-overlay):not(.reveal):nth-child(2) {
+  transition-delay: 0.08s;
+}
+.page.page-anim > *:not(.page-bg):not(.page-overlay):not(.reveal):nth-child(3) {
+  transition-delay: 0.16s;
+}
+.page.page-anim > *:not(.page-bg):not(.page-overlay):not(.reveal):nth-child(4) {
+  transition-delay: 0.24s;
+}
+.page.page-anim > *:not(.page-bg):not(.page-overlay):not(.reveal):nth-child(n + 5) {
+  transition-delay: 0.32s;
+}
+
+/* Página ya asentada (la clase la pone ScrollReveal ~1,6s después de
+   entrar): se quita la transición para que el navegador libere la capa
+   de composición que usa mientras anima. Con la capa viva, un texto
+   claro sobre foto puede verse apenas más apagado que antes de animar
+   —el navegador cambia cómo suaviza los bordes de las letras— y el
+   estado final tiene que ser indistinguible de no haber animado nunca.
+   No se toca ninguna opacidad acá: la de destino ya la fijan las
+   reglas de `in-view`, así que una opacidad de diseño (varias
+   plantillas usan 0.85/0.92) sigue intacta. */
+.page.page-anim.anim-done > *:not(.page-bg):not(.page-overlay):not(.reveal),
+.page.page-anim.anim-done > *:not(.page-bg):not(.page-overlay):not(.reveal):has(> * + *) > *:not(.reveal),
+.page.page-anim.anim-done img {
+  transition: none;
+}
+
+/* Las fotos: aparecen con un zoom que se va soltando. Incluye el fondo
+   (`.page-bg`), que es el que más se nota. */
+.page.page-anim img {
+  opacity: 0;
+  scale: 1.06;
+  transition: opacity 0.9s ease, scale 1.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.page.page-anim.in-view img {
+  opacity: 1;
+  scale: 1;
+}
+
+/* Los swatches quedan afuera: son fichas de 64px, ampliarlas y
+   desvanecerlas no se lee como una animación, se lee como un error de
+   carga. Además tienen su propio zoom en hover. */
+.page.page-anim .swatch img {
+  opacity: 1;
+  scale: 1;
+  transition: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal {
     opacity: 1;
@@ -145,9 +276,48 @@ a {
     transition: none;
   }
 
+  .page.page-anim > *,
+  .page.page-anim > * > *,
+  .page.page-anim img {
+    opacity: 1;
+    translate: none;
+    scale: 1;
+    transition: none;
+  }
+
   html {
     scroll-behavior: auto;
   }
+}
+
+/* ───── DESTELLO AL SALTAR A UNA PÁGINA (solo panel) ─────
+   Los botones "👁 ver" del panel mueven la vista previa a una página.
+   Cuando la vista previa YA estaba en esa página, el clic no producía
+   ningún cambio visible y se leía como un botón roto. El destello es
+   la respuesta a ese clic: pasa siempre, se haya movido o no.
+   Vive en la hoja pública porque la vista previa del panel es el sitio
+   real dentro de un iframe; en el sitio publicado nadie agrega nunca
+   esta clase. */
+/* Se dibuja con `outline`, no con `box-shadow: inset`: la sección está
+   cubierta por su foto de fondo y el contenido, y una sombra interior
+   se pinta DEBAJO de todo eso — quedaba invisible (comprobado en una
+   captura). Los contornos, en cambio, se pintan al final, arriba de
+   los descendientes. El color es de interfaz, a propósito: no sale del
+   tema del catálogo, que puede ser pálido y no leerse como respuesta a
+   un clic. */
+@keyframes page-focus-flash {
+  0% {
+    outline-color: #4c8dff;
+  }
+  100% {
+    outline-color: transparent;
+  }
+}
+
+.page-focus-flash {
+  outline: 4px solid transparent;
+  outline-offset: -4px;
+  animation: page-focus-flash 1.15s ease-out;
 }
 
 /* ───── COVER ───── */
@@ -438,6 +608,94 @@ a {
 
   .swatch:hover .swatch-label {
     opacity: 1;
+  }
+}
+
+/* ───── SOLD OUT ───── */
+/* Un color puntual agotado. La etiqueta con el nombre (.swatch-label)
+   solo aparece en hover/tap, así que un estado permanente necesita su
+   propio cartel siempre visible — ver components/catalog/SwatchGroup.tsx. */
+.swatch-sold-out img,
+.swatch-sold-out .swatch-color {
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+
+/* Línea diagonal de esquina a esquina del swatch. `100%` en los dos
+   ejes del gradiente hace que la línea siga la diagonal real de la
+   caja sea cual sea su tamaño. */
+.swatch-sold-out::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    to top right,
+    transparent calc(50% - 1px),
+    rgba(255, 255, 255, 0.9) calc(50% - 1px),
+    rgba(255, 255, 255, 0.9) calc(50% + 1px),
+    transparent calc(50% + 1px)
+  );
+}
+
+.swatch-soldout-tag {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  font-size: 7px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 3px 2px;
+}
+
+/* Página agotada (modelo entero o alguno de sus colores, ver
+   components/catalog/soldOut.ts): las fotos van en gris. La regla es
+   sobre `.page.is-sold-out`, que la ponen las 10 plantillas en su
+   propia `<section>`, así que vale para todas sin repetir CSS por
+   plantilla. `.page-bg` incluida: en las plantillas que usan foto de
+   fondo, dejarla a color contradiría al resto. */
+.page.is-sold-out img {
+  filter: grayscale(1);
+}
+
+/* Los colores que SÍ están disponibles se siguen viendo tal cual: lo
+   agotado es un color puntual, no la paleta entera. El swatch agotado
+   conserva su propio gris (regla de arriba) porque este `filter: none`
+   excluye justamente a `.swatch-sold-out`. */
+.page.is-sold-out .swatch:not(.swatch-sold-out) img {
+  filter: none;
+}
+
+/* El modelo entero agotado. Se posiciona contra la `.page` (que ya es
+   `position: relative` + `isolation: isolate`), así que el mismo cartel
+   sirve para las 10 plantillas sin saber nada de su composición. */
+.sold-out-badge {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 9;
+  background: var(--ink);
+  color: var(--paper);
+  border: 1px solid var(--paper);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  padding: 8px 14px 8px 18px;
+}
+
+@media (max-width: 850px) {
+  .sold-out-badge {
+    top: 12px;
+    right: 12px;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    padding: 6px 10px 6px 13px;
   }
 }
 
@@ -911,6 +1169,34 @@ a {
   .scroll-progress,
   .pdf-download-link {
     display: none;
+  }
+
+  /* El fade-in ahora se repite: al salir del viewport el bloque vuelve
+     a `opacity: 0` (ver components/catalog/RevealOnScroll.tsx). El
+     script del PDF recorre toda la página antes de imprimir, así que
+     al momento de imprimir TODAS las secciones salvo la última están
+     fuera de pantalla — sin esto el PDF saldría casi en blanco. */
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  /* Mismo motivo que `.reveal` de arriba, para la entrada de página
+     (texto + fotos, ver ScrollReveal.tsx): al imprimir, casi todas las
+     secciones están fuera de pantalla y por lo tanto en su estado
+     inicial. El PDF no debe depender de dónde quedó el scroll.
+     El segundo selector (nietos) no es de más: cuando un bloque agrupa
+     varios elementos, los que animan son sus hijos — sin esa línea las
+     4 páginas de detalle de Ariel salieron literalmente en blanco en
+     el PDF. */
+  .page.page-anim > *,
+  .page.page-anim > * > *,
+  .page.page-anim img {
+    opacity: 1 !important;
+    translate: none !important;
+    scale: 1 !important;
+    transition: none !important;
   }
 
   .page {

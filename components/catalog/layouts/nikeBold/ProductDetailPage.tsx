@@ -2,6 +2,8 @@ import Image from "next/image";
 import PageNumber from "../../PageNumber";
 import SwatchGroup from "../../SwatchGroup";
 import type { ProductVariant } from "@/data/schema";
+import SoldOutBadge from "../../SoldOutBadge";
+import { isVariantSoldOut, soldOutClass } from "../../soldOut";
 import "./nikeBold.css";
 
 type ProductDetailPageProps = {
@@ -17,7 +19,8 @@ export default function ProductDetailPage({ variant }: ProductDetailPageProps) {
   const [hero, inset] = variant.collageImages;
 
   return (
-    <section className="page layout-nike-bold nk-detail" id={variant.id}>
+    <section className={`page layout-nike-bold nk-detail${soldOutClass(variant)}`} id={variant.id}>
+      {isVariantSoldOut(variant) && <SoldOutBadge />}
       <div className="nk-detail-hero">
         {hero && <Image src={hero.src} alt={hero.alt} fill sizes="100vw" style={{ objectFit: "cover" }} />}
       </div>
