@@ -627,3 +627,25 @@ El orden importa y costó un intento: la primera versión del script borraba "lo
 **Bug preexistente encontrado de paso** (confirmado con `git stash` que ya estaba antes de estos cambios, no es una regresión): `CatalogRenderer` usaba `${block.type}-${block.data.pageNumber}` como key de React, y `pageNumber` solo se recalcula al guardar — `lux` tiene tres bloques en 0, así que React avisaba de keys duplicadas, con riesgo real de omitir o duplicar una página. Ahora la key sale de la posición en el array, que es la identidad real. Cero errores de consola en los 3 catálogos después del cambio.
 
 Las fotos en Vercel Blob no se migraron: de las 3 que hay, la única en uso pesa 20KB. Las otras dos están sin usar y el panel ya las muestra en el grupo "Sin usar", que es exactamente donde se pueden borrar a mano.
+
+2026-08-03 (feature — título "Catálogos Mawoa" y fondo dinámico en la pantalla principal)
+
+Dos pedidos sobre el índice (`/`), que hasta ahora era un título chiquito ("Catálogos") y una grilla de tarjetas sobre papel claro.
+
+**Título**: `<p>Catálogos</p>` pasa a un `<h1>` en Playfair Display (la fuente ya embebida en el proyecto, así que no hay ninguna descarga nueva) con una hairline debajo. También se le puso `metadata.title.absolute` a la página — sin `absolute` el template del layout ("Catálogo Digital — %s") daría "Catálogo Digital — Catálogos Mawoa" en la pestaña.
+
+El texto sale de `process.env.SITE_TITLE` con `"Catálogos"` de fallback, **no** es un literal: este mismo código se despliega en tres sitios con marcas distintas (mawoa, el personal y el de la tienda), y un literal distinto por repo sería una línea en conflicto en cada sincronización, para siempre. Solo el despliegue de Mawoa define la variable (`SITE_TITLE="Catálogos Mawoa"`, en su proyecto de Vercel); los otros dos no necesitan configurar nada y muestran "Catálogos". Se resuelve en build time (server component + página estática), así que no hace falta `NEXT_PUBLIC_` — al navegador solo llega el texto ya renderizado. Documentada en `.env.example`.
+
+**Fondo dinámico — mural de fotos en movimiento** (`components/index/CatalogWall.tsx` + `lib/indexBackdrop.ts`): 5 columnas (3 en tablet, 2 en celular) de fotos desplazándose muy despacio en vertical, alternando el sentido y con una duración distinta por columna, desenfocadas y bajo un velo oscuro; el índice pasa a fondo oscuro y texto blanco. Elegido entre 4 opciones que se le presentaron al usuario (mural / portada a pantalla completa que se turna / degradado animado / mural + degradado).
+
+Tres decisiones que importan:
+
+- **Las fotos salen de los catálogos publicados**, no de una lista aparte: el mural crece solo a medida que se publican catálogos, igual que la grilla de tarjetas, sin un segundo lugar que mantener al día. Cuando no alcanzan para llenar las columnas — incluido el caso real de **cero catálogos publicados**, que es el estado actual del repo — se completa con las fotos de las plantillas de creación (`CATALOG_TEMPLATES`), que son fotos reales del repo mantenidas junto a las plantillas, en vez de una tercera lista hardcodeada que se pueda desactualizar sola.
+- **Todo el movimiento es CSS** (`animation` infinita sobre `transform`), cero JavaScript: el mural es decoración y no tiene por qué costar un componente cliente. Va `aria-hidden` y se queda quieto con `prefers-reduced-motion` (verificado: `animationName: none` con `reducedMotion: "reduce"`).
+- **El orden del mural es determinista** (hash FNV-1a sobre la ruta, no `Math.random`): la página se renderiza en el servidor y el HTML tiene que ser idéntico al que el cliente hidrata.
+
+Cada columna se renderiza dos veces seguidas y la animación desplaza exactamente `-50%`, así que al terminar el ciclo la segunda copia queda donde arrancó la primera y el loop no tiene corte. `will-change: transform` en la columna (no en cada foto): el desenfoque se rasteriza una vez por capa y el compositor solo la desplaza, en vez de recalcular el blur en cada cuadro. `sizes="200px"` fijo y chico a propósito — la foto va desenfocada, pedir la versión grande sería pagar ancho de banda por un detalle que nadie ve.
+
+Un ajuste que solo apareció mirando la captura: el velo eran **dos** degradados superpuestos (radial + lineal), y dos capas se multiplican entre sí — el mural salía casi negro, sin que se distinguiera ninguna foto. Quedó una sola capa radial.
+
+Verificado con Playwright contra el dev server real, midiendo además de mirar: las 5 columnas se mueven de verdad y en sentidos alternados (`translateY` medido a los 0s y a los 2.5s: sube/baja/sube/baja/sube), 23 pedidos a `/_next/image` por 184 KB en total (anchos 256 y 640, ninguno grande), 2 columnas visibles en 390px y 3 en 820px, cero errores de consola en los tres viewports. Se probó también con los 3 catálogos reales de `origin/main` restaurados temporalmente, para ver el mural con las tarjetas encima (restaurado el registro vacío después: nada de contenido de prueba quedó en el repo). `tsc --noEmit`, `npm run lint` y `npm run build` limpios.
