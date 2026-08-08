@@ -7,6 +7,7 @@
 // imports, se reescribe completo a partir de la lista de ids.
 
 import { catalogEntry as entry0 } from "./ariel";
+import { catalogEntry as entry1 } from "./blusa-camille";
 import type { CatalogEntry } from "../schema";
 
 // Tipado explícito (no `satisfies`) a propósito: con un registro
@@ -19,6 +20,7 @@ import type { CatalogEntry } from "../schema";
 // tipo es siempre `Record<string, CatalogEntry>`, vacío o no.
 export const catalogs: Record<string, CatalogEntry> = {
   "ariel": entry0,
+  "blusa-camille": entry1,
 };
 
 export type CatalogId = keyof typeof catalogs;

@@ -1,0 +1,255 @@
+{
+  "layoutId": "original",
+  "theme": {
+    "ink": "#2b1810",
+    "paper": "#f5ede4",
+    "line": "#3d2418",
+    "muted": "#8a7361",
+    "accent": "#c1652f",
+    "displayFont": "Didot, \"Bodoni MT\", \"Playfair Display\", serif",
+    "bodyFont": "Futura, \"Century Gothic\", sans-serif"
+  },
+  "blocks": [
+    {
+      "type": "cover",
+      "data": {
+        "title": "BLUSA CAMILLE",
+        "meta": [],
+        "subtitle": "100% Algodón Pima (Suavidad superior, alta respirabilidad y acabado premium).",
+        "bottomLine1": "",
+        "bottomLine2": "PARA MEJOR EXPERIENCIA USAR UN CELULAR",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-camille-20260808-1d486a99.webp",
+        "pageNumber": 1
+      }
+    },
+    {
+      "type": "manifesto",
+      "data": {
+        "heading": "Diseños exclusivos",
+        "paragraph": "Una prenda atemporal de corte holgado y relajado que irradia elegancia sutil. Diseñada para ofrecer ligereza y libertad de movimiento en el día a día, adaptándose con soltura tanto a looks casuales como de oficina.",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-camille-20260808-f658dc81.webp",
+        "pageNumber": 2
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "celeste",
+        "pageNumber": 3,
+        "name": "BLUSA CAMILLE",
+        "label": "Celeste",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-camille-20260808-1772f563.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "celeste",
+        "pageNumber": 4,
+        "name": "BLUSA CAMILLE",
+        "type": "Celeste",
+        "price": "S/ 239",
+        "description": [],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-camille-20260808-5e435ae3.webp",
+            "alt": ""
+          },
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-camille-20260808-1d486a99.webp",
+            "alt": ""
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 1",
+            "type": "color",
+            "color": "#b7dff0"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "amarillo",
+        "pageNumber": 5,
+        "name": "BLUSA CAMILLE",
+        "label": "Amarillo",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-camille-20260808-31754dda.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "amarillo",
+        "pageNumber": 6,
+        "name": "BLUSA CAMILLE",
+        "type": "Amarillo",
+        "price": "S/ 239",
+        "description": [],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-camille-20260808-0a4733f7.webp",
+            "alt": ""
+          },
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-camille-20260808-d43246db.webp",
+            "alt": ""
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 2",
+            "type": "color",
+            "color": "#ffee8c"
+          }
+        ]
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "",
+        "pageNumber": 7,
+        "name": "Blusa CAMILLE",
+        "type": "Rosado",
+        "price": "S/ 239",
+        "description": [],
+        "collageLayout": "one",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-camille-20260808-e549a787.webp",
+            "alt": ""
+          }
+        ],
+        "swatches": [
+          {
+            "label": "rosado pastel",
+            "type": "color",
+            "color": "#ffd1dc"
+          }
+        ]
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "",
+        "pageNumber": 8,
+        "name": "blusa camille",
+        "type": "azul",
+        "price": "S/ 239",
+        "description": [],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-camille-20260808-a1e78cd5.webp",
+            "alt": ""
+          },
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-camille-20260808-218ebde9.webp",
+            "alt": ""
+          }
+        ],
+        "swatches": []
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "",
+        "pageNumber": 9,
+        "name": "BLUSA CAMILLE",
+        "type": "BLANCO",
+        "price": "S/ 239",
+        "description": [],
+        "collageLayout": "one",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/catalogo-20260808-dc4fcafa.webp",
+            "alt": ""
+          }
+        ],
+        "swatches": []
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "",
+        "pageNumber": 10,
+        "name": "CAMISA CAMILLE",
+        "type": "MELON ROSADO CELESTE",
+        "price": "S/ 239",
+        "description": [],
+        "collageLayout": "one",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-camille-20260808-770dd008.webp",
+            "alt": ""
+          }
+        ],
+        "swatches": [
+          {
+            "label": "",
+            "type": "color",
+            "color": "#ffd1dc"
+          },
+          {
+            "label": "",
+            "type": "color",
+            "color": "#fdbcb4"
+          },
+          {
+            "label": "",
+            "type": "color",
+            "color": "#c0dff2"
+          }
+        ],
+        "soldOut": true
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "",
+        "pageNumber": 11,
+        "name": "CAMISA CAMILLE",
+        "type": "NEGRO",
+        "price": "S/ 239",
+        "description": [],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-camille-20260808-c3142712.webp",
+            "alt": ""
+          },
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-camille-20260808-ef1084cd.webp",
+            "alt": ""
+          }
+        ],
+        "swatches": [
+          {
+            "label": "",
+            "type": "color",
+            "color": "#000000"
+          }
+        ]
+      }
+    },
+    {
+      "type": "closing",
+      "data": {
+        "title": "BLUSA CAMILLE",
+        "line1": "cOLECCION DISPONIBLE",
+        "line2": "",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-camille-20260808-5e435ae3.webp",
+        "pageNumber": 12
+      }
+    }
+  ]
+}
