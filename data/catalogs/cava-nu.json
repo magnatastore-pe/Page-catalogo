@@ -1,0 +1,314 @@
+{
+  "layoutId": "zara-editorial",
+  "theme": {
+    "ink": "#111111",
+    "paper": "#f4f2ee",
+    "line": "#c9c2b8",
+    "muted": "#8a8378",
+    "accent": "#111111",
+    "displayFont": "Didot, \"Bodoni MT\", \"Playfair Display\", serif",
+    "bodyFont": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif"
+  },
+  "blocks": [
+    {
+      "type": "cover",
+      "data": {
+        "title": "CAVA NU",
+        "meta": [],
+        "subtitle": "Elegancia y comodidad",
+        "bottomLine1": "CAVA NU",
+        "bottomLine2": "",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-6ae13a19.webp",
+        "pageNumber": 1
+      }
+    },
+    {
+      "type": "manifesto",
+      "data": {
+        "heading": "LESS NOISE",
+        "paragraph": "Structured shapes, considered fabrics, room to breathe.",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-d2049c7f.webp",
+        "pageNumber": 2
+      }
+    },
+    {
+      "type": "productHero",
+      "data": {
+        "id": "cava-nu",
+        "name": "CAVA NU",
+        "type": "COLLECTION",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-40f1937c.webp",
+        "pageNumber": 3
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "colorway-1",
+        "pageNumber": 4,
+        "name": "CAVA NU",
+        "label": "Colorway 1",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-40138d9c.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "colorway-1",
+        "pageNumber": 5,
+        "name": "CAVA NU",
+        "type": "Colorway 1 PIECE",
+        "price": "S/ 000",
+        "description": [
+          "DRAPED FABRIC",
+          "TAILORED WAIST"
+        ],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-f778116c.webp",
+            "alt": "CAVA NU Colorway 1"
+          },
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-c8d2ddb6.webp",
+            "alt": "CAVA NU Colorway 1"
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 1",
+            "type": "color",
+            "color": "#ded5c4"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "colorway-2",
+        "pageNumber": 6,
+        "name": "CAVA NU",
+        "label": "Colorway 2",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-6ae13a19.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "colorway-2",
+        "pageNumber": 7,
+        "name": "CAVA NU",
+        "type": "Colorway 2 PIECE",
+        "price": "S/ 000",
+        "description": [
+          "FLUID SILHOUETTE",
+          "BIAS CUT"
+        ],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-6d75ae88.webp",
+            "alt": "CAVA NU Colorway 2"
+          },
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-c2cdabde.webp",
+            "alt": "CAVA NU Colorway 2"
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 2",
+            "type": "color",
+            "color": "#2b2b2b"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "colorway-3",
+        "pageNumber": 8,
+        "name": "CAVA NU",
+        "label": "COLORWAY 3",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-d5f712f1.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "colorway-3",
+        "pageNumber": 9,
+        "name": "CAVA NU",
+        "type": "COLORWAY 3 COLLECTION",
+        "price": "",
+        "description": [],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-8fd5ecf4.webp",
+            "alt": "CAVA NU Colorway 3"
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 3",
+            "type": "color",
+            "color": "#111111"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "colorway-4",
+        "pageNumber": 10,
+        "name": "CAVA NU",
+        "label": "COLORWAY 4",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-c702a462.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "colorway-4",
+        "pageNumber": 11,
+        "name": "CAVA NU",
+        "type": "COLORWAY 4 COLLECTION",
+        "price": "",
+        "description": [],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-27173a3e.webp",
+            "alt": "CAVA NU Colorway 4"
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 4",
+            "type": "color",
+            "color": "#111111"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "colorway-5",
+        "pageNumber": 12,
+        "name": "CAVA NU",
+        "label": "COLORWAY 5",
+        "bgImage": "/imagenes/zara-editorial-20260731-b93b6fbb.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "colorway-5",
+        "pageNumber": 13,
+        "name": "CAVA NU",
+        "type": "COLORWAY 5 COLLECTION",
+        "price": "",
+        "description": [],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "/imagenes/zara-editorial-20260731-b93b6fbb.webp",
+            "alt": "CAVA NU Colorway 5"
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 5",
+            "type": "color",
+            "color": "#111111"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "colorway-6",
+        "pageNumber": 14,
+        "name": "CAVA NU",
+        "label": "COLORWAY 6",
+        "bgImage": "/imagenes/zara-editorial-20260731-b93b6fbb.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "colorway-6",
+        "pageNumber": 15,
+        "name": "CAVA NU",
+        "type": "COLORWAY 6 COLLECTION",
+        "price": "",
+        "description": [],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "/imagenes/zara-editorial-20260731-b93b6fbb.webp",
+            "alt": "CAVA NU Colorway 6"
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 6",
+            "type": "color",
+            "color": "#111111"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "colorway-7",
+        "pageNumber": 16,
+        "name": "CAVA NU",
+        "label": "COLORWAY 7",
+        "bgImage": "/imagenes/zara-editorial-20260731-b93b6fbb.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "colorway-7",
+        "pageNumber": 17,
+        "name": "CAVA NU",
+        "type": "COLORWAY 7 COLLECTION",
+        "price": "",
+        "description": [],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "/imagenes/zara-editorial-20260731-b93b6fbb.webp",
+            "alt": "CAVA NU Colorway 7"
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 7",
+            "type": "color",
+            "color": "#111111"
+          }
+        ]
+      }
+    },
+    {
+      "type": "closing",
+      "data": {
+        "title": "CAVA NU",
+        "line1": "THE COLLECTION",
+        "line2": "Available now.",
+        "bgImage": "/imagenes/zara-editorial-20260731-5c1e75cb.webp",
+        "pageNumber": 18
+      }
+    }
+  ]
+}
