@@ -25,60 +25,43 @@
     {
       "type": "manifesto",
       "data": {
-        "heading": "LESS NOISE",
-        "paragraph": "Structured shapes, considered fabrics, room to breathe.",
+        "heading": "cava nu",
+        "paragraph": "Angora Vegana (Textura ultra suave y acolchada, de abrigo liviano y 100% libre de crueldad animal).",
         "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-d2049c7f.webp",
         "pageNumber": 2
       }
     },
     {
-      "type": "productHero",
-      "data": {
-        "id": "cava-nu",
-        "name": "CAVA NU",
-        "type": "COLLECTION",
-        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-40f1937c.webp",
-        "pageNumber": 3
-      }
-    },
-    {
       "type": "chapterHero",
       "data": {
-        "id": "colorway-1",
-        "pageNumber": 4,
+        "id": "blanco",
+        "pageNumber": 3,
         "name": "CAVA NU",
-        "label": "Colorway 1",
-        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-40138d9c.webp"
+        "label": "Blanco",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-4a71af37.webp"
       }
     },
     {
       "type": "productDetail",
       "data": {
-        "id": "colorway-1",
-        "pageNumber": 5,
+        "id": "blanco",
+        "pageNumber": 4,
         "name": "CAVA NU",
-        "type": "Colorway 1 PIECE",
-        "price": "S/ 000",
-        "description": [
-          "DRAPED FABRIC",
-          "TAILORED WAIST"
-        ],
-        "collageLayout": "two",
+        "type": " blanco",
+        "price": "S/ 198",
+        "description": [],
+        "collageLayout": "one",
         "collageImages": [
           {
-            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-f778116c.webp",
-            "alt": "CAVA NU Colorway 1"
-          },
-          {
-            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-c8d2ddb6.webp",
-            "alt": "CAVA NU Colorway 1"
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-6ae13a19.webp",
+            "alt": ""
           }
         ],
         "swatches": [
           {
             "label": "Colorway 1",
             "type": "color",
-            "color": "#ded5c4"
+            "color": "#e9e3d8"
           }
         ]
       }
@@ -86,33 +69,26 @@
     {
       "type": "chapterHero",
       "data": {
-        "id": "colorway-2",
-        "pageNumber": 6,
+        "id": "camel",
+        "pageNumber": 5,
         "name": "CAVA NU",
-        "label": "Colorway 2",
-        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-6ae13a19.webp"
+        "label": "CAMEL",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-40138d9c.webp"
       }
     },
     {
       "type": "productDetail",
       "data": {
-        "id": "colorway-2",
-        "pageNumber": 7,
+        "id": "camel",
+        "pageNumber": 6,
         "name": "CAVA NU",
-        "type": "Colorway 2 PIECE",
-        "price": "S/ 000",
-        "description": [
-          "FLUID SILHOUETTE",
-          "BIAS CUT"
-        ],
-        "collageLayout": "two",
+        "type": "CAMEL",
+        "price": "S/ 198",
+        "description": [],
+        "collageLayout": "one",
         "collageImages": [
           {
-            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-6d75ae88.webp",
-            "alt": "CAVA NU Colorway 2"
-          },
-          {
-            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-c2cdabde.webp",
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-c8d2ddb6.webp",
             "alt": "CAVA NU Colorway 2"
           }
         ],
@@ -120,7 +96,7 @@
           {
             "label": "Colorway 2",
             "type": "color",
-            "color": "#2b2b2b"
+            "color": "#d3aa82"
           }
         ]
       }
@@ -128,26 +104,26 @@
     {
       "type": "chapterHero",
       "data": {
-        "id": "colorway-3",
-        "pageNumber": 8,
+        "id": "arena",
+        "pageNumber": 7,
         "name": "CAVA NU",
-        "label": "COLORWAY 3",
-        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-d5f712f1.webp"
+        "label": "arena",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/capa-cava-nu-20260809-40f1937c.webp"
       }
     },
     {
       "type": "productDetail",
       "data": {
-        "id": "colorway-3",
-        "pageNumber": 9,
+        "id": "arena",
+        "pageNumber": 8,
         "name": "CAVA NU",
-        "type": "COLORWAY 3 COLLECTION",
-        "price": "",
+        "type": "ARENA",
+        "price": "S/ 198",
         "description": [],
-        "collageLayout": "two",
+        "collageLayout": "one",
         "collageImages": [
           {
-            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-8fd5ecf4.webp",
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/capa-cava-nu-20260809-d2049c7f.webp",
             "alt": "CAVA NU Colorway 3"
           }
         ],
@@ -155,29 +131,32 @@
           {
             "label": "Colorway 3",
             "type": "color",
-            "color": "#111111"
+            "color": "#cbbd93"
           }
-        ]
+        ],
+        "textColors": {
+          "div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)": "#c9c2b8"
+        }
       }
     },
     {
       "type": "chapterHero",
       "data": {
-        "id": "colorway-4",
-        "pageNumber": 10,
+        "id": "negro",
+        "pageNumber": 9,
         "name": "CAVA NU",
-        "label": "COLORWAY 4",
+        "label": "NEGRO",
         "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-c702a462.webp"
       }
     },
     {
       "type": "productDetail",
       "data": {
-        "id": "colorway-4",
-        "pageNumber": 11,
+        "id": "negro",
+        "pageNumber": 10,
         "name": "CAVA NU",
-        "type": "COLORWAY 4 COLLECTION",
-        "price": "",
+        "type": "NEGRO",
+        "price": "S/ 198",
         "description": [],
         "collageLayout": "two",
         "collageImages": [
@@ -198,26 +177,26 @@
     {
       "type": "chapterHero",
       "data": {
-        "id": "colorway-5",
-        "pageNumber": 12,
+        "id": "vino",
+        "pageNumber": 11,
         "name": "CAVA NU",
-        "label": "COLORWAY 5",
-        "bgImage": "/imagenes/zara-editorial-20260731-b93b6fbb.webp"
+        "label": "VINO",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-f78dc1ec.webp"
       }
     },
     {
       "type": "productDetail",
       "data": {
-        "id": "colorway-5",
-        "pageNumber": 13,
+        "id": "vino",
+        "pageNumber": 12,
         "name": "CAVA NU",
-        "type": "COLORWAY 5 COLLECTION",
-        "price": "",
+        "type": "VINOINO",
+        "price": "S/ 198",
         "description": [],
-        "collageLayout": "two",
+        "collageLayout": "one",
         "collageImages": [
           {
-            "src": "/imagenes/zara-editorial-20260731-b93b6fbb.webp",
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-8fd5ecf4.webp",
             "alt": "CAVA NU Colorway 5"
           }
         ],
@@ -225,77 +204,32 @@
           {
             "label": "Colorway 5",
             "type": "color",
-            "color": "#111111"
+            "color": "#802d2d"
           }
         ]
       }
     },
     {
-      "type": "chapterHero",
-      "data": {
-        "id": "colorway-6",
-        "pageNumber": 14,
-        "name": "CAVA NU",
-        "label": "COLORWAY 6",
-        "bgImage": "/imagenes/zara-editorial-20260731-b93b6fbb.webp"
-      }
-    },
-    {
       "type": "productDetail",
       "data": {
-        "id": "colorway-6",
-        "pageNumber": 15,
-        "name": "CAVA NU",
-        "type": "COLORWAY 6 COLLECTION",
-        "price": "",
+        "id": "",
+        "pageNumber": 13,
+        "name": "cAVA NU",
+        "type": "MARRON",
+        "price": "S/ 198",
         "description": [],
-        "collageLayout": "two",
+        "collageLayout": "one",
         "collageImages": [
           {
-            "src": "/imagenes/zara-editorial-20260731-b93b6fbb.webp",
-            "alt": "CAVA NU Colorway 6"
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-f778116c.webp",
+            "alt": ""
           }
         ],
         "swatches": [
           {
-            "label": "Colorway 6",
+            "label": "",
             "type": "color",
-            "color": "#111111"
-          }
-        ]
-      }
-    },
-    {
-      "type": "chapterHero",
-      "data": {
-        "id": "colorway-7",
-        "pageNumber": 16,
-        "name": "CAVA NU",
-        "label": "COLORWAY 7",
-        "bgImage": "/imagenes/zara-editorial-20260731-b93b6fbb.webp"
-      }
-    },
-    {
-      "type": "productDetail",
-      "data": {
-        "id": "colorway-7",
-        "pageNumber": 17,
-        "name": "CAVA NU",
-        "type": "COLORWAY 7 COLLECTION",
-        "price": "",
-        "description": [],
-        "collageLayout": "two",
-        "collageImages": [
-          {
-            "src": "/imagenes/zara-editorial-20260731-b93b6fbb.webp",
-            "alt": "CAVA NU Colorway 7"
-          }
-        ],
-        "swatches": [
-          {
-            "label": "Colorway 7",
-            "type": "color",
-            "color": "#111111"
+            "color": "#784f21"
           }
         ]
       }
@@ -305,9 +239,9 @@
       "data": {
         "title": "CAVA NU",
         "line1": "THE COLLECTION",
-        "line2": "Available now.",
-        "bgImage": "/imagenes/zara-editorial-20260731-5c1e75cb.webp",
-        "pageNumber": 18
+        "line2": "DISPONIBLE EN TODAS NUESTRAS TIENDAS",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/cava-nu-20260809-4e66cb3f.webp",
+        "pageNumber": 14
       }
     }
   ]
