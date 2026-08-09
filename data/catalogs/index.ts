@@ -8,7 +8,6 @@
 
 import { catalogEntry as entry0 } from "./ariel";
 import { catalogEntry as entry1 } from "./blusa-camille";
-import { catalogEntry as entry2 } from "./capa-cava-nu";
 import type { CatalogEntry } from "../schema";
 
 // Tipado explícito (no `satisfies`) a propósito: con un registro
@@ -22,7 +21,6 @@ import type { CatalogEntry } from "../schema";
 export const catalogs: Record<string, CatalogEntry> = {
   "ariel": entry0,
   "blusa-camille": entry1,
-  "capa-cava-nu": entry2,
 };
 
 export type CatalogId = keyof typeof catalogs;
