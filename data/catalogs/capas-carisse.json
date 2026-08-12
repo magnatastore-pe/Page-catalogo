@@ -1,0 +1,348 @@
+{
+  "layoutId": "zara-editorial",
+  "theme": {
+    "ink": "#111111",
+    "paper": "#f4f2ee",
+    "line": "#c9c2b8",
+    "muted": "#8a8378",
+    "accent": "#111111",
+    "displayFont": "Didot, \"Bodoni MT\", \"Playfair Display\", serif",
+    "bodyFont": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif"
+  },
+  "blocks": [
+    {
+      "type": "cover",
+      "data": {
+        "title": "CAPAS CARISSE",
+        "meta": [
+          "2026",
+          "Angel de canela"
+        ],
+        "subtitle": "La calma como actitud.",
+        "bottomLine1": "CAPAS CARISSE",
+        "bottomLine2": "Ya disponible.",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/catalogo-20260812-b5aebc01.webp",
+        "pageNumber": 1
+      }
+    },
+    {
+      "type": "manifesto",
+      "data": {
+        "heading": "ESTRUCTURA",
+        "paragraph": "Formas definidas, telas nobles, espacio para respirar.",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/catalogo-20260812-8f236154.webp",
+        "pageNumber": 2
+      }
+    },
+    {
+      "type": "productHero",
+      "data": {
+        "id": "capas-carisse",
+        "name": "CAPAS CARISSE",
+        "type": "COLECCION",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/catalogo-20260812-e42613c6.webp",
+        "pageNumber": 3
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "verde-olivo",
+        "pageNumber": 4,
+        "name": "CAPA CARISSE",
+        "label": "VERDE OLIVO",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/catalogo-20260812-40588481.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "verde-olivo",
+        "pageNumber": 5,
+        "name": "CAPA CARISSE",
+        "type": "VERDE OLIVO",
+        "price": "S/ 198",
+        "description": [
+          "DRAPED FABRIC",
+          "TAILORED WAIST"
+        ],
+        "collageLayout": "one",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/catalogo-20260812-3bcaa648.webp",
+            "alt": "CAPAS CARISSE Colorway 1"
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 1",
+            "type": "color",
+            "color": "#433726"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "colorway-2",
+        "pageNumber": 6,
+        "name": "CAPAS CARISSE",
+        "label": "Colorway 2",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/capas-carisse-20260812-b4b7d629.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "colorway-2",
+        "pageNumber": 7,
+        "name": "CAPAS CARISSE",
+        "type": "Colorway 2 PIECE",
+        "price": "S/ 000",
+        "description": [
+          "FLUID SILHOUETTE",
+          "BIAS CUT"
+        ],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/capas-carisse-20260812-a25da359.webp",
+            "alt": "CAPAS CARISSE Colorway 2"
+          },
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/capas-carisse-20260812-3663e653.webp",
+            "alt": "CAPAS CARISSE Colorway 2"
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 2",
+            "type": "color",
+            "color": "#2b2b2b"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "colorway-3",
+        "pageNumber": 8,
+        "name": "CAPAS CARISSE",
+        "label": "COLORWAY 3",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/capas-carisse-20260812-8dbd3e27.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "colorway-3",
+        "pageNumber": 9,
+        "name": "CAPAS CARISSE",
+        "type": "COLORWAY 3 COLLECTION",
+        "price": "",
+        "description": [],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/capas-carisse-20260812-067fc3d1.webp",
+            "alt": "CAPAS CARISSE Colorway 3"
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 3",
+            "type": "color",
+            "color": "#111111"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "colorway-4",
+        "pageNumber": 10,
+        "name": "CAPAS CARISSE",
+        "label": "COLORWAY 4",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/capas-carisse-20260812-11e9fbb1.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "colorway-4",
+        "pageNumber": 11,
+        "name": "CAPAS CARISSE",
+        "type": "COLORWAY 4 COLLECTION",
+        "price": "",
+        "description": [],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/capas-carisse-20260812-40b1c6d5.webp",
+            "alt": "CAPAS CARISSE Colorway 4"
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 4",
+            "type": "color",
+            "color": "#111111"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "colorway-5",
+        "pageNumber": 12,
+        "name": "CAPAS CARISSE",
+        "label": "COLORWAY 5",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/capas-carisse-20260812-34811f32.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "colorway-5",
+        "pageNumber": 13,
+        "name": "CAPAS CARISSE",
+        "type": "COLORWAY 5 COLLECTION",
+        "price": "",
+        "description": [],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/capas-carisse-20260812-c07a7cd7.webp",
+            "alt": "CAPAS CARISSE Colorway 5"
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 5",
+            "type": "color",
+            "color": "#111111"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "colorway-6",
+        "pageNumber": 14,
+        "name": "CAPAS CARISSE",
+        "label": "COLORWAY 6",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/capas-carisse-20260812-18484b3c.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "colorway-6",
+        "pageNumber": 15,
+        "name": "CAPAS CARISSE",
+        "type": "COLORWAY 6 COLLECTION",
+        "price": "",
+        "description": [],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/capas-carisse-20260812-6605efba.webp",
+            "alt": "CAPAS CARISSE Colorway 6"
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 6",
+            "type": "color",
+            "color": "#111111"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "colorway-7",
+        "pageNumber": 16,
+        "name": "CAPAS CARISSE",
+        "label": "COLORWAY 7",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/capas-carisse-20260812-691f682f.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "colorway-7",
+        "pageNumber": 17,
+        "name": "CAPAS CARISSE",
+        "type": "COLORWAY 7 COLLECTION",
+        "price": "",
+        "description": [],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/capas-carisse-20260812-2b8fe802.webp",
+            "alt": "CAPAS CARISSE Colorway 7"
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 7",
+            "type": "color",
+            "color": "#111111"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "colorway-8",
+        "pageNumber": 18,
+        "name": "CAPAS CARISSE",
+        "label": "COLORWAY 8",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/capas-carisse-20260812-c196cf13.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "colorway-8",
+        "pageNumber": 19,
+        "name": "CAPAS CARISSE",
+        "type": "COLORWAY 8 COLLECTION",
+        "price": "",
+        "description": [],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/capas-carisse-20260812-4f76fcf4.webp",
+            "alt": "CAPAS CARISSE Colorway 8"
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 8",
+            "type": "color",
+            "color": "#111111"
+          }
+        ]
+      }
+    },
+    {
+      "type": "closing",
+      "data": {
+        "title": "CAPAS CARISSE",
+        "line1": "THE COLLECTION",
+        "line2": "Available now.",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/capas-carisse-20260812-d682027b.webp",
+        "pageNumber": 20
+      }
+    }
+  ]
+}
