@@ -116,10 +116,26 @@
   margin: 0;
 }
 
-.layout-zara-editorial .za-detail-secondary {
+/* Fila de fotos extra (de la segunda en adelante). `overflow-x: auto`
+   porque el panel deja agregar cuantas fotos quiera: con muchas se
+   desplaza en horizontal en vez de deformar la ficha o empujar la foto
+   grande fuera de la pantalla. */
+.layout-zara-editorial .za-detail-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.layout-zara-editorial .za-detail-thumbs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.layout-zara-editorial .za-detail-thumb {
   position: relative;
-  width: 100%;
-  aspect-ratio: 4 / 3;
+  flex: 0 0 78px;
+  aspect-ratio: 3 / 4;
 }
 
 .layout-zara-editorial .za-detail-price {
@@ -217,16 +233,46 @@
     flex-direction: column;
   }
 
+  /* La foto se queda con TODO lo que la ficha no necesita, en vez de
+     un 48vh fijo. Antes la ficha era `flex: 1 1 35%` centrada: aunque
+     su contenido midiera 235px se estiraba a 439px —más que la propia
+     foto— y el sobrante quedaba en blanco arriba y abajo del texto.
+     Medido en un iPhone (390x844): foto 405px / ficha 439px antes,
+     foto ~520px / ficha ~250px ahora. */
   .layout-zara-editorial .za-detail-image {
-    flex: 0 0 48vh;
+    flex: 1 1 auto;
+    min-height: 42vh;
   }
 
   .layout-zara-editorial .za-detail-content {
+    flex: 0 0 auto;
+    justify-content: flex-start;
     min-width: 0;
-    padding: 26px 28px;
+    gap: 10px;
+    /* El 42px de abajo NO es estético: el número de página va
+       `position: absolute; bottom: 18px`, y con la ficha ya no centrada
+       el precio le quedaba justo debajo, superpuesto. */
+    padding: 18px 24px 42px;
   }
 
-  .layout-zara-editorial .za-detail-secondary {
-    display: none;
+  .layout-zara-editorial .za-detail-desc p {
+    line-height: 1.5;
+  }
+
+  .layout-zara-editorial .za-detail-mini {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 14px;
+  }
+
+  .layout-zara-editorial .za-detail-thumbs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 6px;
+    padding-bottom: 2px;
+  }
+
+  .layout-zara-editorial .za-detail-thumb {
+    flex: 0 0 46px;
   }
 }

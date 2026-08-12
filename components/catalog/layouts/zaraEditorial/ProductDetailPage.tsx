@@ -15,7 +15,12 @@ type ProductDetailPageProps = {
  * blanco y tracking amplio — no la grilla + ficha del layout original.
  */
 export default function ProductDetailPage({ variant }: ProductDetailPageProps) {
-  const [hero, secondary] = variant.collageImages;
+  // Antes esto era `[hero, secondary]`: de la tercera foto en adelante
+  // NO se renderizaba ninguna, así que agregarlas desde el panel no
+  // producía ningún cambio visible (y en celular la segunda tampoco, la
+  // escondía el CSS). Ahora la primera es la foto grande y TODAS las
+  // demás entran en la fila de miniaturas, sin tope.
+  const [hero, ...rest] = variant.collageImages;
 
   return (
     <section className={`page layout-zara-editorial za-detail${soldOutClass(variant)}`} id={variant.id}>
@@ -34,13 +39,22 @@ export default function ProductDetailPage({ variant }: ProductDetailPageProps) {
           ))}
         </div>
 
-        <SwatchGroup swatches={variant.swatches} />
+        {/* Colores y fotos extra comparten fila en celular: son las dos
+            tiras chicas de la ficha, y juntarlas devuelve ~60px de alto
+            a la foto grande, que es lo que se quiere ver. */}
+        <div className="za-detail-mini">
+          <SwatchGroup swatches={variant.swatches} />
 
-        {secondary && (
-          <div className="za-detail-secondary">
-            <Image src={secondary.src} alt={secondary.alt} fill sizes="220px" style={{ objectFit: "cover" }} />
-          </div>
-        )}
+          {rest.length > 0 && (
+            <div className="za-detail-thumbs">
+              {rest.map((img, i) => (
+                <div className="za-detail-thumb" key={`${img.src}-${i}`}>
+                  <Image src={img.src} alt={img.alt} fill sizes="120px" style={{ objectFit: "cover" }} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         <div className="za-detail-price">
           <span>Precio</span>
