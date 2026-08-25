@@ -1,0 +1,268 @@
+{
+  "layoutId": "original",
+  "theme": {
+    "ink": "#2b1810",
+    "paper": "#f5ede4",
+    "line": "#3d2418",
+    "muted": "#8a7361",
+    "accent": "#c1652f",
+    "displayFont": "Didot, \"Bodoni MT\", \"Playfair Display\", serif",
+    "bodyFont": "Futura, \"Century Gothic\", sans-serif"
+  },
+  "blocks": [
+    {
+      "type": "cover",
+      "data": {
+        "title": "BLUSA HELAINE",
+        "meta": [
+          " prenda elegante y versátil, ideal para elevar looks casuales "
+        ],
+        "subtitle": "",
+        "bottomLine1": "BLUSA HELAINE · 2026",
+        "bottomLine2": "",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-82822544.webp",
+        "pageNumber": 1
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "colorway-1",
+        "pageNumber": 2,
+        "name": "BLUSA HELAINE",
+        "label": "Colorway 1",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-16d9cbd2.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "colorway-1",
+        "pageNumber": 3,
+        "name": "BLUSA HELAINE",
+        "type": "Colorway 1 PIECE",
+        "price": "S/ 000",
+        "description": [
+          "BOLD SILHOUETTE | STATEMENT DETAIL",
+          "SIGNATURE COLOURWAY"
+        ],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-7f59b062.webp",
+            "alt": "BLUSA HELAINE Colorway 1"
+          },
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-32f0ac9c.webp",
+            "alt": "BLUSA HELAINE Colorway 1"
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 1",
+            "type": "color",
+            "color": "#c1652f"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "colorway-2",
+        "pageNumber": 4,
+        "name": "BLUSA HELAINE",
+        "label": "Colorway 2",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-66ce3e1e.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "colorway-2",
+        "pageNumber": 5,
+        "name": "BLUSA HELAINE",
+        "type": "Colorway 2 PIECE",
+        "price": "S/ 000",
+        "description": [
+          "RICH TEXTURE | SCULPTED FIT",
+          "AFTER-DARK COLOURWAY"
+        ],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-ffa957c7.webp",
+            "alt": "BLUSA HELAINE Colorway 2"
+          },
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-438a4416.webp",
+            "alt": "BLUSA HELAINE Colorway 2"
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 2",
+            "type": "color",
+            "color": "#2b1810"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "colorway-3",
+        "pageNumber": 6,
+        "name": "BLUSA HELAINE",
+        "label": "COLORWAY 3",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-6a1f46e5.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "colorway-3",
+        "pageNumber": 7,
+        "name": "BLUSA HELAINE",
+        "type": "COLORWAY 3 COLLECTION",
+        "price": "",
+        "description": [],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-82ce8e8a.webp",
+            "alt": "BLUSA HELAINE Colorway 3"
+          },
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-d915d262.webp",
+            "alt": ""
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 3",
+            "type": "color",
+            "color": "#c1652f"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "colorway-4",
+        "pageNumber": 8,
+        "name": "BLUSA HELAINE",
+        "label": "COLORWAY 4",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-3f435fc4.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "colorway-4",
+        "pageNumber": 9,
+        "name": "BLUSA HELAINE",
+        "type": "COLORWAY 4 COLLECTION",
+        "price": "",
+        "description": [],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-2b1baab1.webp",
+            "alt": "BLUSA HELAINE Colorway 4"
+          },
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-a2fdf43d.webp",
+            "alt": ""
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 4",
+            "type": "color",
+            "color": "#c1652f"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chapterHero",
+      "data": {
+        "id": "colorway-6",
+        "pageNumber": 10,
+        "name": "BLUSA HELAINE",
+        "label": "COLORWAY 6",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-ea15d18b.webp"
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "colorway-6",
+        "pageNumber": 11,
+        "name": "BLUSA HELAINE",
+        "type": "COLORWAY 6 COLLECTION",
+        "price": "",
+        "description": [],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-82822544.webp",
+            "alt": "BLUSA HELAINE Colorway 6"
+          },
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-c2e9fd77.webp",
+            "alt": ""
+          }
+        ],
+        "swatches": [
+          {
+            "label": "Colorway 6",
+            "type": "color",
+            "color": "#c1652f"
+          }
+        ]
+      }
+    },
+    {
+      "type": "productDetail",
+      "data": {
+        "id": "",
+        "pageNumber": 12,
+        "name": "",
+        "type": "",
+        "price": "",
+        "description": [],
+        "collageLayout": "two",
+        "collageImages": [
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-1166659a.webp",
+            "alt": ""
+          },
+          {
+            "src": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-6c86c937.webp",
+            "alt": ""
+          }
+        ],
+        "swatches": [
+          {
+            "label": "",
+            "type": "color",
+            "color": "#cccccc"
+          }
+        ]
+      }
+    },
+    {
+      "type": "closing",
+      "data": {
+        "title": "BLUSA HELAINE",
+        "line1": "THE COLLECTION",
+        "line2": "Available now.",
+        "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-0f51e06f.webp",
+        "pageNumber": 13
+      }
+    }
+  ]
+}
