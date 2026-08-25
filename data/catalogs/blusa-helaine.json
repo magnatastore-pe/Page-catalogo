@@ -27,24 +27,23 @@
     {
       "type": "chapterHero",
       "data": {
-        "id": "colorway-1",
+        "id": "beige",
         "pageNumber": 2,
         "name": "BLUSA HELAINE",
-        "label": "Colorway 1",
+        "label": "BEIGE",
         "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-16d9cbd2.webp"
       }
     },
     {
       "type": "productDetail",
       "data": {
-        "id": "colorway-1",
+        "id": "beige",
         "pageNumber": 3,
         "name": "BLUSA HELAINE",
-        "type": "Colorway 1 PIECE",
-        "price": "S/ 000",
+        "type": "",
+        "price": "S/ 169.00",
         "description": [
-          "BOLD SILHOUETTE | STATEMENT DETAIL",
-          "SIGNATURE COLOURWAY"
+          "Confeccionada en seda francesa, un tejido suave"
         ],
         "collageLayout": "two",
         "collageImages": [
@@ -61,7 +60,7 @@
           {
             "label": "Colorway 1",
             "type": "color",
-            "color": "#c1652f"
+            "color": "#e3c8ab"
           }
         ]
       }
@@ -69,24 +68,23 @@
     {
       "type": "chapterHero",
       "data": {
-        "id": "colorway-2",
+        "id": "animal-print",
         "pageNumber": 4,
         "name": "BLUSA HELAINE",
-        "label": "Colorway 2",
+        "label": "Animal Print",
         "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-66ce3e1e.webp"
       }
     },
     {
       "type": "productDetail",
       "data": {
-        "id": "colorway-2",
+        "id": "animal-print",
         "pageNumber": 5,
         "name": "BLUSA HELAINE",
-        "type": "Colorway 2 PIECE",
-        "price": "S/ 000",
+        "type": "",
+        "price": "S/ 169.00",
         "description": [
-          "RICH TEXTURE | SCULPTED FIT",
-          "AFTER-DARK COLOURWAY"
+          "Confeccionada en seda francesa, un tejido suave"
         ],
         "collageLayout": "two",
         "collageImages": [
@@ -103,7 +101,12 @@
           {
             "label": "Colorway 2",
             "type": "color",
-            "color": "#2b1810"
+            "color": "#e5d0bf"
+          },
+          {
+            "label": "",
+            "type": "color",
+            "color": "#0d0f0e"
           }
         ]
       }
@@ -111,22 +114,24 @@
     {
       "type": "chapterHero",
       "data": {
-        "id": "colorway-3",
+        "id": "azul-punteado",
         "pageNumber": 6,
         "name": "BLUSA HELAINE",
-        "label": "COLORWAY 3",
+        "label": "Azul punteado",
         "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-6a1f46e5.webp"
       }
     },
     {
       "type": "productDetail",
       "data": {
-        "id": "colorway-3",
+        "id": "azul-punteado",
         "pageNumber": 7,
         "name": "BLUSA HELAINE",
-        "type": "COLORWAY 3 COLLECTION",
-        "price": "",
-        "description": [],
+        "type": "",
+        "price": "S/ 169.00",
+        "description": [
+          "Confeccionada en seda francesa, un tejido suave"
+        ],
         "collageLayout": "two",
         "collageImages": [
           {
@@ -142,7 +147,7 @@
           {
             "label": "Colorway 3",
             "type": "color",
-            "color": "#c1652f"
+            "color": "#242d31"
           }
         ]
       }
@@ -150,22 +155,24 @@
     {
       "type": "chapterHero",
       "data": {
-        "id": "colorway-4",
+        "id": "multicolor",
         "pageNumber": 8,
         "name": "BLUSA HELAINE",
-        "label": "COLORWAY 4",
+        "label": "Multicolor",
         "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-3f435fc4.webp"
       }
     },
     {
       "type": "productDetail",
       "data": {
-        "id": "colorway-4",
+        "id": "multicolor",
         "pageNumber": 9,
         "name": "BLUSA HELAINE",
-        "type": "COLORWAY 4 COLLECTION",
-        "price": "",
-        "description": [],
+        "type": "",
+        "price": "S/ 169.00",
+        "description": [
+          "Confeccionada en seda francesa, un tejido suave"
+        ],
         "collageLayout": "two",
         "collageImages": [
           {
@@ -179,9 +186,19 @@
         ],
         "swatches": [
           {
-            "label": "Colorway 4",
+            "label": "",
             "type": "color",
-            "color": "#c1652f"
+            "color": "#ecf1f3"
+          },
+          {
+            "label": "",
+            "type": "color",
+            "color": "#c9b8b7"
+          },
+          {
+            "label": "",
+            "type": "color",
+            "color": "#333b4a"
           }
         ]
       }
@@ -189,22 +206,24 @@
     {
       "type": "chapterHero",
       "data": {
-        "id": "colorway-6",
+        "id": "blanco-verde",
         "pageNumber": 10,
         "name": "BLUSA HELAINE",
-        "label": "COLORWAY 6",
+        "label": "Blanco verde",
         "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-ea15d18b.webp"
       }
     },
     {
       "type": "productDetail",
       "data": {
-        "id": "colorway-6",
+        "id": "blanco-verde",
         "pageNumber": 11,
         "name": "BLUSA HELAINE",
-        "type": "COLORWAY 6 COLLECTION",
-        "price": "",
-        "description": [],
+        "type": "",
+        "price": "S/. 169.00",
+        "description": [
+          "Confeccionada en seda francesa, un tejido suave"
+        ],
         "collageLayout": "two",
         "collageImages": [
           {
@@ -220,7 +239,7 @@
           {
             "label": "Colorway 6",
             "type": "color",
-            "color": "#c1652f"
+            "color": "#9c9d8a"
           }
         ]
       }
@@ -230,10 +249,12 @@
       "data": {
         "id": "",
         "pageNumber": 12,
-        "name": "",
+        "name": "Blanco celeste",
         "type": "",
-        "price": "",
-        "description": [],
+        "price": "S/. 169.00",
+        "description": [
+          "Confeccionada en seda francesa, un tejido suave"
+        ],
         "collageLayout": "two",
         "collageImages": [
           {
@@ -249,7 +270,7 @@
           {
             "label": "",
             "type": "color",
-            "color": "#cccccc"
+            "color": "#87a1ad"
           }
         ]
       }
@@ -258,8 +279,8 @@
       "type": "closing",
       "data": {
         "title": "BLUSA HELAINE",
-        "line1": "THE COLLECTION",
-        "line2": "Available now.",
+        "line1": "fluido con una caída delicada y un acabado elegante",
+        "line2": "",
         "bgImage": "https://gzkqoudamwwelxhc.public.blob.vercel-storage.com/imagenes/blusa-helaine-20260825-0f51e06f.webp",
         "pageNumber": 13
       }
